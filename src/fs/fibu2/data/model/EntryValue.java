@@ -158,7 +158,7 @@ public class EntryValue implements XMLConfigurable, Comparable<EntryValue>{
 	 */
 	@Override
 	public String toString() {
-		return value + currency.getSymbol();
+		return value + " " + currency.getSymbol();
 	}
 
 	
