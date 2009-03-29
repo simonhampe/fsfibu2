@@ -4,6 +4,7 @@ import java.util.Currency;
 
 import org.dom4j.Element;
 import org.dom4j.Node;
+import org.dom4j.tree.DefaultElement;
 
 import fs.xml.XMLConfigurable;
 import fs.xml.XMLReadConfigurationException;
@@ -65,31 +66,60 @@ public class EntryValue implements XMLConfigurable, Comparable<EntryValue>{
 	// ********************************************************
 	
 	/**
-	 * This expects a node named 'entryvalue' with subnodes 'value' and 'currency', which contain the
+	 * This expects a root node named 'entryvalue' with subnodes 'value' and 'currency', which contain the
 	 * float value and the ISO 4217 code of the currency
-	 * @throws XMLWriteConfigurationException - if the expected nodes are not present or if the currency code is not a valid ISO 4217 code
+	 * @throws XMLWriteConfigurationException - if the expected nodes are not present or if the value is not a float value or if the currency code is not a valid ISO 4217 code
 	 */
 	@Override
 	public void configure(Node arg0) throws XMLWriteConfigurationException {
-		// TODO Auto-generated method stub
+		if(arg0 == null) throw new XMLWriteConfigurationException("Cannot configure EntryValue from null node");
+		Node v = arg0.selectSingleNode("./value");
+		if(v == null) throw new XMLWriteConfigurationException("Cannot configure EntryValue: value field missing.");
+		try{
+			value = Float.parseFloat(v.getText());
+		}
+		catch(NumberFormatException e) {
+			throw new XMLWriteConfigurationException(e.getMessage());
+		}
+		Node c = arg0.selectSingleNode("./currency");
+		if(c == null) throw new XMLWriteConfigurationException("Cannot configure Entry Value: currency field missing");
+		try {
+			currency = Currency.getInstance(c.getText());
+		}
+		catch(IllegalArgumentException e) {
+			throw new XMLWriteConfigurationException(e.getMessage());
+		}
 	}
 
+	/**
+	 * Returns a node as it would be expected by configure(Node arg0)
+	 */
 	@Override
 	public Element getConfiguration() throws XMLReadConfigurationException {
-		// TODO Auto-generated method stub
-		return null;
+		DefaultElement root = new DefaultElement("entryvalue");
+		DefaultElement v = new DefaultElement("value");
+		DefaultElement c = new DefaultElement("currency");
+		v.setText(value+"");
+		c.setText(currency.toString());
+		root.add(v);
+		root.add(c);
+		return root;
 	}
 
+	/**
+	 * Returns 'entryvalue'
+	 */
 	@Override
 	public String getIdentifier() {
-		// TODO Auto-generated method stub
-		return null;
+		return "entryvalue";
 	}
 
+	/**
+	 * Returns true
+	 */
 	@Override
 	public boolean isConfigured() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 	
 	// EQUALS, HASHCODE AND SUCH **************************************
