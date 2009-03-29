@@ -1,4 +1,4 @@
-package fs.fibu2.test;
+package fs.fibu2.test.model;
 
 import java.util.Arrays;
 import java.util.Vector;
