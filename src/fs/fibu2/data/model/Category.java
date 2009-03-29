@@ -185,6 +185,30 @@ public class Category implements XMLConfigurable {
 		return returnValue;
 	}
 	
+	/**
+	 * @return The root category
+	 */
+	public static Category getRootCategory() {
+		return root != null? root : getCategory(null,null);
+	}
+	
+	/**
+	 * @return Whether this category is a subcategory of p, i.e. p is a (direct or indirect) parent of this category.
+	 * If p == null, this returns false.
+	 */
+	public boolean isSubCategoryOf(Category p) {
+		if(p == null) return false;
+		return this == p || (parent == null? false : parent.isSubCategoryOf(p));
+	}
+	
+	/**
+	 * @return Whether this category is a supercategory of c, i.e. is a (direct or indirect) parent of c.
+	 */
+	public boolean isSuperCategoryOf(Category c) {
+		if(c == null) return false;
+		return c.isSubCategoryOf(this);
+	}
+	
 	// EQUALS, HASHCODE, TOSTRING ***************************************************
 	// ******************************************************************************
 		
