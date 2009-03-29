@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
 import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.tree.DefaultElement;
@@ -33,6 +34,9 @@ public class Category implements XMLConfigurable {
 	private final int hashCode;
 	private final Vector<String> orderedList = new Vector<String>(); //We keep a double copy of the data, since both formats might be efficient depending on the task 
 	
+	//A logger
+	private static Logger logger = Logger.getLogger(Category.class);
+	
 	// CONSTRUCTORS AND CREATION METHODS *************************************
 	// ***********************************************************************
 	
@@ -54,11 +58,14 @@ public class Category implements XMLConfigurable {
 			String s = orderedList.get(i);
 			HashMap<Integer,HashSet<Category>> mapat = categories.get(s);
 			if(mapat == null) mapat = new HashMap<Integer, HashSet<Category>>();
-			HashSet<Category> cmap = mapat.get(i);
+			HashSet<Category> cmap = mapat.get(i+1);
 			if(cmap == null) cmap = new HashSet<Category>();
 			cmap.add(this);
+			mapat.put(i+1, cmap);
+			categories.put(s, mapat);
 		}
 		
+		logger.trace("Created category: " + toString());	
 	}
 	
 	public static Category getCategory(Category parent, String tail) {
@@ -98,22 +105,22 @@ public class Category implements XMLConfigurable {
 		//Create higher order parents
 		for(int i = 1; i < sequence.size(); i++) {
 			//Start with the last parent list
-			HashSet<Category> ithParents = nthOrderParents.get(i-1);
+			HashSet<Category> ithParents = new HashSet<Category>(nthOrderParents.get(i-1));
 			if(ithParents.size() == 0) {
 				nthOrderParents.add(ithParents); 
-				break;
+				continue;
 			}
 
 			HashMap<Integer,HashSet<Category>> containthis = categories.get(sequence.get(i));
 			//If there's no category containing this string, we're done.
 			if(containthis == null) {
 				nthOrderParents.add(new HashSet<Category>());
-				break;
+				continue;
 			}
 			
 			//Else remove all categories from the list of possible ones that do not contain the string at the right position
 			HashSet<Category> containsthisat = containthis.get(i+1);
-			for(Category c : ithParents) {
+			for(Category c : nthOrderParents.get(i-1)) {
 				if(!containsthisat.contains(c)) ithParents.remove(c);
 			}
 			nthOrderParents.add(ithParents);
@@ -165,6 +172,19 @@ public class Category implements XMLConfigurable {
 		return orderedList.size();
 	}
 	
+	/**
+	 * Returns a list of all existing categories (except for the root category)
+	 */
+	public static HashSet<Category> getExistingCategories() {
+		HashSet<Category> returnValue = new HashSet<Category>();
+		for(HashMap<Integer,HashSet<Category>> map : categories.values()) {
+			for(HashSet<Category> set : map.values()) {
+				returnValue.addAll(set);
+			}
+		}
+		return returnValue;
+	}
+	
 	// EQUALS, HASHCODE, TOSTRING ***************************************************
 	// ******************************************************************************
 		
@@ -185,11 +205,11 @@ public class Category implements XMLConfigurable {
 	}
 
 	/**
-	 * Returns the string sequence defining this category, separated by ', ' 
+	 * Returns the string sequence defining this category, separated by ' - ' 
 	 */
 	@Override
 	public String toString() {
-		return (parent == null? "" : parent.toString() + ", ") + tail;
+		return (parent == root || parent == null? "" : parent.toString() + " - ") + tail;
 	}
 
 	// XMLCONFIGURATION METHODS **************************************************
