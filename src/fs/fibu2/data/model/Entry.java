@@ -1,5 +1,8 @@
 package fs.fibu2.data.model;
 
+import java.util.Currency;
+import java.util.Date;
+
 import org.dom4j.Element;
 import org.dom4j.Node;
 
@@ -11,10 +14,17 @@ public class Entry implements XMLConfigurable {
 
 	// MEMBERS ******************************
 	
-	private String name;
+	private String 		name;
+	private float 		value;
+	private Currency 	currency;
+	private Date		date;
+	private Category	category;
+	
+	private String		additionalInformation;
 	
 	
-	
+	// XMLCONFIFGURABLE *********************************
+	// **************************************************
 	
 	@Override
 	public String getIdentifier() {

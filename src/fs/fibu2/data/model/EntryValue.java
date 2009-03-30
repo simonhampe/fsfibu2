@@ -1,6 +1,8 @@
 package fs.fibu2.data.model;
 
+import java.text.NumberFormat;
 import java.util.Currency;
+import java.util.Locale;
 
 import org.dom4j.Element;
 import org.dom4j.Node;
@@ -15,6 +17,8 @@ import fs.xml.XMLWriteConfigurationException;
  * @author Simon Hampe
  *
  */
+//TODO: I think this class is useless...
+
 public class EntryValue implements XMLConfigurable, Comparable<EntryValue>{
 
 	//Data
@@ -154,11 +158,14 @@ public class EntryValue implements XMLConfigurable, Comparable<EntryValue>{
 	}
 
 	/**
-	 * @return The value + " " + currency symbol
+	 * @return The value together with the currency symbol, formatted according to the default
+	 * locale
 	 */
 	@Override
 	public String toString() {
-		return value + " " + currency.getSymbol();
+		NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
+		nf.setCurrency(currency);
+		return nf.format(value);
 	}
 
 	
