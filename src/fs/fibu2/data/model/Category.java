@@ -21,7 +21,7 @@ import fs.xml.XMLWriteConfigurationException;
  * @author Simon Hampe
  *
  */
-public class Category implements XMLConfigurable {
+public final class Category implements XMLConfigurable {
 
 	//A reference to the root group
 	private static Category root = null;
