@@ -19,6 +19,7 @@ public class Entry implements XMLConfigurable {
 	private Currency 	currency;
 	private Date		date;
 	private Category	category;
+	private String		account;
 	
 	private String		additionalInformation;
 	
