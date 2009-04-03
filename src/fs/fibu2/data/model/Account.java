@@ -37,6 +37,17 @@ public interface Account {
 	public String getDescription();
 	
 	/**
+	 * @return The ID of this account. This ID will be used to identify the account of an fsfibu2 journal entry. So you should take care
+	 * to make this ID uniqe. The convention is to take the name of the account, where spaces are replaced by '_' (e.g. 'bank_account', 'cash_box')
+	 */
+	public String getID();
+	
+	/**
+	 * @return The name of this account (e.g. 'Bank account', 'Cash box')
+	 */
+	public String getName();
+	
+	/**
 	 * Checks whether an entry is correct for this type of account.
 	 * @param e The entry to be verified
 	 * @throws EntryVerificationException - if the entry is not correct

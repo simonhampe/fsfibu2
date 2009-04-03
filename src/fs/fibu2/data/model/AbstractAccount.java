@@ -1,5 +1,6 @@
 package fs.fibu2.data.model;
 
+import java.util.Arrays;
 import java.util.Vector;
 
 import fs.fibu2.data.error.EntryVerificationException;
@@ -32,14 +33,24 @@ public class AbstractAccount implements Account {
 
 	@Override
 	public Vector<String> getFieldsIDs() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Vector<String>(Arrays.asList("invoice"));
 	}
 
 	@Override
 	public void verifyEntry(Entry e) throws EntryVerificationException {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public String getID() {
+		return "abstract_account";
+	}
+
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
