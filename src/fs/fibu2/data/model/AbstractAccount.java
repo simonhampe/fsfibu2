@@ -4,53 +4,76 @@ import java.util.Arrays;
 import java.util.Vector;
 
 import fs.fibu2.data.error.EntryVerificationException;
+import fs.fibu2.lang.Fsfibu2StringTableMgr;
+import fs.xml.PolyglotStringTable;
 
 /**
  * This represents the minimal information an fsfibu2 account usually requires: An invoice number which has
  * to exist, if the entry value is negative.
  */
-public class AbstractAccount implements Account {
-
+public class AbstractAccount extends Account {
 	
+	private static Vector<String> 	fieldIDs 	= new Vector<String>(Arrays.asList("invoice"));
+	private static String			accountID 	= "abstract_account";
+	
+	private static String			sgroup		= "fs.fibu2.AbstractAccount";
+	
+	// ACCOUNT METHODS ************************************
+	// ****************************************************
 	
 	@Override
 	public String getDescription() {
-		// TODO Auto-generated method stub
-		return null;
+		return Fsfibu2StringTableMgr.getLoader().getString(sgroup + ".description", PolyglotStringTable.getGlobalLanguageID());
 	}
 
 	@Override
 	public Vector<String> getFieldDescriptions() {
-		// TODO Auto-generated method stub
-		return null;
+		Vector<String> returnValue = new Vector<String>();
+		returnValue.add(Fsfibu2StringTableMgr.getLoader().getString(sgroup + ".invoicedescription", PolyglotStringTable.getGlobalLanguageID()));
+		return returnValue;
 	}
 
 	@Override
 	public Vector<String> getFieldNames() {
-		// TODO Auto-generated method stub
-		return null;
+		Vector<String> returnValue = new Vector<String>();
+		returnValue.add(Fsfibu2StringTableMgr.getLoader().getString(sgroup + ".invoicename", PolyglotStringTable.getGlobalLanguageID()));
+		return returnValue;
 	}
 
 	@Override
 	public Vector<String> getFieldsIDs() {
-		return new Vector<String>(Arrays.asList("invoice"));
-	}
-
-	@Override
-	public void verifyEntry(Entry e) throws EntryVerificationException {
-		// TODO Auto-generated method stub
-
+		return new Vector<String>(fieldIDs);
 	}
 
 	@Override
 	public String getID() {
-		return "abstract_account";
+		return accountID;
 	}
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		 return Fsfibu2StringTableMgr.getLoader().getString(sgroup + ".name", PolyglotStringTable.getGlobalLanguageID());
+	}
+
+	/**
+	 * If the value of e is negative and there is no invoice registration number (i.e. there is no information field or the trimmed string is empty),
+	 * then it throws a non-critical error for the field 'invoice'.
+	 */
+	@Override
+	public void verifyEntry(Entry e) throws EntryVerificationException {
+		if(e == null) return;
+		if(e.getValue() < 0) {
+			Vector<String> info = e.getAccountInformation();
+			if(info.size() == 0 || info.get(0) == null || info.get(0).trim().equals("")) {
+				Vector<String> faultyFields = new Vector<String>();
+					faultyFields.add("invoice");
+				Vector<Boolean> criticality = new Vector<Boolean>();
+					criticality.add(false);
+				Vector<String> descriptions = new Vector<String>();
+					descriptions.add(Fsfibu2StringTableMgr.getLoader().getString(sgroup + ".faultyinvoice", PolyglotStringTable.getGlobalLanguageID()));
+				throw new EntryVerificationException(e,faultyFields,criticality,descriptions);
+			}
+		}
 	}
 
 }
