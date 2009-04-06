@@ -17,7 +17,7 @@ public abstract class Account {
 	/**
 	 * @return A list of IDs of the fields which are required for this type of account.
 	 */
-	public abstract Vector<String> getFieldsIDs();
+	public abstract Vector<String> getFieldIDs();
 	
 	/**
 	 * @return A list of the names of the required fields, such as might be used for label texts in an

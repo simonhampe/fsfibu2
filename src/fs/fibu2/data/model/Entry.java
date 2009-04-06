@@ -25,7 +25,39 @@ public class Entry implements XMLConfigurable {
 	private Vector<String> 		accountInformation;
 	private String				additionalInformation;
 	
+	// CONSTRUCTOR *******************************
+	// *******************************************
 	
+	/**
+	 * Creates an entry with values set to the given parameters
+	 * @param name The name of this entry, e.g. 'Getränkeeinnahmen'. A null string is interpreted as empty string.
+	 * @param value The value of this entry, e.g. '140,00'.
+	 * @param currency The currency of this entry, e.g. EUR. Must not be null.
+	 * @param date The date of this entry, e.g. 13.4.2009. Must not be null.
+	 * @param category The category of this entry, e.g. 'Getränke / Süßigkeiten - Einnahmen'. 
+	 * 			The null category is interpreted as the root category
+	 * @param account The account of this entry, e.g. 'bank_account'. Must not be null.
+	 * @param accountInformation A list of information specific for the account type, e.g. account sheet number. 
+	 * 			Null is interpreted as the empty list.
+	 * @param additionalInformation Some additional information for this entry, e.g. 'Beinhaltet 5 Euro Bestechung von Fex, damit er seinen Fuffziger kleinmachen durfte.'
+	 * 			A null string is interpreted as the empty string
+	 * @throws NullPointerException - If any of the values where 'Must not be null' is written, is null.
+	 */
+	public Entry(String name, float value, Currency currency,
+			GregorianCalendar date, Category category, Account account,
+			Vector<String> accountInformation, String additionalInformation) 
+			throws NullPointerException 									{
+		super();
+		setName(name);
+		setValue(value);
+		setCurrency(currency);
+		setDate(date);
+		setCategory(category);
+		setAccount(account);
+		setAccountInformation(accountInformation);
+		setAdditionalInformation(additionalInformation);
+	}
+
 	// GETTERS / SETTERS *************************
 	// *******************************************
 	

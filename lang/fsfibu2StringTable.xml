@@ -8,16 +8,25 @@
       <description>English</description>
     </language>
   </languagetable>
+  <polyglotstring id="fs.fibu2.global.name" group="fs.fibu2.global">
+    <variant lang="en">Name</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.AbstractAccount.invoicename" group="fs.fibu2.AbstractAccount">
     <variant lang="en">Invoice number</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.AbstractAccount.description" group="fs.fibu2.AbstractAccount">
     <variant lang="en">An abstract account implementing invoice information</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.AbstractAccount.name" group="fs.fibu2.AbstractAccount">
-    <variant lang="en">Abstract account</variant>
+  <polyglotstring id="fs.fibu2.global.description" group="fs.fibu2.global">
+    <variant lang="en">Description</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.AbstractAccount.fieldlegend" group="fs.fibu2.AbstractAccount">
+    <variant lang="en">Fields (ID (Name): Description)</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.AbstractAccount.invoicedescription" group="fs.fibu2.AbstractAccount">
     <variant lang="en">A registration number for the invoice associated to an entry</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.AbstractAccount.name" group="fs.fibu2.AbstractAccount">
+    <variant lang="en">Abstract account</variant>
   </polyglotstring>
 </fsfw:polyglotstringtable>

@@ -41,7 +41,7 @@ public class AbstractAccount extends Account {
 	}
 
 	@Override
-	public Vector<String> getFieldsIDs() {
+	public Vector<String> getFieldIDs() {
 		return new Vector<String>(fieldIDs);
 	}
 
@@ -74,6 +74,32 @@ public class AbstractAccount extends Account {
 				throw new EntryVerificationException(e,faultyFields,criticality,descriptions);
 			}
 		}
+	}
+	
+	/**
+	 * Returns a multi-line summary of this account containing ID, Name, Description, List of
+	 * fields with names and descriptions
+	 */
+	@Override
+	public String toString() {
+		StringBuilder b = new StringBuilder();
+		b.append("ID: " + getID() + "\n" +  
+				 Fsfibu2StringTableMgr.getLoader().getString("fs.fibu2.global.name", PolyglotStringTable.getGlobalLanguageID()) + 
+				 		": " + getName() + "\n" + 
+				 Fsfibu2StringTableMgr.getLoader().getString("fs.fibu2.global.description", PolyglotStringTable.getGlobalLanguageID()) + 
+				 		": " + getDescription() + "\n" + 
+				 Fsfibu2StringTableMgr.getLoader().getString(sgroup + ".fieldlegend", PolyglotStringTable.getGlobalLanguageID()) + 
+				 	"\n" );
+		Vector<String> ids = getFieldIDs();
+		Vector<String> names = getFieldNames();
+		Vector<String> descs = getFieldDescriptions();
+		for(int i = 0; i < ids.size(); i++) {
+			b.append(ids.get(i) + " (");
+			b.append((i < names.size()? names.get(i) : " - " ) + "): ");
+			b.append((i < descs.size()? descs.get(i) : " - " ) + "\n");
+		}
+		
+		return b.toString();
 	}
 
 }

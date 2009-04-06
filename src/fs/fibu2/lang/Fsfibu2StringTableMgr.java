@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.dom4j.Document;
 
 import fs.fibu2.resource.Fsfibu2DefaultReference;
+import fs.xml.FsfwDefaultReference;
 import fs.xml.PolyglotStringLoader;
 import fs.xml.PolyglotStringTable;
 import fs.xml.ResourceDependent;
@@ -21,7 +22,7 @@ import fs.xml.XMLToolbox;
 public final class Fsfibu2StringTableMgr implements ResourceDependent{
 
 	//The resource reference for locating the string tables
-	private static ResourceReference reference;
+	private static ResourceReference reference = Fsfibu2DefaultReference.getDefaultReference();
 	
 	//The only instance of this manager
 	private static Fsfibu2StringTableMgr global_instance = null;
@@ -42,8 +43,8 @@ public final class Fsfibu2StringTableMgr implements ResourceDependent{
 	 * A protected constructor which initializes the resource reference to
 	 * be the default reference
 	 */
-	private Fsfibu2StringTableMgr() {
-		reference = Fsfibu2DefaultReference.getDefaultReference();
+	protected Fsfibu2StringTableMgr() {
+	 
 	}
 	
 	public Fsfibu2StringTableMgr getInstance() {
@@ -60,7 +61,7 @@ public final class Fsfibu2StringTableMgr implements ResourceDependent{
 	public static void reloadTables() {
 		//Reload core table
 		try {
-			fsfibu2Table = new PolyglotStringTable(XMLToolbox.loadXMLFile(new File(reference.getFullResourcePath(global_instance, "lang/fsfibu2StringTable.xml"))),reference);
+			fsfibu2Table = new PolyglotStringTable(XMLToolbox.loadXMLFile(new File(reference.getFullResourcePath(global_instance, "lang/fsfibu2StringTable.xml"))),FsfwDefaultReference.getDefaultReference());
 		} catch (Exception e) {
 			logger.error("Cannot load fsfibu2 string table: " + e.getMessage());
 			fsfibu2Table = new PolyglotStringTable("","");
@@ -69,10 +70,12 @@ public final class Fsfibu2StringTableMgr implements ResourceDependent{
 		File dir = new File(reference.getFullResourcePath(global_instance, "lang/"));
 		for(File f: dir.listFiles()) {
 			try {
+				//Only load .xml files
+				if(!f.getName().endsWith(".xml")) continue;
 				Document d = XMLToolbox.loadXMLFile(f);
 				fsfibu2Table.configure(d.getRootElement());
 			} catch (Exception e) {
-				logger.error("Cannot load update table " + f.getName() + ". " + 
+				logger.warn("Cannot load update table " + f.getName() + ". " + 
 							"Skipping it.");
 			}
 		}
