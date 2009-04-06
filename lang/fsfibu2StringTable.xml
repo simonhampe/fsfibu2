@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<fsfw:polyglotstringtable id="FS_FIBU2_MAIN" xmlns:fsfw="http://www.fsmathe.uni-kl.de/fsframework" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fsmathe.uni-kl.de/fsframework ../schema/PolyglotStringTable.xsd">
+  <description>This table contains the core string table for fsfibu2.</description>
+  <languagetable/>
+</fsfw:polyglotstringtable>
