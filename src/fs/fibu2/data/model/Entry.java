@@ -15,6 +15,9 @@ import org.dom4j.Node;
 import org.dom4j.tree.DefaultElement;
 
 import fs.fibu2.data.format.Fsfibu2DateFormats;
+import fs.fibu2.lang.Fsfibu2StringTableMgr;
+import fs.xml.PolyglotStringLoader;
+import fs.xml.PolyglotStringTable;
 import fs.xml.XMLConfigurable;
 import fs.xml.XMLReadConfigurationException;
 import fs.xml.XMLWriteConfigurationException;
@@ -31,6 +34,8 @@ public class Entry implements XMLConfigurable {
 	private Account					account;
 	private HashMap<String,String> 	accountInformation;
 	private String					additionalInformation;
+	
+	private static final String sgroup = "fs.fibu2.Entry";
 	
 	// CONSTRUCTOR *******************************
 	// *******************************************
@@ -54,7 +59,6 @@ public class Entry implements XMLConfigurable {
 			GregorianCalendar date, Category category, Account account,
 			HashMap<String,String> accountInformation, String additionalInformation) 
 			throws NullPointerException 									{
-		super();
 		setName(name);
 		setValue(value);
 		setCurrency(currency);
@@ -63,6 +67,14 @@ public class Entry implements XMLConfigurable {
 		setAccount(account);
 		setAccountInformation(accountInformation);
 		setAdditionalInformation(additionalInformation);
+	}
+	
+	/**
+	 * Creates an entry which is configured by the given node as by a call to configure()
+	 * @throws XMLWriteConfigurationException - If n == null or the configure method throws this exception
+	 */
+	public Entry(Node n) throws XMLWriteConfigurationException{
+		configure(n);
 	}
 
 	// GETTERS / SETTERS *************************
@@ -186,7 +198,39 @@ public class Entry implements XMLConfigurable {
 	public void setAdditionalInformation(String additionalInformation) {
 		this.additionalInformation = additionalInformation == null? "" : additionalInformation;
 	}
-
+	
+	// TOSTRING ********************************************
+	// *****************************************************
+	
+	/**
+	 * Returns a multi-line representation of this entry
+	 */
+	@Override
+	public String toString() {
+		StringBuilder b = new StringBuilder();
+		PolyglotStringLoader l = Fsfibu2StringTableMgr.getLoader();
+		
+		String lid = PolyglotStringTable.getGlobalLanguageID();
+		b.append(l.getString("fs.fibu2.global.name", lid));
+		b.append(": " + name + "\n");
+		b.append(l.getString(sgroup + ".value", lid));
+		b.append(": " + value + "\n");
+		b.append(l.getString(sgroup + ".currency", lid));
+		b.append(": " + currency.getSymbol() + "\n");
+		b.append(l.getString(sgroup + ".date", lid));
+		b.append(": " + Fsfibu2DateFormats.getEntryDateFormat().format(date.getTime()) + "\n");
+		b.append(l.getString(sgroup + ".category", lid));
+		b.append(": " + category.toString() + "\n");
+		b.append(l.getString(sgroup + ".account", lid));
+		b.append(": " + account.getName() + "\n");
+		for(String field : accountInformation.keySet()) {
+			b.append("  " + account.getFieldNames().get(field) + ": " + accountInformation.get(field) + "\n");
+		}
+		b.append(l.getString(sgroup + ".info", lid));
+		b.append(": " + additionalInformation);
+		return b.toString();
+	}
+	
 	// XMLCONFIFGURABLE *********************************
 	// **************************************************
 	
@@ -212,7 +256,7 @@ public class Entry implements XMLConfigurable {
 	 * - name (String)* <br>
 	 * - value (float)* <br>
 	 * - currency (A String containing the ISO 4217 code)* <br>
-	 * - date (A date formatted as dd.MM.YYYY)* <br>
+	 * - date (A date formatted as dd.MM.yyyy)* <br>
 	 * - category (A node as described in {@link Category})
 	 * - account (String)*<br>
 	 * - accountinformation (A node containing subnodes for each field id - named after that id - which contain the associated
@@ -223,6 +267,8 @@ public class Entry implements XMLConfigurable {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void configure(Node n) throws XMLWriteConfigurationException {
+		if(n == null) throw new XMLWriteConfigurationException("Invalid entry configuration: Null node");
+		
 		Node nameNode = n.selectSingleNode("./name");
 		if(nameNode == null) throw new XMLWriteConfigurationException("Invalid entry configuration: Name node missing");
 		else setName(nameNode.getText());
@@ -249,7 +295,7 @@ public class Entry implements XMLConfigurable {
 		if(dateNode == null) throw new XMLWriteConfigurationException("Invalid entry configuration: Date node missing");
 		try {
 			GregorianCalendar cal = new GregorianCalendar();
-			cal.setTime(((new SimpleDateFormat(Fsfibu2DateFormats.entryDateFormat)).parse(dateNode.getText())));
+			cal.setTime(Fsfibu2DateFormats.getEntryDateFormat().parse(dateNode.getText()));
 			setDate(cal);
 		}
 		catch(ParseException pe) {
@@ -282,7 +328,7 @@ public class Entry implements XMLConfigurable {
 			throw new XMLWriteConfigurationException("Invalid entry configuration: Account id '" + accountNode.getText() + "' unknown");
 		}
 		
-		Node accountInfoNode = n.selectSingleNode("/accountinformation");
+		Node accountInfoNode = n.selectSingleNode("./accountinformation");
 		if(accountInfoNode == null) setAccountInformation(null);
 		else {
 			try {
@@ -291,13 +337,14 @@ public class Entry implements XMLConfigurable {
 				for(Object f : l) {
 					accInf.put(((Node)f).getName(), ((Node)f).getText());
 				}
+				setAccountInformation(accInf);
 			}
 			catch(Exception e) {
 				throw new XMLWriteConfigurationException("Invalid entry configuration: Account information node contains invalid data");
 			}
 		}
 		
-		Node additionalInfoNode = n.selectSingleNode("/additionalinformation");
+		Node additionalInfoNode = n.selectSingleNode("./additionalinformation");
 		if(additionalInfoNode == null) setAdditionalInformation(null);
 		else setAdditionalInformation(additionalInfoNode.getText());
 	}
@@ -322,7 +369,7 @@ public class Entry implements XMLConfigurable {
 		root.add(currencyNode);
 		
 		DefaultElement dateNode = new DefaultElement("date");
-		dateNode.setText(new SimpleDateFormat(Fsfibu2DateFormats.entryDateFormat).format(date.getTime()));
+		dateNode.setText(Fsfibu2DateFormats.getEntryDateFormat().format(date.getTime()));
 		root.add(dateNode);
 		
 		Node categoryNode = category.getConfiguration();

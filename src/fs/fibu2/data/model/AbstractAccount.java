@@ -28,16 +28,16 @@ public class AbstractAccount extends Account {
 	}
 
 	@Override
-	public Vector<String> getFieldDescriptions() {
-		Vector<String> returnValue = new Vector<String>();
-		returnValue.add(Fsfibu2StringTableMgr.getLoader().getString(sgroup + ".invoicedescription", PolyglotStringTable.getGlobalLanguageID()));
+	public HashMap<String,String> getFieldDescriptions() {
+		HashMap<String,String> returnValue = new HashMap<String,String>();
+		returnValue.put(fieldIDs.get(0),Fsfibu2StringTableMgr.getLoader().getString(sgroup + ".invoicedescription", PolyglotStringTable.getGlobalLanguageID()));
 		return returnValue;
 	}
 
 	@Override
-	public Vector<String> getFieldNames() {
-		Vector<String> returnValue = new Vector<String>();
-		returnValue.add(Fsfibu2StringTableMgr.getLoader().getString(sgroup + ".invoicename", PolyglotStringTable.getGlobalLanguageID()));
+	public HashMap<String,String> getFieldNames() {
+		HashMap<String,String> returnValue = new HashMap<String,String>();
+		returnValue.put(fieldIDs.get(0),Fsfibu2StringTableMgr.getLoader().getString(sgroup + ".invoicename", PolyglotStringTable.getGlobalLanguageID()));
 		return returnValue;
 	}
 
@@ -92,12 +92,12 @@ public class AbstractAccount extends Account {
 				 Fsfibu2StringTableMgr.getLoader().getString(sgroup + ".fieldlegend", PolyglotStringTable.getGlobalLanguageID()) + 
 				 	"\n" );
 		Vector<String> ids = getFieldIDs();
-		Vector<String> names = getFieldNames();
-		Vector<String> descs = getFieldDescriptions();
+		HashMap<String,String> names = getFieldNames();
+		HashMap<String,String> descs = getFieldDescriptions();
 		for(int i = 0; i < ids.size(); i++) {
 			b.append(ids.get(i) + " (");
-			b.append((i < names.size()? names.get(i) : " - " ) + "): ");
-			b.append((i < descs.size()? descs.get(i) : " - " ) + "\n");
+			b.append((i < names.size()? names.get(ids.get(i)) : " - " ) + "): ");
+			b.append((i < descs.size()? descs.get(ids.get(i)) : " - " ) + "\n");
 		}
 		
 		return b.toString();

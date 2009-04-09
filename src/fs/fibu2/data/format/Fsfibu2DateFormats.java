@@ -1,5 +1,7 @@
 package fs.fibu2.data.format;
 
+import java.text.SimpleDateFormat;
+
 import fs.fibu2.data.model.Entry;
 
 /**
@@ -12,6 +14,10 @@ public class Fsfibu2DateFormats {
 	/**
 	 * The date format for the date field of {@link Entry}.
 	 */
-	public final static String entryDateFormat = "dd.MM.YYYY";
+	public final static String entryDateFormat = "dd.MM.yyyy";
+	
+	public static SimpleDateFormat getEntryDateFormat() {
+		return new SimpleDateFormat(entryDateFormat);
+	}
 	
 }

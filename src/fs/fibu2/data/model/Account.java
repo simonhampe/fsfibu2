@@ -1,5 +1,6 @@
 package fs.fibu2.data.model;
 
+import java.util.HashMap;
 import java.util.Vector;
 
 import fs.fibu2.data.error.EntryVerificationException;
@@ -21,15 +22,15 @@ public abstract class Account {
 	
 	/**
 	 * @return A list of the names of the required fields, such as might be used for label texts in an
-	 * entry dialog. The order should be the same as in getFieldIDs()
+	 * entry dialog. The names are identified via their ids.
 	 */
-	public abstract Vector<String> getFieldNames();
+	public abstract HashMap<String,String> getFieldNames();
 	
 	/**
 	 * @return A list of descriptions for each fiels, such as might be used for a tooltip.
-	 * The order should be the same as in getFieldIDs() 
+	 * The descriptions are identified via their ids. 
 	 */
-	public abstract Vector<String> getFieldDescriptions();
+	public abstract HashMap<String,String> getFieldDescriptions();
 	
 	/**
 	 * @return A description of this type of account, i.e.: In which context it is used, what it stands for and what kind of

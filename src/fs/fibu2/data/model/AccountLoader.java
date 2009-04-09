@@ -15,7 +15,7 @@ public final class AccountLoader {
 	private static HashMap<String,Account> accountMap = new HashMap<String, Account>();
 	
 	//Init code
-	{
+	static {
 		AbstractAccount absAcc = new AbstractAccount();
 		accountMap.put(absAcc.getID(), absAcc);
 		

@@ -1,6 +1,7 @@
 package fs.fibu2.lang;
 
 import java.io.File;
+import java.util.MissingFormatArgumentException;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
@@ -15,7 +16,8 @@ import fs.xml.XMLDirectoryTree;
 import fs.xml.XMLToolbox;
 
 /**
- * This class provides static methods for reloading fsfibu2 string tables and retrieving a polyglot string loader 
+ * This class provides static methods for reloading fsfibu2 string tables and retrieving a polyglot string loader. It also provides delegate methods
+ * for direct string queries which automatically use the global language id.
  * @author Simon Hampe
  *
  */
@@ -91,6 +93,21 @@ public final class Fsfibu2StringTableMgr implements ResourceDependent{
 		if(fsfibu2Loader == null) reloadTables();
 		return fsfibu2Loader;
 	}
+	
+	/**
+	 * Queries for the unformatted string given by the id under the global language id using the fsfibu2 string loader
+	 */
+	public static String getString(String id) {
+		return fsfibu2Loader.getUnformattedString(id, PolyglotStringTable.getGlobalLanguageID());
+	}
+	
+	/**
+	 * Queries for the formatted string given by the id and the arguments under the global language id using the fsfibu2 string loader
+	 */
+	public static String getString(String id, Object... args) throws MissingFormatArgumentException {
+		return fsfibu2Loader.getString(id, PolyglotStringTable.getGlobalLanguageID(), args);
+	}
+	
 
 	// RESOURCEDEPENDENT *************************
 	// *******************************************
