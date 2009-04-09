@@ -1,13 +1,20 @@
 package fs.fibu2.data.model;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Currency;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 
 import org.dom4j.Element;
 import org.dom4j.Node;
+import org.dom4j.tree.DefaultElement;
 
+import fs.fibu2.data.format.Fsfibu2DateFormats;
 import fs.xml.XMLConfigurable;
 import fs.xml.XMLReadConfigurationException;
 import fs.xml.XMLWriteConfigurationException;
@@ -16,14 +23,14 @@ public class Entry implements XMLConfigurable {
 
 	// MEMBERS ******************************
 	
-	private String 				name;
-	private float 				value;
-	private Currency 			currency;
-	private GregorianCalendar	date;
-	private Category			category;
-	private Account				account;
-	private Vector<String> 		accountInformation;
-	private String				additionalInformation;
+	private String 					name;
+	private float 					value;
+	private Currency 				currency;
+	private GregorianCalendar		date;
+	private Category				category;
+	private Account					account;
+	private HashMap<String,String> 	accountInformation;
+	private String					additionalInformation;
 	
 	// CONSTRUCTOR *******************************
 	// *******************************************
@@ -45,7 +52,7 @@ public class Entry implements XMLConfigurable {
 	 */
 	public Entry(String name, float value, Currency currency,
 			GregorianCalendar date, Category category, Account account,
-			Vector<String> accountInformation, String additionalInformation) 
+			HashMap<String,String> accountInformation, String additionalInformation) 
 			throws NullPointerException 									{
 		super();
 		setName(name);
@@ -154,16 +161,16 @@ public class Entry implements XMLConfigurable {
 	/**
 	 * @return A list of information fields specific for the account type of this entry
 	 */
-	public Vector<String> getAccountInformation() {
-		return new Vector<String>(accountInformation);
+	public HashMap<String,String> getAccountInformation() {
+		return new HashMap<String,String>(accountInformation);
 	}
 
 	/**
 	 * Sets the list of information for the account type of this entry. A null list
 	 * is replaced by the empty list
 	 */
-	public void setAccountInformation(Vector<String> accountInformation) {
-		this.accountInformation = accountInformation == null? new Vector<String>() : accountInformation;
+	public void setAccountInformation(HashMap<String, String> accountInformation) {
+		this.accountInformation = accountInformation == null? new HashMap<String,String>() : accountInformation;
 	}
 
 	/**
@@ -184,28 +191,160 @@ public class Entry implements XMLConfigurable {
 	// **************************************************
 	
 	
+	/**
+	 * @return 'entry'
+	 */
 	@Override
 	public String getIdentifier() {
-		// TODO Auto-generated method stub
-		return null;
+		return "entry"; 
 	}
 
+	/**
+	 * @return true
+	 */
 	@Override
 	public boolean isConfigured() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
+	/**
+	 * Expects a node containing the following subnodes (with appropriately formatted content): <br>
+	 * - name (String)* <br>
+	 * - value (float)* <br>
+	 * - currency (A String containing the ISO 4217 code)* <br>
+	 * - date (A date formatted as dd.MM.YYYY)* <br>
+	 * - category (A node as described in {@link Category})
+	 * - account (String)*<br>
+	 * - accountinformation (A node containing subnodes for each field id - named after that id - which contain the associated
+	 * data as a string) <br>
+	 * - additionalinformation (String)
+	 * @throws XMLWriteConfigurationException - If any of the nodes marked * is missing or contains invalid data.
+	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public void configure(Node arg0) throws XMLWriteConfigurationException {
-		// TODO Auto-generated method stub
+	public void configure(Node n) throws XMLWriteConfigurationException {
+		Node nameNode = n.selectSingleNode("./name");
+		if(nameNode == null) throw new XMLWriteConfigurationException("Invalid entry configuration: Name node missing");
+		else setName(nameNode.getText());
 		
+		Node valueNode = n.selectSingleNode("./value"); 
+		if(valueNode == null) throw new XMLWriteConfigurationException("Invalid entry configuration: Value node missing");
+		try{
+			setValue(Float.parseFloat(valueNode.getText()));
+		}
+		catch(NumberFormatException ne) {
+			throw new XMLWriteConfigurationException("Invalid entry configuration: Value node contains nonnumerical data '" + valueNode.getText() + "'");
+		}
+		
+		Node currencyNode = n.selectSingleNode("./currency");
+		if(currencyNode == null) throw new XMLWriteConfigurationException("Invalid entry configuration: Currency node missing");
+		try {
+			setCurrency(Currency.getInstance(currencyNode.getText()));
+		}
+		catch(IllegalArgumentException ie) {
+			throw new XMLWriteConfigurationException("Invalid entry configuration: Currency code '" + currencyNode.getText() + "' unknown");
+		}
+		
+		Node dateNode = n.selectSingleNode("./date");
+		if(dateNode == null) throw new XMLWriteConfigurationException("Invalid entry configuration: Date node missing");
+		try {
+			GregorianCalendar cal = new GregorianCalendar();
+			cal.setTime(((new SimpleDateFormat(Fsfibu2DateFormats.entryDateFormat)).parse(dateNode.getText())));
+			setDate(cal);
+		}
+		catch(ParseException pe) {
+			throw new XMLWriteConfigurationException("Invalid entry configuration: Date format '" + dateNode.getText() + "' not conforming to " + 
+			Fsfibu2DateFormats.entryDateFormat);
+		}
+		
+		Node categoryNode = n.selectSingleNode("./category");
+		if(categoryNode == null) setCategory(Category.getRootCategory());
+		else {
+			try{
+				Vector<String> seq = new Vector<String>();
+				List l = categoryNode.selectNodes("./tail");
+				for(Object t : l) {
+					seq.add(((Node)t).getText());
+				}
+				setCategory(Category.getCategory(seq));
+			}
+			catch(Exception e) {
+				throw new XMLWriteConfigurationException("Invalid entry configuration: Category node contains invalid data");
+			}
+		}
+		
+		Node accountNode = n.selectSingleNode("./account");
+		if(accountNode == null) throw new XMLWriteConfigurationException("Invalid entry configuration: Account node missing");
+		try {
+			setAccount(AccountLoader.getAccount(accountNode.getText()));
+		}
+		catch(IllegalArgumentException ie) {
+			throw new XMLWriteConfigurationException("Invalid entry configuration: Account id '" + accountNode.getText() + "' unknown");
+		}
+		
+		Node accountInfoNode = n.selectSingleNode("/accountinformation");
+		if(accountInfoNode == null) setAccountInformation(null);
+		else {
+			try {
+				HashMap<String,String> accInf = new HashMap<String, String>();
+				List l = accountInfoNode.selectNodes("./*");
+				for(Object f : l) {
+					accInf.put(((Node)f).getName(), ((Node)f).getText());
+				}
+			}
+			catch(Exception e) {
+				throw new XMLWriteConfigurationException("Invalid entry configuration: Account information node contains invalid data");
+			}
+		}
+		
+		Node additionalInfoNode = n.selectSingleNode("/additionalinformation");
+		if(additionalInfoNode == null) setAdditionalInformation(null);
+		else setAdditionalInformation(additionalInfoNode.getText());
 	}
 
+	/**
+	 * @return A node formatted as specified by configure(Node n)
+	 */
 	@Override
 	public Element getConfiguration() throws XMLReadConfigurationException {
-		// TODO Auto-generated method stub
-		return null;
+		DefaultElement root = new DefaultElement("entry");
+		
+		DefaultElement nameNode = new DefaultElement("name");
+		nameNode.setText(name);
+		root.add(nameNode);
+		
+		DefaultElement valueNode = new DefaultElement("value");
+		valueNode.setText(value + "");
+		root.add(valueNode);
+		
+		DefaultElement currencyNode = new DefaultElement("currency");
+		currencyNode.setText(currency.getCurrencyCode());
+		root.add(currencyNode);
+		
+		DefaultElement dateNode = new DefaultElement("date");
+		dateNode.setText(new SimpleDateFormat(Fsfibu2DateFormats.entryDateFormat).format(date.getTime()));
+		root.add(dateNode);
+		
+		Node categoryNode = category.getConfiguration();
+		root.add(categoryNode);
+		
+		DefaultElement accountNode = new DefaultElement("account");
+		accountNode.setText(account.getID());
+		root.add(accountNode);
+		
+		DefaultElement accountInfoNode = new DefaultElement("accountinformation");
+		for(String key : accountInformation.keySet()) {
+			DefaultElement k = new DefaultElement(key);
+			k.setText(accountInformation.get(key));
+			accountInfoNode.add(k);
+		}
+		root.add(accountInfoNode);
+		
+		DefaultElement additionalInfoNode = new DefaultElement("additionalinformation");
+		additionalInfoNode.setText(additionalInformation);
+		root.add(additionalInfoNode);
+		
+		return root;
 	}
 
 }

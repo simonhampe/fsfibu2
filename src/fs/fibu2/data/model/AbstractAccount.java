@@ -1,6 +1,7 @@
 package fs.fibu2.data.model;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Vector;
 
 import fs.fibu2.data.error.EntryVerificationException;
@@ -63,8 +64,8 @@ public class AbstractAccount extends Account {
 	public void verifyEntry(Entry e) throws EntryVerificationException {
 		if(e == null) return;
 		if(e.getValue() < 0) {
-			Vector<String> info = e.getAccountInformation();
-			if(info.size() == 0 || info.get(0) == null || info.get(0).trim().equals("")) {
+			HashMap<String,String> info = e.getAccountInformation();
+			if(info.size() == 0 || info.get("invoice") == null || info.get("invoice").trim().equals("")) {
 				Vector<String> faultyFields = new Vector<String>();
 					faultyFields.add("invoice");
 				Vector<Boolean> criticality = new Vector<Boolean>();
