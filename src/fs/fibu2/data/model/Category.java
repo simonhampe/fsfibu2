@@ -70,7 +70,7 @@ public final class Category implements XMLConfigurable {
 	
 	public static Category getCategory(Category parent, String tail) {
 		//If tail == null, this is just the parent category
-		if(tail == null) return parent;
+		if(tail == null) return parent == null? getCategory((Vector<String>)null) : parent;
 		
 		//Create associated string sequence
 		Vector<String> sequence = (parent == null? new Vector<String>() : parent.getOrderedList());
@@ -139,7 +139,7 @@ public final class Category implements XMLConfigurable {
 		}
 		
 		//If nearestparent == null, it is the root category
-		if(nearestparent == null) nearestparent = getCategory(null);
+		if(nearestparent == null) nearestparent = getRootCategory();
 		
 		//If the nearest parent has the same order as the sequence, it IS the category
 		if(nearestparent.getOrder() == s) return nearestparent;
@@ -238,6 +238,24 @@ public final class Category implements XMLConfigurable {
 
 	// XMLCONFIGURATION METHODS **************************************************
 	// ***************************************************************************
+	
+	/**
+	 * @return A category with a sequence element for each 'tail' node / The root category for the null node
+	 */
+	public static Category getCategory(Node n) {
+		if(n == null) return getRootCategory();
+		//Create sequence
+		Vector<String> sequence = new Vector<String>();
+		for(Object o : n.selectNodes("./tail")) {
+			try {
+				sequence.add(((Node)o).getText());
+			}
+			catch(ClassCastException ce) {
+				//Skip
+			}
+		}
+		return getCategory(sequence);		
+	}
 	
 	/**
 	 * Invalid operation, since Category is immutable

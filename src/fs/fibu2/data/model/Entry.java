@@ -5,7 +5,6 @@ import java.util.Currency;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Vector;
 
 import org.dom4j.Element;
 import org.dom4j.Node;
@@ -299,17 +298,7 @@ public class Entry implements XMLConfigurable {
 		Node categoryNode = n.selectSingleNode("./category");
 		if(categoryNode == null) setCategory(Category.getRootCategory());
 		else {
-			try{
-				Vector<String> seq = new Vector<String>();
-				List l = categoryNode.selectNodes("./tail");
-				for(Object t : l) {
-					seq.add(((Node)t).getText());
-				}
-				setCategory(Category.getCategory(seq));
-			}
-			catch(Exception e) {
-				throw new XMLWriteConfigurationException("Invalid entry configuration: Category node contains invalid data");
-			}
+			setCategory(Category.getCategory(categoryNode));
 		}
 		
 		Node accountNode = n.selectSingleNode("./account");
