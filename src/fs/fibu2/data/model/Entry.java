@@ -1,10 +1,7 @@
 package fs.fibu2.data.model;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Currency;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -16,8 +13,6 @@ import org.dom4j.tree.DefaultElement;
 
 import fs.fibu2.data.format.Fsfibu2DateFormats;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
-import fs.xml.PolyglotStringLoader;
-import fs.xml.PolyglotStringTable;
 import fs.xml.XMLConfigurable;
 import fs.xml.XMLReadConfigurationException;
 import fs.xml.XMLWriteConfigurationException;
