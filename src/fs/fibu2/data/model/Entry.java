@@ -193,7 +193,7 @@ public class Entry implements XMLConfigurable {
 		this.additionalInformation = additionalInformation == null? "" : additionalInformation;
 	}
 	
-	// TOSTRING ********************************************
+	// TOSTRING, CLONE *************************************
 	// *****************************************************
 	
 	/**
@@ -221,6 +221,13 @@ public class Entry implements XMLConfigurable {
 		b.append(Fsfibu2StringTableMgr.getString(sgroup + ".info"));
 		b.append(": " + additionalInformation);
 		return b.toString();
+	}
+	
+	/**
+	 * @return A copy of this entry
+	 */
+	public Entry clone() {
+		return new Entry(name,value,currency,(GregorianCalendar)date.clone(),category,account,new HashMap<String, String>(accountInformation),additionalInformation);
 	}
 	
 	// XMLCONFIFGURABLE *********************************
