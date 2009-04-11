@@ -14,11 +14,23 @@
   <polyglotstring id="fs.fibu2.Entry.account" group="fs.fibu2.Entry">
     <variant lang="en">Account</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.CashBox.name" group="fs.fibu2.CashBox">
+    <variant lang="en"></variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.BankAccount.faultystatement" group="fs.fibu2.BankAccount">
+    <variant lang="en">The statement number should be an integer value. If you don't know the number yet it is recommended you leave that field empty.</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.CashBox.description" group="fs.fibu2.CashBox">
+    <variant lang="en">A generic cash box where your cash is stored</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.AbstractAccount.invoicedescription" group="fs.fibu2.AbstractAccount">
     <variant lang="en">A registration number for the invoice associated to an entry</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.AbstractAccount.name" group="fs.fibu2.AbstractAccount">
     <variant lang="en">Abstract account</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.BankAccount.statement" group="fs.fibu2.BankAccount">
+    <variant lang="en">Statement sheet</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.Entry.currency" group="fs.fibu2.Entry">
     <variant lang="en">Currency</variant>
@@ -38,17 +50,20 @@
   <polyglotstring id="fs.fibu2.AbstractAccount.faultyinvoice" group="fs.fibu2.AbstractAccount">
     <variant lang="en">This entry has a negative value, but no invoice id is given.</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.AbstractAccount.invoicename" group="fs.fibu2.AbstractAccount">
-    <variant lang="en">Invoice number</variant>
-  </polyglotstring>
   <polyglotstring id="fs.fibu2.Entry.category" group="fs.fibu2.Entry">
     <variant lang="en">Category</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.AbstractAccount.invoicename" group="fs.fibu2.AbstractAccount">
+    <variant lang="en">Invoice number</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.AbstractAccount.description" group="fs.fibu2.AbstractAccount">
     <variant lang="en">An abstract account implementing invoice information</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.global.description" group="fs.fibu2.global">
     <variant lang="en">Description</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.BankAccount.nostatement" group="fs.fibu2.BankAccount">
+    <variant lang="en">No statement sheet number has been specified.</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.BankAccount.name" group="fs.fibu2.BankAccount">
     <variant lang="en">Bank account</variant>

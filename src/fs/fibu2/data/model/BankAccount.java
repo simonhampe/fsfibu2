@@ -5,7 +5,6 @@ import java.util.Vector;
 
 import fs.fibu2.data.error.EntryVerificationException;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
-import fs.xml.PolyglotStringTable;
 
 /**
  * This class represents a bank account, i.e. it requires for each entry the number (i.e. an integer value) of the account statement sheet 
@@ -27,7 +26,7 @@ public class BankAccount extends AbstractAccount {
 	 */
 	@Override
 	public String getDescription() {
-		return Fsfibu2StringTableMgr.getLoader().getString(sgroup + ".description", PolyglotStringTable.getGlobalLanguageID());
+		return Fsfibu2StringTableMgr.getString(sgroup + ".description");
 	}
 
 	/* (non-Javadoc)
@@ -36,7 +35,7 @@ public class BankAccount extends AbstractAccount {
 	@Override
 	public HashMap<String, String> getFieldDescriptions() {
 		HashMap<String, String> returnValue = super.getFieldDescriptions();
-		returnValue.put(statementID,Fsfibu2StringTableMgr.getLoader().getString(sgroup + ".statementdescription", PolyglotStringTable.getGlobalLanguageID()));
+		returnValue.put(statementID,Fsfibu2StringTableMgr.getString(sgroup + ".statementdescription"));
 		return returnValue;
 	}
 
@@ -56,7 +55,8 @@ public class BankAccount extends AbstractAccount {
 	@Override
 	public HashMap<String, String> getFieldNames() {
 		HashMap<String, String> returnValue = super.getFieldNames();
-		returnValue.put(statementID, Fsfibu2StringTableMgr.getLoader().getString(sgroup + ".statementdescription", PolyglotStringTable.getGlobalLanguageID()));
+		returnValue.put(statementID, Fsfibu2StringTableMgr.getString(sgroup + ".statement"));
+		return returnValue;
 	}
 
 	/* (non-Javadoc)
@@ -72,25 +72,47 @@ public class BankAccount extends AbstractAccount {
 	 */
 	@Override
 	public String getName() {
-		 return Fsfibu2StringTableMgr.getLoader().getString(sgroup + ".name", PolyglotStringTable.getGlobalLanguageID());
+		 return Fsfibu2StringTableMgr.getString(sgroup + ".name");
 	}
 
-	/* (non-Javadoc)
-	 * @see fs.fibu2.data.model.AbstractAccount#toString()
-	 */
-	@Override
-	public String toString() {
-		// TODO Auto-generated method stub
-		return super.toString();
-	}
-
-	/* (non-Javadoc)
-	 * @see fs.fibu2.data.model.AbstractAccount#verifyEntry(fs.fibu2.data.model.Entry)
+	/**
+	 * @throws EntryVerificationException - in the following cases: <br>
+	 * - The entry has a negative value, but no 'invoice' field
+	 * - The entry has no 'statement' field or the field contains data which is not an integer
+	 * (Both errors are non-critical and cumulative, i.e. if both fields are faulty, the exception
+	 * will contain descriptions of both errors)
 	 */
 	@Override
 	public void verifyEntry(Entry e) throws EntryVerificationException {
-		// TODO Auto-generated method stub
-		super.verifyEntry(e);
+		EntryVerificationException ev = new EntryVerificationException(e,new Vector<String>(), new HashMap<String, Boolean>(), new HashMap<String, String>());
+		boolean errorOccured = false;
+		//Check for invoice number
+		try {
+			super.verifyEntry(e);
+		}
+		catch(EntryVerificationException ve) {
+			ev = ve;
+			errorOccured = true;
+		}
+		//Check for statement number
+		if(e == null || e.getAccountInformation().get(statementID) == null || e.getAccountInformation().get(statementID).trim().equals("")) {
+				ev.getListOfFaultyFields().add(statementID);
+				ev.getListOfCriticality().put(statementID, false);
+				ev.getFaultDescriptions().put(statementID, Fsfibu2StringTableMgr.getString(sgroup + ".nostatement"));
+				errorOccured = true;
+		}
+		else {
+			try {
+				Integer.parseInt(e.getAccountInformation().get(statementID));
+			}
+			catch(NumberFormatException ne) {
+				ev.getListOfFaultyFields().add(statementID);
+				ev.getFaultDescriptions().put(statementID, Fsfibu2StringTableMgr.getString(sgroup + ".faultystatement"));
+				ev.getListOfCriticality().put(statementID, false);
+				errorOccured = true;
+			}
+		}
+		if(errorOccured) throw ev;
 	}
 
 }

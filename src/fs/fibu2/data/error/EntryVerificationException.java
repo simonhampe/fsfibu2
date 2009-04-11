@@ -1,5 +1,6 @@
 package fs.fibu2.data.error;
 
+import java.util.HashMap;
 import java.util.Vector;
 
 import fs.fibu2.data.model.Entry;
@@ -21,8 +22,8 @@ public class EntryVerificationException extends Exception {
 	
 	private Entry verifiedEntry;
 	private Vector<String> listOfFaultyFields;
-	private Vector<Boolean> listOfCriticality;
-	private Vector<String> faultDescriptions;
+	private HashMap<String,Boolean> listOfCriticality;
+	private HashMap<String,String> faultDescriptions;
 	
 	/**
 	 * Creates an exceptions
@@ -33,35 +34,38 @@ public class EntryVerificationException extends Exception {
 	 * @param faultDescriptions A description of the error for each field given in the previous list. The order should be identical.
 	 */
 	public EntryVerificationException(Entry verifiedEntry, Vector<String> listOfFaultyFields, 
-			Vector<Boolean> listOfCriticality,
-			Vector<String> faultDescriptions) {
+			HashMap<String,Boolean> listOfCriticality,
+			HashMap<String,String> faultDescriptions) {
 		super();
 		this.verifiedEntry = verifiedEntry;
 		this.listOfFaultyFields = listOfFaultyFields == null? new Vector<String>() : new Vector<String>(listOfFaultyFields);
-		this.listOfCriticality = listOfCriticality == null? new Vector<Boolean>() : new Vector<Boolean>(listOfCriticality);
-		this.faultDescriptions = faultDescriptions == null? new Vector<String>() : new Vector<String>(faultDescriptions);
+		this.listOfCriticality = listOfCriticality == null? new HashMap<String,Boolean>() : new HashMap<String,Boolean>(listOfCriticality);
+		this.faultDescriptions = faultDescriptions == null? new HashMap<String,String>() : new HashMap<String,String>(faultDescriptions);
 	}
 
 	/**
-	 * @return The list of field IDs of the fields with insufficient or incorrect data.
+	 * @return The list of field IDs of the fields with insufficient or incorrect data. This is a direct object link, so any change is 
+	 * a change of this exception.
 	 */
 	public Vector<String> getListOfFaultyFields() {
-		return new Vector<String>(listOfFaultyFields);
+		return listOfFaultyFields;
 	}
 
 	/**
 	 * @return A list of boolean value indicating for each faulty field, whether the error is critical (the entry cannot be accepted that way)
-	 * or not (the entry can at least temporarily accepted).
+	 * or not (the entry can at least temporarily accepted). This is a direct object link, so any change is 
+	 * a change of this exception.
 	 */
-	public Vector<Boolean> getListOfCriticality() {
-		return new Vector<Boolean>(listOfCriticality);
+	public HashMap<String,Boolean> getListOfCriticality() {
+		return listOfCriticality;
 	}
 	
 	/**
-	 * @return The list of error descriptions for each faulty field
+	 * @return The list of error descriptions for each faulty field This is a direct object link, so any change is 
+	 * a change of this exception.
 	 */
-	public Vector<String> getFaultDescriptions() {
-		return new Vector<String>(faultDescriptions);
+	public HashMap<String,String> getFaultDescriptions() {
+		return faultDescriptions;
 	}
 	
 	/**

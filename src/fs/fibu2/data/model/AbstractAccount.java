@@ -6,7 +6,6 @@ import java.util.Vector;
 
 import fs.fibu2.data.error.EntryVerificationException;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
-import fs.xml.PolyglotStringTable;
 
 /**
  * This represents the minimal information an fsfibu2 account usually requires: An invoice number which has
@@ -14,7 +13,7 @@ import fs.xml.PolyglotStringTable;
  */
 public class AbstractAccount extends Account {
 	
-	private static Vector<String> 	fieldIDs 	= new Vector<String>(Arrays.asList("invoice"));
+	private static String		 	invoiceID 	= "invoice";
 	private static String			accountID 	= "abstract_account";
 	
 	private static String			sgroup		= "fs.fibu2.AbstractAccount";
@@ -24,26 +23,26 @@ public class AbstractAccount extends Account {
 	
 	@Override
 	public String getDescription() {
-		return Fsfibu2StringTableMgr.getLoader().getString(sgroup + ".description", PolyglotStringTable.getGlobalLanguageID());
+		return Fsfibu2StringTableMgr.getString(sgroup + ".description");
 	}
 
 	@Override
 	public HashMap<String,String> getFieldDescriptions() {
 		HashMap<String,String> returnValue = new HashMap<String,String>();
-		returnValue.put(fieldIDs.get(0),Fsfibu2StringTableMgr.getLoader().getString(sgroup + ".invoicedescription", PolyglotStringTable.getGlobalLanguageID()));
+		returnValue.put(invoiceID,Fsfibu2StringTableMgr.getString(sgroup + ".invoicedescription"));
 		return returnValue;
 	}
 
 	@Override
 	public HashMap<String,String> getFieldNames() {
 		HashMap<String,String> returnValue = new HashMap<String,String>();
-		returnValue.put(fieldIDs.get(0),Fsfibu2StringTableMgr.getLoader().getString(sgroup + ".invoicename", PolyglotStringTable.getGlobalLanguageID()));
+		returnValue.put(invoiceID,Fsfibu2StringTableMgr.getString(sgroup + ".invoicename"));
 		return returnValue;
 	}
 
 	@Override
 	public Vector<String> getFieldIDs() {
-		return new Vector<String>(fieldIDs);
+		return new Vector<String>(Arrays.asList(invoiceID));
 	}
 
 	@Override
@@ -53,7 +52,7 @@ public class AbstractAccount extends Account {
 
 	@Override
 	public String getName() {
-		 return Fsfibu2StringTableMgr.getLoader().getString(sgroup + ".name", PolyglotStringTable.getGlobalLanguageID());
+		 return Fsfibu2StringTableMgr.getString(sgroup + ".name");
 	}
 
 	/**
@@ -65,13 +64,13 @@ public class AbstractAccount extends Account {
 		if(e == null) return;
 		if(e.getValue() < 0) {
 			HashMap<String,String> info = e.getAccountInformation();
-			if(info.size() == 0 || info.get("invoice") == null || info.get("invoice").trim().equals("")) {
+			if(info.size() == 0 || info.get(invoiceID) == null || info.get(invoiceID).trim().equals("")) {
 				Vector<String> faultyFields = new Vector<String>();
-					faultyFields.add("invoice");
-				Vector<Boolean> criticality = new Vector<Boolean>();
-					criticality.add(false);
-				Vector<String> descriptions = new Vector<String>();
-					descriptions.add(Fsfibu2StringTableMgr.getLoader().getString(sgroup + ".faultyinvoice", PolyglotStringTable.getGlobalLanguageID()));
+					faultyFields.add(invoiceID);
+				HashMap<String,Boolean> criticality = new HashMap<String, Boolean>();
+					criticality.put(invoiceID,false);
+				HashMap<String,String> descriptions = new HashMap<String, String>();
+					descriptions.put(invoiceID,Fsfibu2StringTableMgr.getString(sgroup + ".faultyinvoice"));
 				throw new EntryVerificationException(e,faultyFields,criticality,descriptions);
 			}
 		}
@@ -85,11 +84,11 @@ public class AbstractAccount extends Account {
 	public String toString() {
 		StringBuilder b = new StringBuilder();
 		b.append("ID: " + getID() + "\n" +  
-				 Fsfibu2StringTableMgr.getLoader().getString("fs.fibu2.global.name", PolyglotStringTable.getGlobalLanguageID()) + 
+				 Fsfibu2StringTableMgr.getString("fs.fibu2.global.name") + 
 				 		": " + getName() + "\n" + 
-				 Fsfibu2StringTableMgr.getLoader().getString("fs.fibu2.global.description", PolyglotStringTable.getGlobalLanguageID()) + 
+				 Fsfibu2StringTableMgr.getString("fs.fibu2.global.description") + 
 				 		": " + getDescription() + "\n" + 
-				 Fsfibu2StringTableMgr.getLoader().getString(sgroup + ".fieldlegend", PolyglotStringTable.getGlobalLanguageID()) + 
+				 Fsfibu2StringTableMgr.getString(sgroup + ".fieldlegend") + 
 				 	"\n" );
 		Vector<String> ids = getFieldIDs();
 		HashMap<String,String> names = getFieldNames();

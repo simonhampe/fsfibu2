@@ -208,25 +208,23 @@ public class Entry implements XMLConfigurable {
 	@Override
 	public String toString() {
 		StringBuilder b = new StringBuilder();
-		PolyglotStringLoader l = Fsfibu2StringTableMgr.getLoader();
 		
-		String lid = PolyglotStringTable.getGlobalLanguageID();
-		b.append(l.getString("fs.fibu2.global.name", lid));
+		b.append(Fsfibu2StringTableMgr.getString("fs.fibu2.global.name"));
 		b.append(": " + name + "\n");
-		b.append(l.getString(sgroup + ".value", lid));
+		b.append(Fsfibu2StringTableMgr.getString(sgroup + ".value"));
 		b.append(": " + value + "\n");
-		b.append(l.getString(sgroup + ".currency", lid));
+		b.append(Fsfibu2StringTableMgr.getString(sgroup + ".currency"));
 		b.append(": " + currency.getSymbol() + "\n");
-		b.append(l.getString(sgroup + ".date", lid));
+		b.append(Fsfibu2StringTableMgr.getString(sgroup + ".date"));
 		b.append(": " + Fsfibu2DateFormats.getEntryDateFormat().format(date.getTime()) + "\n");
-		b.append(l.getString(sgroup + ".category", lid));
+		b.append(Fsfibu2StringTableMgr.getString(sgroup + ".category"));
 		b.append(": " + category.toString() + "\n");
-		b.append(l.getString(sgroup + ".account", lid));
+		b.append(Fsfibu2StringTableMgr.getString(sgroup + ".account"));
 		b.append(": " + account.getName() + "\n");
 		for(String field : accountInformation.keySet()) {
 			b.append("  " + account.getFieldNames().get(field) + ": " + accountInformation.get(field) + "\n");
 		}
-		b.append(l.getString(sgroup + ".info", lid));
+		b.append(Fsfibu2StringTableMgr.getString(sgroup + ".info"));
 		b.append(": " + additionalInformation);
 		return b.toString();
 	}

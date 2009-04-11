@@ -98,6 +98,7 @@ public final class Fsfibu2StringTableMgr implements ResourceDependent{
 	 * Queries for the unformatted string given by the id under the global language id using the fsfibu2 string loader
 	 */
 	public static String getString(String id) {
+		if(fsfibu2Loader == null) reloadTables();
 		return fsfibu2Loader.getUnformattedString(id, PolyglotStringTable.getGlobalLanguageID());
 	}
 	
@@ -105,6 +106,7 @@ public final class Fsfibu2StringTableMgr implements ResourceDependent{
 	 * Queries for the formatted string given by the id and the arguments under the global language id using the fsfibu2 string loader
 	 */
 	public static String getString(String id, Object... args) throws MissingFormatArgumentException {
+		if(fsfibu2Loader == null) reloadTables();
 		return fsfibu2Loader.getString(id, PolyglotStringTable.getGlobalLanguageID(), args);
 	}
 	
