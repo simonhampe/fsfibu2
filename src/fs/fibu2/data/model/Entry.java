@@ -227,7 +227,7 @@ public class Entry implements XMLConfigurable {
 	 * @return A copy of this entry
 	 */
 	public Entry clone() {
-		return new Entry(name,value,currency,(GregorianCalendar)date.clone(),category,account,new HashMap<String, String>(accountInformation),additionalInformation);
+		return new Entry(name,value,currency,getDate(),category,account,new HashMap<String, String>(accountInformation),additionalInformation);
 	}
 	
 	// XMLCONFIFGURABLE *********************************
