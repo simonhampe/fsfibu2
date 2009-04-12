@@ -9,7 +9,8 @@ import fs.fibu2.data.error.EntryVerificationException;
  *  This interface represents an fsfibu2 account, i.e. for example a bank account or a cash
  *  box. Each account requires different fields with different value formats and with different
  *  restrictions. For example a bank account transaction requires the number of the associated account statement.<br>
- *  Classes implementing this interface should usually have a standard no-argument constructor and no write access methods. 
+ *  Classes implementing this interface should usually have a standard no-argument constructor and should be immutable, since fsfibu2 relies on these
+ *  facts an would it cause errors or unpredictable behavior, were it otherwise.
  * @author Simon Hampe
  *
  */

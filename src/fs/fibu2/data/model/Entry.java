@@ -16,7 +16,13 @@ import fs.xml.XMLConfigurable;
 import fs.xml.XMLReadConfigurationException;
 import fs.xml.XMLWriteConfigurationException;
 
-public class Entry implements XMLConfigurable {
+/**
+ * This class represents an fsfibu2 journal entry. It is immutable, at least as far as its account object is immutable (Since Account is an
+ * interface, no guarantee can be made as to whether the object is immutable). 
+ * @author Simon Hampe
+ *
+ */
+public final class Entry implements XMLConfigurable {
 
 	// MEMBERS ******************************
 	
@@ -64,193 +70,6 @@ public class Entry implements XMLConfigurable {
 	}
 	
 	/**
-	 * Creates an entry which is configured by the given node as by a call to configure()
-	 * @throws XMLWriteConfigurationException - If n == null or the configure method throws this exception
-	 */
-	public Entry(Node n) throws XMLWriteConfigurationException{
-		configure(n);
-	}
-
-	// GETTERS / SETTERS *************************
-	// *******************************************
-	
-	/**
-	 * @return the name of this entry 
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * Sets the name of this entry (null is transformed to the empty string)
-	 */
-	public void setName(String name) {
-		this.name = name == null? "" : name;
-	}
-
-	/**
-	 * @return The value of this entry
-	 */
-	public float getValue() {
-		return value;
-	}
-
-	/**
-	 * Sets the value of this entry. The number of fraction digits actually displayed is determined by the currency.
-	 */
-	public void setValue(float value) {
-		this.value = value;
-	}
-
-	/**
-	 * @return The currency of this entry
-	 */
-	public Currency getCurrency() {
-		return currency;
-	}
-
-	/**
-	 * Sets the currency of this entry. 
-	 * @throws NullPointerException - If currency == null
-	 */
-	public void setCurrency(Currency currency) throws NullPointerException {
-		if(currency == null) throw new NullPointerException("Null currency invalid.");
-		this.currency = currency;
-	}
-
-	/**
-	 * The date of this entry (usually the invoice date)
-	 */
-	public GregorianCalendar getDate() {
-		return (GregorianCalendar)date.clone();
-	}
-
-	/**
-	 * Sets the date of this entry. 
-	 * @throws NullPointerException - If date == null
-	 */
-	public void setDate(GregorianCalendar date) throws NullPointerException {
-		if(date == null) throw new NullPointerException("Null date invalid");
-		this.date = (GregorianCalendar)date.clone();
-	}
-
-	/**
-	 * @return the category of this entry
-	 */
-	public Category getCategory() {
-		return category;
-	}
-
-	/**
-	 * Sets the category of this entry. The null category is replaced by the root category
-	 */
-	public void setCategory(Category category) {
-		this.category = category == null? Category.getRootCategory() : category;
-	}
-
-	/**
-	 * @return the account of this entry
-	 */
-	public Account getAccount() {
-		return account;
-	}
-
-	/**
-	 * Sets the account of this entry. 
-	 * @throws NullPointerException - If account == null
-	 */
-	public void setAccount(Account account) throws NullPointerException {
-		if(account == null) throw new NullPointerException("Null account invalid.");
-		this.account = account;
-	}
-
-	/**
-	 * @return A list of information fields specific for the account type of this entry
-	 */
-	public HashMap<String,String> getAccountInformation() {
-		return new HashMap<String,String>(accountInformation);
-	}
-
-	/**
-	 * Sets the list of information for the account type of this entry. A null list
-	 * is replaced by the empty list
-	 */
-	public void setAccountInformation(HashMap<String, String> accountInformation) {
-		this.accountInformation = accountInformation == null? new HashMap<String,String>() : accountInformation;
-	}
-
-	/**
-	 * @return A string containing additional information about this entry
-	 */
-	public String getAdditionalInformation() {
-		return additionalInformation;
-	}
-
-	/**
-	 * Sets the additional information about this entry. A null string is replaced by the empty string
-	 */
-	public void setAdditionalInformation(String additionalInformation) {
-		this.additionalInformation = additionalInformation == null? "" : additionalInformation;
-	}
-	
-	// TOSTRING, CLONE *************************************
-	// *****************************************************
-	
-	/**
-	 * Returns a multi-line representation of this entry
-	 */
-	@Override
-	public String toString() {
-		StringBuilder b = new StringBuilder();
-		
-		b.append(Fsfibu2StringTableMgr.getString("fs.fibu2.global.name"));
-		b.append(": " + name + "\n");
-		b.append(Fsfibu2StringTableMgr.getString(sgroup + ".value"));
-		b.append(": " + value + "\n");
-		b.append(Fsfibu2StringTableMgr.getString(sgroup + ".currency"));
-		b.append(": " + currency.getSymbol() + "\n");
-		b.append(Fsfibu2StringTableMgr.getString(sgroup + ".date"));
-		b.append(": " + Fsfibu2DateFormats.getEntryDateFormat().format(date.getTime()) + "\n");
-		b.append(Fsfibu2StringTableMgr.getString(sgroup + ".category"));
-		b.append(": " + category.toString() + "\n");
-		b.append(Fsfibu2StringTableMgr.getString(sgroup + ".account"));
-		b.append(": " + account.getName() + "\n");
-		for(String field : accountInformation.keySet()) {
-			b.append("  " + account.getFieldNames().get(field) + ": " + accountInformation.get(field) + "\n");
-		}
-		b.append(Fsfibu2StringTableMgr.getString(sgroup + ".info"));
-		b.append(": " + additionalInformation);
-		return b.toString();
-	}
-	
-	/**
-	 * @return A copy of this entry
-	 */
-	public Entry clone() {
-		return new Entry(name,value,currency,getDate(),category,account,new HashMap<String, String>(accountInformation),additionalInformation);
-	}
-	
-	// XMLCONFIFGURABLE *********************************
-	// **************************************************
-	
-	
-	/**
-	 * @return 'entry'
-	 */
-	@Override
-	public String getIdentifier() {
-		return "entry"; 
-	}
-
-	/**
-	 * @return true
-	 */
-	@Override
-	public boolean isConfigured() {
-		return true;
-	}
-
-	/**
 	 * Expects a node containing the following subnodes (with appropriately formatted content): <br>
 	 * - name (String)* <br>
 	 * - value (float)* <br>
@@ -264,8 +83,7 @@ public class Entry implements XMLConfigurable {
 	 * @throws XMLWriteConfigurationException - If any of the nodes marked * is missing or contains invalid data.
 	 */
 	@SuppressWarnings("unchecked")
-	@Override
-	public void configure(Node n) throws XMLWriteConfigurationException {
+	public Entry(Node n) throws XMLWriteConfigurationException{
 		if(n == null) throw new XMLWriteConfigurationException("Invalid entry configuration: Null node");
 		
 		Node nameNode = n.selectSingleNode("./name");
@@ -336,6 +154,193 @@ public class Entry implements XMLConfigurable {
 		Node additionalInfoNode = n.selectSingleNode("./additionalinformation");
 		if(additionalInfoNode == null) setAdditionalInformation(null);
 		else setAdditionalInformation(additionalInfoNode.getText());
+	}
+
+	// GETTERS / SETTERS *************************
+	// *******************************************
+	
+	/**
+	 * @return the name of this entry 
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * Sets the name of this entry (null is transformed to the empty string)
+	 */
+	private void setName(String name) {
+		this.name = name == null? "" : name;
+	}
+
+	/**
+	 * @return The value of this entry
+	 */
+	public float getValue() {
+		return value;
+	}
+
+	/**
+	 * Sets the value of this entry. The number of fraction digits actually displayed is determined by the currency.
+	 */
+	private void setValue(float value) {
+		this.value = value;
+	}
+
+	/**
+	 * @return The currency of this entry
+	 */
+	public Currency getCurrency() {
+		return currency;
+	}
+
+	/**
+	 * Sets the currency of this entry. 
+	 * @throws NullPointerException - If currency == null
+	 */
+	private void setCurrency(Currency currency) throws NullPointerException {
+		if(currency == null) throw new NullPointerException("Null currency invalid.");
+		this.currency = currency;
+	}
+
+	/**
+	 * The date of this entry (usually the invoice date)
+	 */
+	public GregorianCalendar getDate() {
+		return (GregorianCalendar)date.clone();
+	}
+
+	/**
+	 * Sets the date of this entry. 
+	 * @throws NullPointerException - If date == null
+	 */
+	private void setDate(GregorianCalendar date) throws NullPointerException {
+		if(date == null) throw new NullPointerException("Null date invalid");
+		this.date = (GregorianCalendar)date.clone();
+	}
+
+	/**
+	 * @return the category of this entry
+	 */
+	public Category getCategory() {
+		return category;
+	}
+
+	/**
+	 * Sets the category of this entry. The null category is replaced by the root category
+	 */
+	private void setCategory(Category category) {
+		this.category = category == null? Category.getRootCategory() : category;
+	}
+
+	/**
+	 * @return the account of this entry
+	 */
+	public Account getAccount() {
+		return account;
+	}
+
+	/**
+	 * Sets the account of this entry. 
+	 * @throws NullPointerException - If account == null
+	 */
+	private void setAccount(Account account) throws NullPointerException {
+		if(account == null) throw new NullPointerException("Null account invalid.");
+		this.account = account;
+	}
+
+	/**
+	 * @return A list of information fields specific for the account type of this entry
+	 */
+	public HashMap<String,String> getAccountInformation() {
+		return new HashMap<String,String>(accountInformation);
+	}
+
+	/**
+	 * Sets the list of information for the account type of this entry. A null list
+	 * is replaced by the empty list
+	 */
+	private void setAccountInformation(HashMap<String, String> accountInformation) {
+		this.accountInformation = accountInformation == null? new HashMap<String,String>() : accountInformation;
+	}
+
+	/**
+	 * @return A string containing additional information about this entry
+	 */
+	public String getAdditionalInformation() {
+		return additionalInformation;
+	}
+
+	/**
+	 * Sets the additional information about this entry. A null string is replaced by the empty string
+	 */
+	private void setAdditionalInformation(String additionalInformation) {
+		this.additionalInformation = additionalInformation == null? "" : additionalInformation;
+	}
+	
+	// TOSTRING, CLONE *************************************
+	// *****************************************************
+	
+	/**
+	 * Returns a multi-line representation of this entry
+	 */
+	@Override
+	public String toString() {
+		StringBuilder b = new StringBuilder();
+		
+		b.append(Fsfibu2StringTableMgr.getString("fs.fibu2.global.name"));
+		b.append(": " + name + "\n");
+		b.append(Fsfibu2StringTableMgr.getString(sgroup + ".value"));
+		b.append(": " + value + "\n");
+		b.append(Fsfibu2StringTableMgr.getString(sgroup + ".currency"));
+		b.append(": " + currency.getSymbol() + "\n");
+		b.append(Fsfibu2StringTableMgr.getString(sgroup + ".date"));
+		b.append(": " + Fsfibu2DateFormats.getEntryDateFormat().format(date.getTime()) + "\n");
+		b.append(Fsfibu2StringTableMgr.getString(sgroup + ".category"));
+		b.append(": " + category.toString() + "\n");
+		b.append(Fsfibu2StringTableMgr.getString(sgroup + ".account"));
+		b.append(": " + account.getName() + "\n");
+		for(String field : accountInformation.keySet()) {
+			b.append("  " + account.getFieldNames().get(field) + ": " + accountInformation.get(field) + "\n");
+		}
+		b.append(Fsfibu2StringTableMgr.getString(sgroup + ".info"));
+		b.append(": " + additionalInformation);
+		return b.toString();
+	}
+	
+	/**
+	 * @return A copy of this entry
+	 */
+	public Entry clone() {
+		return new Entry(name,value,currency,getDate(),category,account,new HashMap<String, String>(accountInformation),additionalInformation);
+	}
+	
+	// XMLCONFIFGURABLE *********************************
+	// **************************************************
+	
+	
+	/**
+	 * @return 'entry'
+	 */
+	@Override
+	public String getIdentifier() {
+		return "entry"; 
+	}
+
+	/**
+	 * @return true
+	 */
+	@Override
+	public boolean isConfigured() {
+		return true;
+	}
+
+	/**
+	 * @throws XMLWriteConfigurationException - Always, since instances of this class should be immutable
+	 */
+	@Override
+	public void configure(Node n) throws XMLWriteConfigurationException {
+		throw new XMLWriteConfigurationException("Cannot modify immutable entry.");
 	}
 
 	/**
