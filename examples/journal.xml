@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<journal>
+  <startvalues>
+  	<bank_account>8000.30</bank_account>
+  	<cash_box>123.67</cash_box></startvalues>
+  <readingpoint>
+  	<readingday>12.3.2008</readingday>
+  	<isactive>true</isactive>
+  	<isvisible>false</isvisible></readingpoint>
+  <entry>
+  	<name>Getränkeeinnahmen</name>
+  	<value>140.00</value>
+  	<currency>EUR</currency>
+  	<date>11.02.2007</date>
+  	<category>
+  		<tail>Getränke und Süßigkeiten</tail>
+  		<tail>Einnahmen</tail></category>
+  	<account>bank_account</account>
+  	<accountinformation>
+  		<statement>4</statement></accountinformation>
+  	<additionalinformation>Eine Menge Geld...</additionalinformation></entry></journal>

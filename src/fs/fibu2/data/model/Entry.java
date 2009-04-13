@@ -48,17 +48,18 @@ public final class Entry implements XMLConfigurable {
 	 * @param date The date of this entry, e.g. 13.4.2009. Must not be null.
 	 * @param category The category of this entry, e.g. 'Getränke / Süßigkeiten - Einnahmen'. 
 	 * 			The null category is interpreted as the root category
-	 * @param account The account of this entry, e.g. 'bank_account'. Must not be null.
+	 * @param account The account id of this entry, e.g. 'bank_account'. Must be known to the AccountLoader
 	 * @param accountInformation A list of information specific for the account type, e.g. account sheet number. 
 	 * 			Null is interpreted as the empty list.
 	 * @param additionalInformation Some additional information for this entry, e.g. 'Beinhaltet 5 Euro Bestechung von Fex, damit er seinen Fuffziger kleinmachen durfte.'
 	 * 			A null string is interpreted as the empty string
 	 * @throws NullPointerException - If any of the values where 'Must not be null' is written, is null.
+	 * @throws IllegalArgumentException - If the account ID is null or unknown to the AccountLoader
 	 */
 	public Entry(String name, float value, Currency currency,
-			GregorianCalendar date, Category category, Account account,
+			GregorianCalendar date, Category category, String account,
 			HashMap<String,String> accountInformation, String additionalInformation) 
-			throws NullPointerException 									{
+			throws NullPointerException, IllegalArgumentException									{
 		setName(name);
 		setValue(value);
 		setCurrency(currency);
@@ -75,8 +76,8 @@ public final class Entry implements XMLConfigurable {
 	 * - value (float)* <br>
 	 * - currency (A String containing the ISO 4217 code)* <br>
 	 * - date (A date formatted as dd.MM.yyyy)* <br>
-	 * - category (A node as described in {@link Category})
-	 * - account (String)*<br>
+	 * - category (A node as described in {@link Category})<br>
+	 * - account (String, must be known to AccountLoader)*<br>
 	 * - accountinformation (A node containing subnodes for each field id - named after that id - which contain the associated
 	 * data as a string) <br>
 	 * - additionalinformation (String)
@@ -129,7 +130,7 @@ public final class Entry implements XMLConfigurable {
 		Node accountNode = n.selectSingleNode("./account");
 		if(accountNode == null) throw new XMLWriteConfigurationException("Invalid entry configuration: Account node missing");
 		try {
-			setAccount(AccountLoader.getAccount(accountNode.getText()));
+			setAccount(accountNode.getText());
 		}
 		catch(IllegalArgumentException ie) {
 			throw new XMLWriteConfigurationException("Invalid entry configuration: Account id '" + accountNode.getText() + "' unknown");
@@ -242,11 +243,11 @@ public final class Entry implements XMLConfigurable {
 
 	/**
 	 * Sets the account of this entry. 
-	 * @throws NullPointerException - If account == null
+	 * @throws IllegalArgumentException - If account == null or the AccountLoader does not recognize the ID
 	 */
-	private void setAccount(Account account) throws NullPointerException {
-		if(account == null) throw new NullPointerException("Null account invalid.");
-		this.account = account;
+	private void setAccount(String account) throws NullPointerException, IllegalArgumentException {
+		if(account == null) throw new IllegalArgumentException("Null account invalid.");
+		this.account = AccountLoader.getAccount(account);
 	}
 
 	/**
@@ -312,7 +313,7 @@ public final class Entry implements XMLConfigurable {
 	 * @return A copy of this entry
 	 */
 	public Entry clone() {
-		return new Entry(name,value,currency,getDate(),category,account,new HashMap<String, String>(accountInformation),additionalInformation);
+		return new Entry(name,value,currency,getDate(),category,account.getID(),new HashMap<String, String>(accountInformation),additionalInformation);
 	}
 	
 	// XMLCONFIFGURABLE *********************************

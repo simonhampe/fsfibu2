@@ -41,7 +41,7 @@ public class EntryTest {
 		ai.put("statement","4");
 		Entry e = new Entry("Getränkeeinnahmen", -140.00f, Currency.getInstance("EUR"),new GregorianCalendar(2009,0,1),
 				Category.getCategory(new Vector<String>(Arrays.asList("Getr. & Süßes", "Einnahmen"))),
-				AccountLoader.getAccount("bank_account"), ai, "bla");
+				"bank_account", ai, "bla");
 		Entry f = new Entry(e.getConfiguration());
 		DefaultDocument doc = new DefaultDocument();
 		doc.setRootElement(e.getConfiguration());
