@@ -6,7 +6,6 @@ import org.dom4j.Document;
 import org.dom4j.tree.DefaultDocument;
 
 import fs.fibu2.data.model.Journal;
-import fs.xml.XMLReadConfigurationException;
 import fs.xml.XMLToolbox;
 
 /**
