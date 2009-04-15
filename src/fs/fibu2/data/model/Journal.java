@@ -1,5 +1,6 @@
 package fs.fibu2.data.model;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -12,6 +13,8 @@ import org.dom4j.tree.DefaultElement;
 
 import com.sun.swing.internal.plaf.synth.resources.synth;
 
+import fs.fibu2.data.event.JournalListener;
+import fs.fibu2.data.event.ReadingPointListener;
 import fs.fibu2.undo.JournalUndoManager;
 import fs.xml.XMLConfigurable;
 import fs.xml.XMLReadConfigurationException;
@@ -24,12 +27,12 @@ import fs.xml.XMLWriteConfigurationException;
  * all sums. <br>
  * - Start values: A journal contains a start value for each account it uses.<br>
  * <br> 
- * All the write access methods automatically create an associated {@link UndoableEdit}
- * and post it to the proper JournalUndoManager. 
+ * All the write access methods exist in two versions: The normal one and the one that automatically creates an associated {@link UndoableEdit}
+ * and posts it to the proper JournalUndoManager. Both versions notify any Listeners of changes. 
  * @author Simon Hampe
  *
  */
-public class Journal implements XMLConfigurable {
+public class Journal implements XMLConfigurable, ReadingPointListener {
 
 	// FIELDS ****************************************
 	// ***********************************************
@@ -39,6 +42,8 @@ public class Journal implements XMLConfigurable {
 	private HashMap<Account, Float> startValues = new HashMap<Account, Float>();
 	
 	private JournalUndoManager manager = JournalUndoManager.getInstance(this);
+	
+	private HashSet<JournalListener> listeners = new HashSet<JournalListener>(); 
 	
 	// CONSTRUCTOR ***********************************
 	// ***********************************************
@@ -95,8 +100,74 @@ public class Journal implements XMLConfigurable {
 	 * Adds the entry e to the list (if it isn't already contained in it). If e == null,
 	 * this call is ignored
 	 */
-	protected void addEntry(Entry e) {
+	public synchronized void addEntry(Entry e) {
 		if(e != null) listOfEntries.add(e);
+	}
+	
+	/**
+	 * Removes e from the journal
+	 */
+	public synchronized void removeEntry(Entry e) {
+		if(e != null) listOfEntries.remove(e);
+	}
+	
+	/**
+	 * Adds all entries in c, if they are not null
+	 */
+	public synchronized void addAllEntries(Collection<? extends Entry> c) {
+		if(c != null) {
+			for(Entry e : c) {
+				if(e != null) listOfEntries.add(e);
+			}
+		}
+	}
+	
+	/**
+	 * Removes all entries which are in c from the journal
+	 */
+	public synchronized void removeAllEntries(Collection<? extends Entry> c) {
+		if(c != null) listOfEntries.removeAll(c);
+	}
+	
+	/**
+	 * Removes the entry oldEntry and adds the entry newEntry. If one of them is null,
+	 * the call is ignored
+	 */
+	public synchronized void replaceEntry(Entry oldEntry, Entry newEntry) {
+		if(oldEntry != null && newEntry != null) {
+			listOfEntries.remove(oldEntry);
+			listOfEntries.add(newEntry);
+		}
+	}
+	
+	/**
+	 * Sets the start value for the account a. If a == null, this call is ignored. 
+	 */
+	public synchronized void setStartValue(Account a, float f) {
+		if(a != null) {
+			startValues.put(a, f);
+		}
+	}
+	
+	/**
+	 * Removes the start value for a.
+	 */
+	public synchronized void removeStartValue(Account a) {
+		startValues.remove(a);
+	}
+	
+	/**
+	 * Adds rp to the list of reading points, if it isn't null
+	 */
+	public synchronized void addReadingPoint(ReadingPoint rp) {
+		if(rp != null) listOfReadingPoints.add(rp);
+	}
+	
+	/**
+	 * Removes the reading point rp from the list of reading points
+	 */
+	public synchronized void removeReadingPoint(ReadingPoint rp) {
+		listOfReadingPoints.remove(rp);
 	}
 	
 	
@@ -216,6 +287,27 @@ public class Journal implements XMLConfigurable {
 	@Override
 	public boolean isConfigured() {
 		return true;
+	}
+	
+	// READINGPOINTLISTENER ****************************************
+	// *************************************************************
+
+	@Override
+	public void activityChanged(ReadingPoint source) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void dateChanged(ReadingPoint source) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visibilityChanged(ReadingPoint source) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
