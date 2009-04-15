@@ -18,7 +18,7 @@ import fs.xml.XMLWriteConfigurationException;
 
 /**
  * This class represents an fsfibu2 journal entry. It is immutable, at least as far as its account object is immutable (Since Account is an
- * interface, no guarantee can be made as to whether the object is immutable). 
+ * abstract class, no guarantee can be made as to whether the object is immutable). 
  * @author Simon Hampe
  *
  */

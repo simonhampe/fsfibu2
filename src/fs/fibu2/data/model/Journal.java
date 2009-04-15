@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import javax.swing.undo.UndoManager;
+import javax.swing.undo.UndoableEdit;
 
 import org.dom4j.Element;
 import org.dom4j.Node;
@@ -23,7 +24,8 @@ import fs.xml.XMLWriteConfigurationException;
  * all sums. <br>
  * - Start values: A journal contains a start value for each account it uses.<br>
  * <br> 
- * @see 
+ * All the write access methods automatically create an associated {@link UndoableEdit}
+ * and post it to the proper JournalUndoManager. 
  * @author Simon Hampe
  *
  */
@@ -58,6 +60,44 @@ public class Journal implements XMLConfigurable {
 	// GETTERS AND SETTERS ***************************
 	// ***********************************************
 	
+	/**
+	 * @return The list of entries
+	 */
+	public synchronized HashSet<Entry> getEntries() {
+		return new HashSet<Entry>(listOfEntries);
+	}
+	
+	/**
+	 * @return The list of reading points
+	 */
+	public synchronized HashSet<ReadingPoint> getReadingPoints() {
+		return new HashSet<ReadingPoint>(listOfReadingPoints);
+	}
+	
+	/**
+	 * @return The list of start values
+	 */
+	public synchronized HashMap<Account, Float> getStartValues() {
+		return new HashMap<Account, Float>(startValues);
+	}
+	
+	/**
+	 * @return The start value associated to the account
+	 * @throws IllegalArgumentException - If there is no start value for this account 
+	 */
+	public synchronized float getStartValue(Account a) throws IllegalArgumentException {
+		Float f = startValues.get(a);
+		if(f != null ) return f;
+		else throw new IllegalArgumentException("No start value for account " + a.getName());
+	}
+	
+	/**
+	 * Adds the entry e to the list (if it isn't already contained in it). If e == null,
+	 * this call is ignored
+	 */
+	protected void addEntry(Entry e) {
+		if(e != null) listOfEntries.add(e);
+	}
 	
 	
 	// XMLCONFIGURABLE *******************************
