@@ -75,5 +75,16 @@ public class EntryVerificationException extends Exception {
 		return verifiedEntry;
 	}
 	
+	/**
+	 * @return A multi-line representation of the exception
+	 */
+	@Override
+	public String toString() {
+		StringBuilder b = new StringBuilder();
+		for(String s : getListOfFaultyFields()) {
+			b.append(s + ": " + "(Critical: " + getListOfCriticality().get(s) + ") " + getFaultDescriptions().get(s) + "\n");
+		}
+		return b.toString();
+	}
 	
 }

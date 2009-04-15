@@ -1,7 +1,7 @@
 package fs.fibu2.data.model;
 
-import java.io.File;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * This class maintains a map of account id's to account objects. It can load .class files dynamically to add further accounts.
@@ -45,8 +45,25 @@ public final class AccountLoader {
 		}
 	}
 	
-	public static void loadAccount(File f) {
-		//TODO: Write dynamic class loading method... 
+	public static HashSet<String> getListOfIDs() {
+		return new HashSet<String>(accountMap.keySet());
+	}
+	
+	/**
+	 * Tries to call the nullary constructor on c to retrieve an Account object and stores it under its ID.
+	 * If there already is an account object under this ID, this call is ignored.
+	 * @throws UnsupportedOperationException - If the instantiation fails for some reason.
+	 */
+	public static void loadAccount(Class<?> c) throws UnsupportedOperationException {
+		 try {
+			 Account a = (Account)c.newInstance();
+			 if(!accountMap.containsKey(a.getID())) {
+				 accountMap.put(a.getID(), a);
+			 }
+		 }
+		 catch(Exception e) {
+			 throw new UnsupportedOperationException(e);
+		 }
 	}
 	
 }

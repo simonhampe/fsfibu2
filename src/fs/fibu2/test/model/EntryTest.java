@@ -1,5 +1,7 @@
 package fs.fibu2.test.model;
 
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Arrays;
 import java.util.Currency;
 import java.util.GregorianCalendar;
@@ -27,14 +29,19 @@ public class EntryTest {
 	public static void main(String[] args) {
 		try {
 		BasicConfigurator.configure();
-		FsfwDefaultReference.setFsfwDirectory("/home/talio/eclipse/workspace/fsframework/");
+		FsfwDefaultReference.setFsfwDirectory("/home/hampe/workspace/fsframework/");
 		AbstractAccount account = new AbstractAccount();
 		System.out.println(account);
 		Account bA = AccountLoader.getAccount("bank_account");
 		System.out.println(bA);
 		Account cb = AccountLoader.getAccount("cash_box");
 		System.out.println(cb);
-		
+		URL[] path =  { new URL("file:///home/hampe/workspace/fsfibu2/bin/fs/fibu2/examples/")};
+		URLClassLoader loader = new URLClassLoader(path);
+		Class<?> c = loader.loadClass("fs.fibu2.examples.SlushFund");
+		AccountLoader.loadAccount(c);
+		Account sf = AccountLoader.getAccount("slush_fund");
+		System.out.println(sf);
 		
 		HashMap<String,String> ai = new HashMap<String, String>();
 		ai.put("invoice", "G 17");
@@ -48,7 +55,7 @@ public class EntryTest {
 		System.out.println(XMLToolbox.getDocumentAsPrettyString(doc));
 		System.out.println(f);
 		
-		//f.getAccount().verifyEntry(f);
+		sf.verifyEntry(f);
 		
 		}
 //		catch(EntryVerificationException ve) {
