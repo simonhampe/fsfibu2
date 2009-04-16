@@ -1,5 +1,6 @@
 package fs.fibu2.data.event;
 
+import fs.fibu2.data.model.Account;
 import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.Journal;
 import fs.fibu2.data.model.ReadingPoint;
@@ -21,9 +22,9 @@ public interface JournalListener extends ReadingPointListener {
 	/**
 	 * This is called, whenever some entries are removed
 	 * @param source The journal from which the entries are removed
-	 * @param oldEntry The removed entries
+	 * @param oldEntry The removed entries. 
 	 */
-	public void entriesRemoved(Journal source, Entry[] oldEntry);
+	public void entriesRemoved(Journal source, Entry[] oldEntries);
 	
 	/**
 	 * This is called, whenever one entry is replaced by another
@@ -36,10 +37,11 @@ public interface JournalListener extends ReadingPointListener {
 	/**
 	 * This is called, whenever a start value is added, removed or changed
 	 * @param source The journal in which the change took place
+	 * @param a The account for which the value was changed
 	 * @param oldValue The old value. Null, if the value was newly added
 	 * @param newValue The new value. Null, if the value was removed
 	 */
-	public void startValueChanged(Journal source, Float oldValue, Float newValue);
+	public void startValueChanged(Journal source, Account a,  Float oldValue, Float newValue);
 	
 	/**
 	 * This is called, whenever a reading point is added

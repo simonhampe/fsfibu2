@@ -10,6 +10,7 @@ import javax.swing.undo.UndoableEdit;
 import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.tree.DefaultElement;
+import org.w3c.dom.ls.LSException;
 
 import com.sun.swing.internal.plaf.synth.resources.synth;
 
@@ -101,14 +102,22 @@ public class Journal implements XMLConfigurable, ReadingPointListener {
 	 * this call is ignored
 	 */
 	public synchronized void addEntry(Entry e) {
-		if(e != null) listOfEntries.add(e);
+		if(e != null) {
+			boolean b = listOfEntries.add(e);
+			if(b) fireEntriesAdded(new Entry[] {e});
+		}
+		
 	}
 	
 	/**
 	 * Removes e from the journal
 	 */
 	public synchronized void removeEntry(Entry e) {
-		if(e != null) listOfEntries.remove(e);
+		if(e != null) {
+			boolean b = listOfEntries.remove(e);
+			if(b) fireEntriesRemoved(new Entry[] {e});
+		}
+		
 	}
 	
 	/**
@@ -116,9 +125,14 @@ public class Journal implements XMLConfigurable, ReadingPointListener {
 	 */
 	public synchronized void addAllEntries(Collection<? extends Entry> c) {
 		if(c != null) {
+			HashSet<Entry> trueEntries = new HashSet<Entry>();
 			for(Entry e : c) {
-				if(e != null) listOfEntries.add(e);
+				if(e != null) {
+					boolean b = listOfEntries.add(e);
+					if(b) trueEntries.add(e);
+				}
 			}
+			fireEntriesAdded((Entry[]) trueEntries.toArray());
 		}
 	}
 	
@@ -126,7 +140,16 @@ public class Journal implements XMLConfigurable, ReadingPointListener {
 	 * Removes all entries which are in c from the journal
 	 */
 	public synchronized void removeAllEntries(Collection<? extends Entry> c) {
-		if(c != null) listOfEntries.removeAll(c);
+		if(c != null) {
+			HashSet<Entry> trueEntries = new HashSet<Entry>();
+			for(Entry e : c) {
+				if(e != null) {
+					boolean b = listOfEntries.remove(e);
+					if(b) trueEntries.add(e);
+				}
+			}
+			fireEntriesRemoved((Entry[]) trueEntries.toArray());
+		}
 	}
 	
 	/**
@@ -134,9 +157,10 @@ public class Journal implements XMLConfigurable, ReadingPointListener {
 	 * the call is ignored
 	 */
 	public synchronized void replaceEntry(Entry oldEntry, Entry newEntry) {
-		if(oldEntry != null && newEntry != null) {
+		if(oldEntry != null && newEntry != null && oldEntry != newEntry) {
 			listOfEntries.remove(oldEntry);
 			listOfEntries.add(newEntry);
+			fireEntryReplaced(oldEntry, newEntry);
 		}
 	}
 	
@@ -145,7 +169,9 @@ public class Journal implements XMLConfigurable, ReadingPointListener {
 	 */
 	public synchronized void setStartValue(Account a, float f) {
 		if(a != null) {
+			Float old = startValues.get(a);
 			startValues.put(a, f);
+			if(old != f) fireStartValueChanged(a, old, f);
 		}
 	}
 	
@@ -153,21 +179,29 @@ public class Journal implements XMLConfigurable, ReadingPointListener {
 	 * Removes the start value for a.
 	 */
 	public synchronized void removeStartValue(Account a) {
-		startValues.remove(a);
+		if(a != null) {
+			Float old = startValues.get(a);
+			startValues.remove(a);
+			if(old != null) fireStartValueChanged(a, old, null);
+		}		
 	}
 	
 	/**
 	 * Adds rp to the list of reading points, if it isn't null
 	 */
 	public synchronized void addReadingPoint(ReadingPoint rp) {
-		if(rp != null) listOfReadingPoints.add(rp);
+		if(rp != null) {
+			boolean b = listOfReadingPoints.add(rp);
+			if(b) fireReadingPointAdded(rp);
+		}
 	}
 	
 	/**
 	 * Removes the reading point rp from the list of reading points
 	 */
 	public synchronized void removeReadingPoint(ReadingPoint rp) {
-		listOfReadingPoints.remove(rp);
+		boolean b = listOfReadingPoints.remove(rp);
+		if(b) fireReadingPointRemoved(rp);
 	}
 	
 	
@@ -289,25 +323,75 @@ public class Journal implements XMLConfigurable, ReadingPointListener {
 		return true;
 	}
 	
+	// LISTENERHANDLING ********************************************
+	// *************************************************************
+	
+	/**
+	 * Adds l to the list of listeners (if l != null)
+	 */
+	public void addJournalListener(JournalListener l) {
+		if(l != null) listeners.add(l);
+	}
+	
+	/**
+	 * Removes l from the list of listeners
+	 */
+	public void remvoeJournalListener(JournalListener l) {
+		listeners.remove(l);
+	}
+	
+	protected void fireActivityChanged(ReadingPoint source) {
+		for(JournalListener l : listeners) l.activityChanged(source);
+	}
+	
+	protected void fireDateChanged(ReadingPoint source) {
+		for(JournalListener l : listeners) l.dateChanged(source);
+	}
+	
+	protected void fireVisibilityChanged(ReadingPoint source) {
+		for(JournalListener l : listeners) l.visibilityChanged(source);
+	}
+	
+	protected void fireEntriesAdded(Entry[] newEntries) {
+		for(JournalListener l : listeners) l.entriesAdded(this, newEntries);
+	}
+	
+	protected void fireEntriesRemoved(Entry[] oldEntries) {
+		for(JournalListener l : listeners) l.entriesRemoved(this, oldEntries);
+	}
+	
+	protected  void  fireEntryReplaced(Entry oldEntry, Entry newEntry) {
+		for(JournalListener l : listeners) l.entryReplaced(this, oldEntry, newEntry);
+	}
+	
+	protected void fireStartValueChanged(Account a, Float oldValue, Float newValue) {
+		for(JournalListener l : listeners) l.startValueChanged(this, a, oldValue, newValue);
+	}
+	
+	protected void fireReadingPointAdded(ReadingPoint point) {
+		for(JournalListener l : listeners) l.readingPointAdded(this, point);
+	}
+	
+	protected void fireReadingPointRemoved(ReadingPoint point) {
+		for(JournalListener l : listeners) l.readingPointRemoved(this, point);
+	}
+	
 	// READINGPOINTLISTENER ****************************************
 	// *************************************************************
 
 	@Override
 	public void activityChanged(ReadingPoint source) {
-		// TODO Auto-generated method stub
-		
+		fireActivityChanged(source);
 	}
 
 	@Override
 	public void dateChanged(ReadingPoint source) {
-		// TODO Auto-generated method stub
-		
+		fireDateChanged(source);
 	}
 
 	@Override
 	public void visibilityChanged(ReadingPoint source) {
-		// TODO Auto-generated method stub
-		
+		fireVisibilityChanged(source);
 	}
 
 }
