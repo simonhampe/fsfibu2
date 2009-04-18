@@ -10,9 +10,6 @@ import javax.swing.undo.UndoableEdit;
 import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.tree.DefaultElement;
-import org.w3c.dom.ls.LSException;
-
-import com.sun.swing.internal.plaf.synth.resources.synth;
 
 import fs.fibu2.data.event.JournalListener;
 import fs.fibu2.data.event.ReadingPointListener;
@@ -88,13 +85,12 @@ public class Journal implements XMLConfigurable, ReadingPointListener {
 	}
 	
 	/**
-	 * @return The start value associated to the account
-	 * @throws IllegalArgumentException - If there is no start value for this account 
+	 * @return The start value associated to the account or 0 if there is none.
 	 */
 	public synchronized float getStartValue(Account a) throws IllegalArgumentException {
 		Float f = startValues.get(a);
 		if(f != null ) return f;
-		else throw new IllegalArgumentException("No start value for account " + a.getName());
+		else return 0;
 	}
 	
 	/**
@@ -187,21 +183,29 @@ public class Journal implements XMLConfigurable, ReadingPointListener {
 	}
 	
 	/**
-	 * Adds rp to the list of reading points, if it isn't null
+	 * Adds rp to the list of reading points, if it isn't null. The journal 
+	 * automatically adds itself as a listener to the reading point
 	 */
 	public synchronized void addReadingPoint(ReadingPoint rp) {
 		if(rp != null) {
 			boolean b = listOfReadingPoints.add(rp);
-			if(b) fireReadingPointAdded(rp);
+			if(b) {
+				rp.addReadingPointListener(this);
+				fireReadingPointAdded(rp);
+			}
 		}
 	}
 	
 	/**
-	 * Removes the reading point rp from the list of reading points
+	 * Removes the reading point rp from the list of reading points. The journal
+	 * automatically removes itself as a listener from the reading point
 	 */
 	public synchronized void removeReadingPoint(ReadingPoint rp) {
 		boolean b = listOfReadingPoints.remove(rp);
-		if(b) fireReadingPointRemoved(rp);
+		if(b) {
+			rp.removeReadingPointListener(this);
+			fireReadingPointRemoved(rp);
+		}
 	}
 	
 	
@@ -213,7 +217,7 @@ public class Journal implements XMLConfigurable, ReadingPointListener {
 	 * - An optional node called startvalues with subnodes for each account. The subnodes have
 	 * as name the account id (which must be known to AccountLoader) and as text a valid
 	 * float value indicating the start value for this account. All accounts for which
-	 * no start value has been given will be initialized to zero <br> 
+	 * no start value has been given will implicitely be initialized to zero <br> 
 	 * - An arbitrary number of valid {@link ReadingPoint} nodes <br>
 	 * - An arbitrary number of valid {@link Entry} nodes <br>
 	 * This operation is not undoable, however it will reset the associated undomanager. The journal

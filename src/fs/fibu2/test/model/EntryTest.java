@@ -29,7 +29,7 @@ public class EntryTest {
 	public static void main(String[] args) {
 		try {
 		BasicConfigurator.configure();
-		FsfwDefaultReference.setFsfwDirectory("/home/hampe/workspace/fsframework/");
+		FsfwDefaultReference.setFsfwDirectory("/home/talio/eclipse/workspace/fsframework/");
 		AbstractAccount account = new AbstractAccount();
 		System.out.println(account);
 		Account bA = AccountLoader.getAccount("bank_account");
@@ -46,7 +46,7 @@ public class EntryTest {
 		HashMap<String,String> ai = new HashMap<String, String>();
 		ai.put("invoice", "G 17");
 		ai.put("statement","4");
-		Entry e = new Entry("Getränkeeinnahmen", -140.00f, Currency.getInstance("EUR"),new GregorianCalendar(2009,0,1),
+		Entry e = new Entry("<Getränkeeinnahmen>", -140.00f, Currency.getInstance("EUR"),new GregorianCalendar(2009,0,1),
 				Category.getCategory(new Vector<String>(Arrays.asList("Getr. & Süßes", "Einnahmen"))),
 				"bank_account", ai, "bla");
 		Entry f = new Entry(e.getConfiguration());
