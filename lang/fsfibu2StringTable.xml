@@ -60,7 +60,7 @@
     <variant lang="en">Fields (ID (Name): Description)</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.undo.JournalEntryEdit.presentation" group="fs.fibu2.undo.JournalEntryEdit">
-    <variant lang="en">%s entries from a journal</variant>
+    <variant lang="en">%s entries from the journal %s</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.BankAccount.faultystatement" group="fs.fibu2.BankAccount">
     <variant lang="en">The statement number should be an integer value. If you don't know the number yet it is recommended you leave that field empty.</variant>
