@@ -57,4 +57,20 @@ public interface JournalListener extends ReadingPointListener {
 	 */
 	public void readingPointRemoved(Journal source, ReadingPoint point);
 	
+	/**
+	 * This is called, when the name of a journal is changed.
+	 * @param source The journal whose name was changed
+	 * @param oldValue The old name
+	 * @param newValue The new name
+	 */
+	public void nameChanged(Journal source, String oldValue, String newValue);
+	
+	/**
+	 * This is called when the description of the journal is changed
+	 * @param source The journal whose description is changed
+	 * @param oldValue The old description
+	 * @param newValue The new description
+	 */
+	public void descriptionChanged(Journal source, String oldValue, String newValue);
+	
 }

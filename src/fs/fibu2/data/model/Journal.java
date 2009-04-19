@@ -24,6 +24,7 @@ import fs.xml.XMLWriteConfigurationException;
  * - ReadingPoints: A reading point is a certain day of the year at which the user whishes to see a bilancial overview and potentially reset
  * all sums. <br>
  * - Start values: A journal contains a start value for each account it uses.<br>
+ * - A name and a description for this journal
  * <br> 
  * All the write access methods exist in two versions: The normal one and the one that automatically creates an associated {@link UndoableEdit}
  * and posts it to the proper JournalUndoManager. Both versions notify any Listeners of changes. 
@@ -38,6 +39,9 @@ public class Journal implements XMLConfigurable, ReadingPointListener {
 	private HashSet<Entry> listOfEntries = new HashSet<Entry>();
 	private HashSet<ReadingPoint> listOfReadingPoints = new HashSet<ReadingPoint>();
 	private HashMap<Account, Float> startValues = new HashMap<Account, Float>();
+	
+	private String name = "";
+	private String description = "";
 	
 	private JournalUndoManager manager = JournalUndoManager.getInstance(this);
 	
@@ -91,6 +95,21 @@ public class Journal implements XMLConfigurable, ReadingPointListener {
 		Float f = startValues.get(a);
 		if(f != null ) return f;
 		else return 0;
+	}
+	
+	/**
+	 * @return The name of this journal
+	 */
+	public synchronized String getName() {
+		return name;
+	}
+	
+	/**
+	 * @return A description of this journal
+	 * @return
+	 */
+	public synchronized String getDescription() {
+		return description;
 	}
 	
 	/**
@@ -208,12 +227,34 @@ public class Journal implements XMLConfigurable, ReadingPointListener {
 		}
 	}
 	
+	/**
+	 * Sets the name of this journal. The name will be used for representation in lists
+	 * and window titles and such
+	 * @param newName the new name. If null, the empty string is used
+	 */
+	public synchronized void setName(String newName) {
+		String old = name;
+		this.name = newName == null? "" : newName;
+		fireNameChanged(old, name);
+	}
+	
+	/**
+	 * Sets the description of this journal. The description should shortly 
+	 * specify the content and purpose of this journal
+	 * @param newDescription The new description. If null, the empty string is used
+	 */
+	public synchronized void setDescription(String newDescription) {
+		String old = description;
+		this.description = newDescription == null? "" : newDescription;
+		fireDescriptionChanged(old, description);
+	}
 	
 	// XMLCONFIGURABLE *******************************
 	// ***********************************************
 	
 	/**
 	 * Expects the following node structure:<br>
+	 * - Optionally the nodes name and description with arbitrary content <br>
 	 * - An optional node called startvalues with subnodes for each account. The subnodes have
 	 * as name the account id (which must be known to AccountLoader) and as text a valid
 	 * float value indicating the start value for this account. All accounts for which
@@ -234,6 +275,18 @@ public class Journal implements XMLConfigurable, ReadingPointListener {
 		HashMap<Account, Float> newstartvalues = new HashMap<Account, Float>();
 		HashSet<Entry> newentries = new HashSet<Entry>();
 		HashSet<ReadingPoint> newreadings = new HashSet<ReadingPoint>();
+		String newname = "";
+		String newdescription = "";
+		
+		Node nameNode = n.selectSingleNode("./name");
+		if(nameNode != null) {
+			newname = nameNode.getText();
+		}
+		
+		Node descriptionNode = n.selectSingleNode("./description");
+		if(descriptionNode != null) {
+			newdescription = descriptionNode.getText();
+		}
 		
 		Node startNode = n.selectSingleNode("./startvalues");
 		if(startNode != null) {
@@ -278,11 +331,21 @@ public class Journal implements XMLConfigurable, ReadingPointListener {
 		}
 		
 		//Copy values and reset manager
-		listOfEntries = newentries;
-		listOfReadingPoints = newreadings;
-		startValues = newstartvalues;
+		
+		removeAllEntries(listOfEntries);
+		addAllEntries(newentries);
+		
+		for(ReadingPoint rp : listOfReadingPoints) removeReadingPoint(rp);
+		for(ReadingPoint rp : newreadings) addReadingPoint(rp);
+		
+		for(Account a : startValues.keySet()) removeStartValue(a);
+		for(Account a : newstartvalues.keySet()) setStartValue(a, newstartvalues.get(a));
+		
+		setName(newname);
+		setDescription(newdescription);
+		
 		manager.discardAllEdits();
-		//TODO: fire journalchanged or so...
+		
 	}
 
 	/**
@@ -291,6 +354,14 @@ public class Journal implements XMLConfigurable, ReadingPointListener {
 	@Override
 	public synchronized Element getConfiguration() throws XMLReadConfigurationException {
 		DefaultElement root = new DefaultElement("journal");
+		
+		DefaultElement nameNode = new DefaultElement("name");
+		nameNode.setText(name);
+		root.add(nameNode);
+		
+		DefaultElement descNode = new DefaultElement("description");
+		descNode.setText(description);
+		root.add(descNode);
 		
 		DefaultElement startNode = new DefaultElement("startvalues");
 		for(Account a : startValues.keySet()) {
@@ -378,6 +449,14 @@ public class Journal implements XMLConfigurable, ReadingPointListener {
 	
 	protected void fireReadingPointRemoved(ReadingPoint point) {
 		for(JournalListener l : listeners) l.readingPointRemoved(this, point);
+	}
+	
+	protected void fireNameChanged(String oldValue, String newValue) {
+		for(JournalListener l : listeners) l.nameChanged(this, oldValue, newValue);
+	}
+	
+	protected void fireDescriptionChanged(String oldValue, String newValue) {
+		for(JournalListener l : listeners) l.descriptionChanged(this, oldValue, newValue);
 	}
 	
 	// READINGPOINTLISTENER ****************************************
