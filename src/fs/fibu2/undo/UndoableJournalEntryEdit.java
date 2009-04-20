@@ -3,6 +3,8 @@ package fs.fibu2.undo;
 import java.util.HashSet;
 
 import javax.swing.undo.AbstractUndoableEdit;
+import javax.swing.undo.CannotRedoException;
+import javax.swing.undo.CannotUndoException;
 
 import fs.fibu2.data.error.RedoException;
 import fs.fibu2.data.error.UndoException;
@@ -38,6 +40,7 @@ public class UndoableJournalEntryEdit extends AbstractUndoableEdit {
 	 * be removed
 	 */
 	public UndoableJournalEntryEdit(Journal journal, HashSet<Entry> entries, boolean entriesAreAdded) {
+		super();
 		this.journal = journal;
 		this.entries = new HashSet<Entry>(entries);
 		this.entriesAreAdded = entriesAreAdded;
@@ -79,6 +82,12 @@ public class UndoableJournalEntryEdit extends AbstractUndoableEdit {
 	 */
 	@Override
 	public void redo() throws RedoException {
+		try {
+			super.redo();
+		}
+		catch(CannotRedoException ce) {
+			throw new RedoException("Cannot redo. Edit is not alive or has already been done.");
+		}
 		if(journal == null) throw new RedoException("Cannot redo on null journal");
 		if(entriesAreAdded) journal.addAllEntries(entries);
 		else journal.removeAllEntries(entries);
@@ -86,10 +95,16 @@ public class UndoableJournalEntryEdit extends AbstractUndoableEdit {
 
 	/**
 	 * Tries to add/remove the specified edits to/from the journal
-	 * @throws RedoException - if journal == null
+	 * @throws UndoException - if journal == null
 	 */
 	@Override
 	public void undo() throws UndoException {
+		try {
+			super.undo();
+		}
+		catch(CannotUndoException ce) {
+			throw new UndoException("Cannot undo. Edit is not alive or has already been done.");
+		}
 		if(journal == null) throw new UndoException("Cannot undo on null journal");
 		if(entriesAreAdded) journal.removeAllEntries(entries);
 		else journal.addAllEntries(entries);
