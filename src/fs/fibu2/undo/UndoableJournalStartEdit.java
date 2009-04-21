@@ -4,6 +4,8 @@ import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
+import fs.fibu2.data.error.RedoException;
+import fs.fibu2.data.error.UndoException;
 import fs.fibu2.data.model.Account;
 import fs.fibu2.data.model.Journal;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
@@ -18,6 +20,11 @@ import fs.fibu2.lang.Fsfibu2StringTableMgr;
  */
 public class UndoableJournalStartEdit extends AbstractUndoableEdit {
 
+	/**
+	 * compiler-generated version uid 
+	 */
+	private static final long serialVersionUID = 4213167039317248655L;
+	
 	private Journal journal; 	//The journal to which the changes are made 
 	private Account account;	//The account for which the values are set
 	private Float oldValue;		//The value to set on undo
@@ -67,16 +74,42 @@ public class UndoableJournalStartEdit extends AbstractUndoableEdit {
 							journal != null? journal.getName() : "?");
 	}
 
+	/**
+	 * Tries to set the start value for the associated account to the new value or remove it if the
+	 * new value is null
+	 * @throws RedoException - If journal == null or account == null
+	 */
 	@Override
-	public void redo() throws CannotRedoException {
-		// TODO Auto-generated method stub
-		super.redo();
+	public void redo() throws RedoException {
+		try {
+			super.redo();
+		}
+		catch(CannotRedoException ce) {
+			throw new RedoException("Cannot redo. Edit is not alive or has already been done.");
+		}
+		if(journal == null) throw new RedoException("Cannot redo on null journal.");
+		if(account == null) throw new RedoException("Cannot redo on null account");
+		if(newValue != null) journal.setStartValue(account, newValue);
+		else journal.removeStartValue(account);
 	}
 
+	/**
+	 * Tries to set the start value for the associated account to the old value or remove it if the 
+	 * old value is null
+	 * @throws UndoException - If journal == null or account == null
+	 */
 	@Override
-	public void undo() throws CannotUndoException {
-		// TODO Auto-generated method stub
-		super.undo();
+	public void undo() throws UndoException {
+		try {
+			super.undo();
+		}
+		catch(CannotUndoException ce) {
+			throw new UndoException("Cannot undo. Edit is not alive or has not been done.");
+		}
+		if(journal == null) throw new RedoException("Cannot undo on null journal.");
+		if(account == null) throw new RedoException("Cannot undo on null account");
+		if(oldValue != null) journal.setStartValue(account, oldValue);
+		else journal.removeStartValue(account);
 	}
 	
 	

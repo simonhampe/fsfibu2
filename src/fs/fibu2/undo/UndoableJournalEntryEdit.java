@@ -103,7 +103,7 @@ public class UndoableJournalEntryEdit extends AbstractUndoableEdit {
 			super.undo();
 		}
 		catch(CannotUndoException ce) {
-			throw new UndoException("Cannot undo. Edit is not alive or has already been done.");
+			throw new UndoException("Cannot undo. Edit is not alive or has not been done.");
 		}
 		if(journal == null) throw new UndoException("Cannot undo on null journal");
 		if(entriesAreAdded) journal.removeAllEntries(entries);

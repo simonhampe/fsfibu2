@@ -14,11 +14,11 @@
   <polyglotstring id="fs.fibu2.undo.JournalStartEdit.presentation" group="fs.fibu2.undo.JournalStartEdit">
     <variant lang="en">Changes the start value of account %s in journal %s.</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.undo.JournalEntryEdit.remove" group="fs.fibu2.undo.JournalEntryEdit">
-    <variant lang="en">Removes</variant>
-  </polyglotstring>
   <polyglotstring id="fs.fibu2.Entry.account" group="fs.fibu2.Entry">
     <variant lang="en">Account</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.undo.JournalEntryEdit.remove" group="fs.fibu2.undo.JournalEntryEdit">
+    <variant lang="en">Removes</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.CashBox.name" group="fs.fibu2.CashBox">
     <variant lang="en"></variant>
@@ -38,11 +38,11 @@
   <polyglotstring id="fs.fibu2.Entry.info" group="fs.fibu2.Entry">
     <variant lang="en">Additional Information</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.AbstractAccount.invoicename" group="fs.fibu2.AbstractAccount">
-    <variant lang="en">Invoice number</variant>
-  </polyglotstring>
   <polyglotstring id="fs.fibu2.Entry.category" group="fs.fibu2.Entry">
     <variant lang="en">Category</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.AbstractAccount.invoicename" group="fs.fibu2.AbstractAccount">
+    <variant lang="en">Invoice number</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.AbstractAccount.description" group="fs.fibu2.AbstractAccount">
     <variant lang="en">An abstract account implementing invoice information</variant>
@@ -68,6 +68,9 @@
   <polyglotstring id="fs.fibu2.undo.JournalEntryEdit.presentation" group="fs.fibu2.undo.JournalEntryEdit">
     <variant lang="en">%s entries from the journal %s</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.undo.JournalReplaceEdit.modify" group="fs.fibu2.undo.JournalReplaceEdit">
+    <variant lang="en">Modifies the entry %s in journal %s.</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.BankAccount.faultystatement" group="fs.fibu2.BankAccount">
     <variant lang="en">The statement number should be an integer value. If you don't know the number yet it is recommended you leave that field empty.</variant>
   </polyglotstring>
@@ -77,17 +80,20 @@
   <polyglotstring id="fs.fibu2.BankAccount.statement" group="fs.fibu2.BankAccount">
     <variant lang="en">Statement sheet</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.undo.JournalReplaceEdit.presentation" group="fs.fibu2.undo.JournalReplaceEdit">
+    <variant lang="en">Replaces an entry in journal %s by another.</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.Entry.value" group="fs.fibu2.Entry">
     <variant lang="en">Value</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.BankAccount.description" group="fs.fibu2.BankAccount">
     <variant lang="en">A generic bank account</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.BankAccount.statementdescription" group="fs.fibu2.BankAccount">
-    <variant lang="en">The number of the bank account statement sheet</variant>
-  </polyglotstring>
   <polyglotstring id="fs.fibu2.AbstractAccount.faultyinvoice" group="fs.fibu2.AbstractAccount">
     <variant lang="en">This entry has a negative value, but no invoice id is given.</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.BankAccount.statementdescription" group="fs.fibu2.BankAccount">
+    <variant lang="en">The number of the bank account statement sheet</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.undo.JournalStartEdit.remove" group="fs.fibu2.undo.JournalStartEdit">
     <variant lang="en">Removes the start value for account %s in journal %s.</variant>
