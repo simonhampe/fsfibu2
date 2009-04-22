@@ -23,6 +23,6 @@ public interface EntryFilter {
 	/**
 	 * @return An editor for the filter. If the filter should not be editable, this should return null
 	 */
-	public EntryFilterEditor<? extends EntryFilter> getEditor();
+	public EntryFilterEditor getEditor();
 	
 }
