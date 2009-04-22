@@ -24,4 +24,8 @@ public interface ReadingPointListener {
 	 */
 	public void dateChanged(ReadingPoint source);
 	
+	/**
+	 * Indicates that the name of source has changed
+	 */
+	public void nameChanged(ReadingPoint source);
 }

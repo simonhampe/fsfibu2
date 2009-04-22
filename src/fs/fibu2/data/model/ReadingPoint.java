@@ -30,6 +30,7 @@ public class ReadingPoint implements XMLConfigurable {
 	// *****************************************
 	
 	private GregorianCalendar readingDay;
+	private String name;
 	private boolean isActive;
 	private boolean isVisible;
 	
@@ -40,14 +41,16 @@ public class ReadingPoint implements XMLConfigurable {
 	
 	/**
 	 * Constructs a reading point.
+	 * @param name The name of the point. If null, the empty string is used
 	 * @param readingDay The date associated to the reading. Must not be null
 	 * @param isActive Whether this reading point should be regarded as active (bilancial sums are reset)
 	 * @param isVisible Whether this reading point should be displayed or not
 	 * @throws NullPointerException - If readingDay == null
 	 */
-	public ReadingPoint(GregorianCalendar readingDay, boolean isActive,
+	public ReadingPoint(String name, GregorianCalendar readingDay, boolean isActive,
 			boolean isVisible) throws NullPointerException {
 		if(readingDay == null) throw new NullPointerException("Can't construct reading point from null date");
+		this.name = name == null? "" : name;
 		this.readingDay = (GregorianCalendar)readingDay.clone();
 		this.isActive = isActive;
 		this.isVisible = isVisible;
@@ -110,6 +113,21 @@ public class ReadingPoint implements XMLConfigurable {
 	public void setVisible(boolean isVisible) {
 		this.isVisible = isVisible;
 		fireVisibilityChanged();
+	}
+	
+	/**
+	 * @return The name of this reading point
+	 */
+	public String getName() {
+		return name;
+	}
+	
+	/**
+	 * Sets the name of this reading point. If newname == null, the empty string is used
+	 */
+	public void setName(String newname) {
+		name = newname == null? "" : newname;
+		fireNameChanged();
 	}
 	
 	// ENTRY COMPARISON ***********************
@@ -195,11 +213,19 @@ public class ReadingPoint implements XMLConfigurable {
 		for(ReadingPointListener l : listeners) l.dateChanged(this);
 	}
 	
+	/**
+	 * Calls nameChanged on all listeners
+	 */
+	protected void fireNameChanged() {
+		for(ReadingPointListener l : listeners) l.nameChanged(this);
+	}
+	
 	// XMLCONFIGURABLE ************************
 	// ****************************************
 	
 	/**
 	 * Expects three subnodes with appropriately formatted values: <br>
+	 * - name (String) <br>
 	 * - readingday (date: dd.MM.yyyy)<br>
 	 * - isactive (boolean)<br>
 	 * - isvisible (boolean)<br>
@@ -210,9 +236,14 @@ public class ReadingPoint implements XMLConfigurable {
 	public void configure(Node n) throws XMLWriteConfigurationException {
 		if(n == null) throw new XMLWriteConfigurationException("Cannot configure reading point from null node");
 		
+		String newname;
 		GregorianCalendar newdate;
 		boolean newactive;
 		boolean newvisible;
+		
+		Node nameNode = n.selectSingleNode("./name");
+		if(nameNode == null) throw new XMLWriteConfigurationException("Invalid reading point configuration: name node missing");
+		newname = nameNode.getText();
 		
 		Node dateNode = n.selectSingleNode("./readingday");
 		if(dateNode == null) throw new XMLWriteConfigurationException("Invalid reading point configuration: date node missing");
@@ -232,6 +263,7 @@ public class ReadingPoint implements XMLConfigurable {
 		if(visibleNode == null) throw new XMLWriteConfigurationException("Invalid reading point configuration: Visibility node missing");
 		newvisible = Boolean.parseBoolean(visibleNode.getText());
 		
+		setName(newname);
 		setReadingDay(newdate);
 		setActive(newactive);
 		setVisible(newvisible);

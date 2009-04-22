@@ -52,8 +52,8 @@ public class UndoableJournalEntryEdit extends AbstractUndoableEdit {
 	@Override
 	public String getPresentationName() {
 		return Fsfibu2StringTableMgr.getString(sgroup + ".presentation",entriesAreAdded? 
-				Fsfibu2StringTableMgr.getString(sgroup + ".add") :
-				Fsfibu2StringTableMgr.getString(sgroup + ".remove"),
+				Fsfibu2StringTableMgr.getString("fs.fibu2.undo.add") :
+				Fsfibu2StringTableMgr.getString("fs.fibu2.undo.remove"),
 				journal != null? journal.getName() : "");
 	}
 
@@ -71,8 +71,8 @@ public class UndoableJournalEntryEdit extends AbstractUndoableEdit {
 	@Override
 	public String getUndoPresentationName() {
 		return Fsfibu2StringTableMgr.getString(sgroup + ".presentation",!entriesAreAdded? 
-				Fsfibu2StringTableMgr.getString(sgroup + ".add") :
-				Fsfibu2StringTableMgr.getString(sgroup + ".remove"),
+				Fsfibu2StringTableMgr.getString("fs.fibu2.undo.add") :
+				Fsfibu2StringTableMgr.getString("fs.fibu2.undo.remove"),
 				journal != null? journal.getName() : "");
 	}
 
