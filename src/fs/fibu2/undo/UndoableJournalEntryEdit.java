@@ -1,5 +1,6 @@
 package fs.fibu2.undo;
 
+import java.util.Collection;
 import java.util.HashSet;
 
 import javax.swing.undo.AbstractUndoableEdit;
@@ -39,7 +40,7 @@ public class UndoableJournalEntryEdit extends AbstractUndoableEdit {
 	 * @param entriesAreAdded True, if the entries should be added, false if they should
 	 * be removed
 	 */
-	public UndoableJournalEntryEdit(Journal journal, HashSet<Entry> entries, boolean entriesAreAdded) {
+	public UndoableJournalEntryEdit(Journal journal, Collection<? extends Entry> entries, boolean entriesAreAdded) {
 		super();
 		this.journal = journal;
 		this.entries = new HashSet<Entry>(entries);

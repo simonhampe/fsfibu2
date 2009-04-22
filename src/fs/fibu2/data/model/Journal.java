@@ -1,5 +1,6 @@
 package fs.fibu2.data.model;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,6 +15,11 @@ import org.dom4j.tree.DefaultElement;
 import fs.fibu2.data.event.JournalListener;
 import fs.fibu2.data.event.ReadingPointListener;
 import fs.fibu2.undo.JournalUndoManager;
+import fs.fibu2.undo.UndoableJournalEntryEdit;
+import fs.fibu2.undo.UndoableJournalInfoEdit;
+import fs.fibu2.undo.UndoableJournalPointEdit;
+import fs.fibu2.undo.UndoableJournalReplaceEdit;
+import fs.fibu2.undo.UndoableJournalStartEdit;
 import fs.xml.XMLConfigurable;
 import fs.xml.XMLReadConfigurationException;
 import fs.xml.XMLWriteConfigurationException;
@@ -248,6 +254,108 @@ public class Journal implements XMLConfigurable, ReadingPointListener {
 		this.description = newDescription == null? "" : newDescription;
 		fireDescriptionChanged(old, description);
 	}
+	
+	// UNDOABLEEDITS *********************************
+	// ***********************************************
+	
+	/**
+	 * @see Journal#addEntry(Entry)
+	 */
+	public synchronized void addEntryUndoable(Entry e) {
+		UndoableJournalEntryEdit edit = new UndoableJournalEntryEdit(this,new HashSet<Entry>(Arrays.asList(e)),true);
+		edit.redo();
+		manager.addEdit(edit);
+	}
+	
+	/**
+	 * @see Journal#removeEntry(Entry)
+	 */
+	public synchronized void removeEntryUndoable(Entry e) {
+		UndoableJournalEntryEdit edit = new UndoableJournalEntryEdit(this, new HashSet<Entry>(Arrays.asList(e)),false);
+		edit.redo();
+		manager.addEdit(edit);
+	}
+	
+	/**
+	 * @see Journal#addAllEntries(Collection)
+	 */
+	public synchronized void addAllEntriesUndoable(Collection<? extends Entry> c) {
+		UndoableJournalEntryEdit edit = new UndoableJournalEntryEdit(this, c, true);
+		edit.redo();
+		manager.addEdit(edit);
+	}
+	
+	/**
+	 * @see Journal#removeAllEntries(Collection)
+	 */
+	public synchronized void removeAllEntriesUndoable(Collection<? extends Entry> c) {
+		UndoableJournalEntryEdit edit = new UndoableJournalEntryEdit(this,c,false);
+		edit.redo();
+		manager.addEdit(edit);
+	}
+	
+	/**
+	 * @see Journal#replaceEntry(Entry, Entry)
+	 */
+	public synchronized void replaceEntryUndoable(Entry oldValue, Entry newValue) {
+		UndoableJournalReplaceEdit edit = new UndoableJournalReplaceEdit(this,oldValue, newValue);
+		edit.redo();
+		manager.addEdit(edit);
+	}
+	
+	/**
+	 * @see Journal#setStartValue(Account, float)
+	 */
+	public synchronized void setStartValueUndoable(Account a, float value) {
+		UndoableJournalStartEdit edit = new UndoableJournalStartEdit(this,a,getStartValue(a),value);
+		edit.redo();
+		manager.addEdit(edit);
+	}
+	
+	/**
+	 * @see Journal#removeStartValue(Account)
+	 */
+	public synchronized void removeStartValueUndoable(Account a) {
+		UndoableJournalStartEdit edit = new UndoableJournalStartEdit(this,a,getStartValue(a),null);
+		edit.redo();
+		manager.addEdit(edit);
+	}
+	
+	/**
+	 * @see Journal#addReadingPoint(ReadingPoint)
+	 */
+	public synchronized void addReadingPointUndoable(ReadingPoint point) {
+		UndoableJournalPointEdit edit = new UndoableJournalPointEdit(this,point,true);
+		edit.redo();
+		manager.addEdit(edit);
+	}
+	
+	/**
+	 * @see Journal#removeReadingPoint(ReadingPoint)
+	 */
+	public synchronized void removeReadingPointUndoable(ReadingPoint point) {
+		UndoableJournalPointEdit edit = new UndoableJournalPointEdit(this,point,false);
+		edit.redo();
+		manager.addEdit(edit);
+	}
+	
+	/**
+	 * @see Journal#setName(String)
+	 */
+	public synchronized void setNameUndoable(String newname) {
+		UndoableJournalInfoEdit edit = new UndoableJournalInfoEdit(this,getName(),newname,true);
+		edit.redo();
+		manager.addEdit(edit);
+	}
+	
+	/**
+	 * @see Journal#setDescription(String)
+	 */
+	public synchronized void setDescriptionUndoable(String newdescription) {
+		UndoableJournalInfoEdit edit = new UndoableJournalInfoEdit(this,getDescription(),newdescription,false);
+		edit.redo();
+		manager.addEdit(edit);
+	}	
 	
 	// XMLCONFIGURABLE *******************************
 	// ***********************************************
