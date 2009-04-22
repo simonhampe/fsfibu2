@@ -83,6 +83,9 @@
   <polyglotstring id="fs.fibu2.AbstractAccount.invoicedescription" group="fs.fibu2.AbstractAccount">
     <variant lang="en">A registration number for the invoice associated to an entry</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.undo.JournalInfoEdit.setto" group="fs.fibu2.undo.JournalInfoEdit">
+    <variant lang="en">Sets %s of journal %s to '%s'</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.undo.add" group="fs.fibu2.undo">
     <variant lang="en">Adds</variant>
   </polyglotstring>
