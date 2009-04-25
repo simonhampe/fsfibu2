@@ -26,7 +26,7 @@ public final class Entry implements XMLConfigurable {
 
 	// MEMBERS ******************************
 	
-	private String 					name;
+	private String 					name;	
 	private float 					value;
 	private Currency 				currency;
 	private GregorianCalendar		date;
