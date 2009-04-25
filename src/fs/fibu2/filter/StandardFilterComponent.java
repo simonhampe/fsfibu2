@@ -130,7 +130,9 @@ public class StandardFilterComponent extends JPanel {
 		
 		singleEntry.setText(singleContent);
 		minEntry.setText(minContent);
+			minEntry.setToolTipText(Fsfibu2StringTableMgr.getString(sgroup + ".mintooltip"));
 		maxEntry.setText(maxContent);
+			maxEntry.setToolTipText(Fsfibu2StringTableMgr.getString(sgroup + ".maxtooltip"));
 		
 		equalityButton.setText(Fsfibu2StringTableMgr.getString(sgroup + ".equality"));
 		regexButton.setText(Fsfibu2StringTableMgr.getString(sgroup + ".regex"));

@@ -25,12 +25,14 @@ public interface EntryFilter {
 	
 	/**
 	 * @return A (possibly) unique ID used for retrieving an instance of this filter
-	 * from the FilterLoader
+	 * from the FilterLoader. The convention for fsfibu2 filters is "ff2filter_" + 
+	 * something descriptive like "name" or "onlywithbeer".
 	 */
 	public String getID();
 	
 	/**
-	 * @return Whether e fulfills the criteria of this filter
+	 * @return Whether e fulfills the criteria of this filter. The null entry should
+	 * verify no criterion at all.
 	 */
 	public boolean verifyEntry(Entry e);
 	

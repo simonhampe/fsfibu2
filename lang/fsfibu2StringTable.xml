@@ -26,6 +26,9 @@
   <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.equality" group="fs.fibu2.filter.StandardFilterComponent">
     <variant lang="en">Equality</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.filter.describeequals" group="fs.fibu2.filter">
+    <variant lang="en">%s = '%s'</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.undo.JournalInfoEdit.name" group="fs.fibu2.undo.JournalInfoEdit">
     <variant lang="en">the name</variant>
   </polyglotstring>
@@ -41,8 +44,14 @@
   <polyglotstring id="fs.fibu2.Entry.currency" group="fs.fibu2.Entry">
     <variant lang="en">Currency</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.filter.NameFilter.name" group="fs.fibu2.filter.NameFilter">
+    <variant lang="en">Name filter</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.regex" group="fs.fibu2.filter.StandardFilterComponent">
     <variant lang="en">Regular expression</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.mintooltip" group="fs.fibu2.filter.StandardFilterComponent">
+    <variant lang="en">Empty content means: No lower bound</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.undo.JournalInfoEdit.description" group="fs.fibu2.undo.JournalInfoEdit">
     <variant lang="en">the description</variant>
@@ -61,6 +70,9 @@
   </polyglotstring>
   <polyglotstring id="fs.fibu2.AbstractAccount.description" group="fs.fibu2.AbstractAccount">
     <variant lang="en">An abstract account implementing invoice information</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.filter.describerange" group="fs.fibu2.filter">
+    <variant lang="en">%s in between '%s' and '%s'</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.global.description" group="fs.fibu2.global">
     <variant lang="en">Description</variant>
@@ -82,6 +94,9 @@
   </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.range" group="fs.fibu2.filter.StandardFilterComponent">
     <variant lang="en">Range</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.maxtooltip" group="fs.fibu2.filter.StandardFilterComponent">
+    <variant lang="en">Empty content means: No upper bound</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.undo.JournalEntryEdit.presentation" group="fs.fibu2.undo.JournalEntryEdit">
     <variant lang="en">%s entries from the journal %s</variant>
@@ -127,5 +142,8 @@
   </polyglotstring>
   <polyglotstring id="fs.fibu2.undo.JournalStartEdit.remove" group="fs.fibu2.undo.JournalStartEdit">
     <variant lang="en">Removes the start value for account %s in journal %s.</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.filter.describematches" group="fs.fibu2.filter">
+    <variant lang="en">%s matches '%s'</variant>
   </polyglotstring>
 </fsfw:polyglotstringtable>
