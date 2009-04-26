@@ -146,14 +146,18 @@ public class Journal implements XMLConfigurable, ReadingPointListener {
 	 */
 	public synchronized void addAllEntries(Collection<? extends Entry> c) {
 		if(c != null) {
-			HashSet<Entry> trueEntries = new HashSet<Entry>();
+			Entry[] trueEntries= new Entry[c.size()];
+			int i = 0;
 			for(Entry e : c) {
 				if(e != null) {
 					boolean b = listOfEntries.add(e);
-					if(b) trueEntries.add(e);
+					if(b) {
+						trueEntries[i] = e;
+						i++;
+					}
 				}
 			}
-			fireEntriesAdded((Entry[]) trueEntries.toArray());
+			fireEntriesAdded(Arrays.<Entry>copyOf(trueEntries, i));
 		}
 	}
 	
@@ -162,14 +166,18 @@ public class Journal implements XMLConfigurable, ReadingPointListener {
 	 */
 	public synchronized void removeAllEntries(Collection<? extends Entry> c) {
 		if(c != null) {
-			HashSet<Entry> trueEntries = new HashSet<Entry>();
+			Entry[] trueEntries= new Entry[c.size()];
+			int i = 0;
 			for(Entry e : c) {
 				if(e != null) {
 					boolean b = listOfEntries.remove(e);
-					if(b) trueEntries.add(e);
+					if(b) {
+						trueEntries[i] = e;
+						i++;
+					}
 				}
 			}
-			fireEntriesRemoved((Entry[]) trueEntries.toArray());
+			fireEntriesRemoved(Arrays.<Entry>copyOf(trueEntries, i));
 		}
 	}
 	
@@ -192,7 +200,7 @@ public class Journal implements XMLConfigurable, ReadingPointListener {
 		if(a != null) {
 			Float old = startValues.get(a);
 			startValues.put(a, f);
-			if(old != f) fireStartValueChanged(a, old, f);
+			if(old == null || old != f) fireStartValueChanged(a, old, f);
 		}
 	}
 	

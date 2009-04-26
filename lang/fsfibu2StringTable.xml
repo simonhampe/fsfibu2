@@ -8,15 +8,6 @@
       <description>English</description>
     </language>
   </languagetable>
-  <polyglotstring id="fs.fibu2.global.name" group="fs.fibu2.global">
-    <variant lang="en">Name</variant>
-  </polyglotstring>
-  <polyglotstring id="fs.fibu2.undo.remove" group="fs.fibu2.undo">
-    <variant lang="en">Removes</variant>
-  </polyglotstring>
-  <polyglotstring id="fs.fibu2.undo.JournalStartEdit.presentation" group="fs.fibu2.undo.JournalStartEdit">
-    <variant lang="en">Changes the start value of account %s in journal %s.</variant>
-  </polyglotstring>
   <polyglotstring id="fs.fibu2.Entry.account" group="fs.fibu2.Entry">
     <variant lang="en">Account</variant>
   </polyglotstring>
@@ -26,17 +17,8 @@
   <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.equality" group="fs.fibu2.filter.StandardFilterComponent">
     <variant lang="en">Equality</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.filter.describeequals" group="fs.fibu2.filter">
-    <variant lang="en">%s = '%s'</variant>
-  </polyglotstring>
   <polyglotstring id="fs.fibu2.undo.JournalInfoEdit.name" group="fs.fibu2.undo.JournalInfoEdit">
     <variant lang="en">the name</variant>
-  </polyglotstring>
-  <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.max" group="fs.fibu2.filter.StandardFilterComponent">
-    <variant lang="en">Max:</variant>
-  </polyglotstring>
-  <polyglotstring id="fs.fibu2.CashBox.description" group="fs.fibu2.CashBox">
-    <variant lang="en">A generic cash box where your cash is stored</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.AbstractAccount.name" group="fs.fibu2.AbstractAccount">
     <variant lang="en">Abstract account</variant>
@@ -44,11 +26,11 @@
   <polyglotstring id="fs.fibu2.Entry.currency" group="fs.fibu2.Entry">
     <variant lang="en">Currency</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.filter.NameFilter.name" group="fs.fibu2.filter.NameFilter">
-    <variant lang="en">Name filter</variant>
-  </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.regex" group="fs.fibu2.filter.StandardFilterComponent">
     <variant lang="en">Regular expression</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.filter.NameFilter.name" group="fs.fibu2.filter.NameFilter">
+    <variant lang="en">Name filter</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.mintooltip" group="fs.fibu2.filter.StandardFilterComponent">
     <variant lang="en">Empty content means: No lower bound</variant>
@@ -62,35 +44,80 @@
   <polyglotstring id="fs.fibu2.Entry.info" group="fs.fibu2.Entry">
     <variant lang="en">Additional Information</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.AbstractAccount.invoicename" group="fs.fibu2.AbstractAccount">
-    <variant lang="en">Invoice number</variant>
-  </polyglotstring>
-  <polyglotstring id="fs.fibu2.Entry.category" group="fs.fibu2.Entry">
-    <variant lang="en">Category</variant>
-  </polyglotstring>
   <polyglotstring id="fs.fibu2.AbstractAccount.description" group="fs.fibu2.AbstractAccount">
     <variant lang="en">An abstract account implementing invoice information</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.describerange" group="fs.fibu2.filter">
     <variant lang="en">%s in between '%s' and '%s'</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.global.description" group="fs.fibu2.global">
-    <variant lang="en">Description</variant>
+  <polyglotstring id="fs.fibu2.AbstractAccount.fieldlegend" group="fs.fibu2.AbstractAccount">
+    <variant lang="en">Fields (ID (Name): Description)</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.undo.JournalEntryEdit.presentation" group="fs.fibu2.undo.JournalEntryEdit">
+    <variant lang="en">%s entries from the journal %s</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.invalidformat" group="fs.fibu2.filter.StandardFilterComponent">
+    <variant lang="en">Invalid format: %s</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.undo.JournalInfoEdit.setto" group="fs.fibu2.undo.JournalInfoEdit">
+    <variant lang="en">Sets %s of journal %s to '%s'</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.BankAccount.statement" group="fs.fibu2.BankAccount">
+    <variant lang="en">Statement sheet</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.undo.JournalReplaceEdit.presentation" group="fs.fibu2.undo.JournalReplaceEdit">
+    <variant lang="en">Replaces an entry in journal %s by another.</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.BankAccount.description" group="fs.fibu2.BankAccount">
+    <variant lang="en">A generic bank account</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.undo.JournalInfoEdit.presentation" group="fs.fibu2.undo.JournalInfoEdit">
+    <variant lang="en">Changes %s of journal %s</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.AbstractAccount.faultyinvoice" group="fs.fibu2.AbstractAccount">
+    <variant lang="en">This entry has a negative value, but no invoice id is given.</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.filter.describematches" group="fs.fibu2.filter">
+    <variant lang="en">%s matches '%s'</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.global.name" group="fs.fibu2.global">
+    <variant lang="en">Name</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.undo.remove" group="fs.fibu2.undo">
+    <variant lang="en">Removes</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.undo.JournalStartEdit.presentation" group="fs.fibu2.undo.JournalStartEdit">
+    <variant lang="en">Changes the start value of account %s in journal %s.</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.filter.describeequals" group="fs.fibu2.filter">
+    <variant lang="en">%s = '%s'</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.CashBox.description" group="fs.fibu2.CashBox">
+    <variant lang="en">A generic cash box where your cash is stored</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.max" group="fs.fibu2.filter.StandardFilterComponent">
+    <variant lang="en">Max</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.Entry.category" group="fs.fibu2.Entry">
+    <variant lang="en">Category</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.AbstractAccount.invoicename" group="fs.fibu2.AbstractAccount">
+    <variant lang="en">Invoice number</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.BankAccount.nostatement" group="fs.fibu2.BankAccount">
     <variant lang="en">No statement sheet number has been specified.</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.BankAccount.name" group="fs.fibu2.BankAccount">
-    <variant lang="en">Bank account</variant>
+  <polyglotstring id="fs.fibu2.global.description" group="fs.fibu2.global">
+    <variant lang="en">Description</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.Entry.date" group="fs.fibu2.Entry">
     <variant lang="en">Date</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.BankAccount.name" group="fs.fibu2.BankAccount">
+    <variant lang="en">Bank account</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.undo.JournalStartEdit.setto" group="fs.fibu2.undo.JournalStartEdit">
     <variant lang="en">Sets the start value of account %s to %.2f in journal %s.</variant>
-  </polyglotstring>
-  <polyglotstring id="fs.fibu2.AbstractAccount.fieldlegend" group="fs.fibu2.AbstractAccount">
-    <variant lang="en">Fields (ID (Name): Description)</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.range" group="fs.fibu2.filter.StandardFilterComponent">
     <variant lang="en">Range</variant>
@@ -98,14 +125,11 @@
   <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.maxtooltip" group="fs.fibu2.filter.StandardFilterComponent">
     <variant lang="en">Empty content means: No upper bound</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.undo.JournalEntryEdit.presentation" group="fs.fibu2.undo.JournalEntryEdit">
-    <variant lang="en">%s entries from the journal %s</variant>
-  </polyglotstring>
   <polyglotstring id="fs.fibu2.undo.JournalReplaceEdit.modify" group="fs.fibu2.undo.JournalReplaceEdit">
     <variant lang="en">Modifies the entry %s in journal %s.</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.min" group="fs.fibu2.filter.StandardFilterComponent">
-    <variant lang="en">Min:</variant>
+    <variant lang="en">Min</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.BankAccount.faultystatement" group="fs.fibu2.BankAccount">
     <variant lang="en">The statement number should be an integer value. If you don't know the number yet it is recommended you leave that field empty.</variant>
@@ -113,37 +137,22 @@
   <polyglotstring id="fs.fibu2.AbstractAccount.invoicedescription" group="fs.fibu2.AbstractAccount">
     <variant lang="en">A registration number for the invoice associated to an entry</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.BankAccount.statement" group="fs.fibu2.BankAccount">
-    <variant lang="en">Statement sheet</variant>
+  <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.minmaxorder" group="fs.fibu2.filter.StandardFilterComponent">
+    <variant lang="en">'%s' &gt; '%s'. This filter is useless.</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.undo.add" group="fs.fibu2.undo">
     <variant lang="en">Adds</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.undo.JournalInfoEdit.setto" group="fs.fibu2.undo.JournalInfoEdit">
-    <variant lang="en">Sets %s of journal %s to '%s'</variant>
-  </polyglotstring>
-  <polyglotstring id="fs.fibu2.undo.JournalReplaceEdit.presentation" group="fs.fibu2.undo.JournalReplaceEdit">
-    <variant lang="en">Replaces an entry in journal %s by another.</variant>
-  </polyglotstring>
   <polyglotstring id="fs.fibu2.Entry.value" group="fs.fibu2.Entry">
     <variant lang="en">Value</variant>
-  </polyglotstring>
-  <polyglotstring id="fs.fibu2.BankAccount.description" group="fs.fibu2.BankAccount">
-    <variant lang="en">A generic bank account</variant>
-  </polyglotstring>
-  <polyglotstring id="fs.fibu2.AbstractAccount.faultyinvoice" group="fs.fibu2.AbstractAccount">
-    <variant lang="en">This entry has a negative value, but no invoice id is given.</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.BankAccount.statementdescription" group="fs.fibu2.BankAccount">
     <variant lang="en">The number of the bank account statement sheet</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.undo.JournalInfoEdit.presentation" group="fs.fibu2.undo.JournalInfoEdit">
-    <variant lang="en">Changes %s of journal %s</variant>
-  </polyglotstring>
   <polyglotstring id="fs.fibu2.undo.JournalStartEdit.remove" group="fs.fibu2.undo.JournalStartEdit">
     <variant lang="en">Removes the start value for account %s in journal %s.</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.filter.describematches" group="fs.fibu2.filter">
-    <variant lang="en">%s matches '%s'</variant>
+  <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.invalidregex" group="fs.fibu2.filter.StandardFilterComponent">
+    <variant lang="en">This string is not a valid regular expression</variant>
   </polyglotstring>
 </fsfw:polyglotstringtable>

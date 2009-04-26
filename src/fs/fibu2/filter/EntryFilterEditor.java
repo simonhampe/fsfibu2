@@ -22,7 +22,7 @@ public abstract class EntryFilterEditor extends JPanel{
 	private static final long serialVersionUID = 4365873600172270982L;
 	
 	//A list of listeners
-	private HashSet<ChangeListener> listeners;
+	private HashSet<ChangeListener> listeners = new HashSet<ChangeListener>();
 	
 	/**
 	 * @return Whether the content of the editor is valid content, e.g. all

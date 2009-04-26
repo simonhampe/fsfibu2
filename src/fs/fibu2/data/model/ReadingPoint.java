@@ -276,6 +276,9 @@ public class ReadingPoint implements XMLConfigurable {
 	public Element getConfiguration() throws XMLReadConfigurationException {
 		DefaultElement root = new DefaultElement("readingpoint");
 		
+		DefaultElement nameNode = new DefaultElement("name");
+		nameNode.setText(name);
+		root.add(nameNode);
 		DefaultElement dateNode = new DefaultElement("readingday");
 		dateNode.setText(Fsfibu2DateFormats.getEntryDateFormat().format(readingDay.getTime()));
 		root.add(dateNode);

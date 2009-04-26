@@ -7,7 +7,8 @@
   <readingpoint>
   	<readingday>12.3.2008</readingday>
   	<isactive>true</isactive>
-  	<isvisible>false</isvisible></readingpoint>
+  	<isvisible>false</isvisible>
+  	<name>Kassenprüfung</name></readingpoint>
   <entry>
   	<name>Getränkeeinnahmen</name>
   	<value>140.00</value>
@@ -19,4 +20,6 @@
   	<account>bank_account</account>
   	<accountinformation>
   		<statement>4</statement></accountinformation>
-  	<additionalinformation>Eine Menge Geld...</additionalinformation></entry></journal>
+  	<additionalinformation>Eine Menge Geld...</additionalinformation></entry>
+  <name>Kassenbuch 2009</name>
+  <description>Contains the journal of FS Mathe for the year 2009</description></journal>

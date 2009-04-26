@@ -4,9 +4,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import fs.fibu2.data.format.DefaultStringComparator;
 import fs.fibu2.data.model.Entry;
 import fs.fibu2.filter.StandardFilterComponent.Selection;
+import fs.fibu2.filter.event.StandardComponentListener;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
+import fs.validate.ValidationResult.Result;
 
 /**
  * This filters entries on comparing their 'name' value to a certain filter.
@@ -19,7 +22,7 @@ public class NameFilter implements EntryFilter {
 	private String firstFilter;		//The filter for equality or regex and the min value for range
 	private String secondFilter;	//The max value for range
 	
-	private Pattern pattern;
+	private Pattern pattern;		//The pattern compiled for REGEX
 	
 	/**
 	 * Creates a name filter
@@ -55,9 +58,8 @@ public class NameFilter implements EntryFilter {
 
 	@Override
 	public EntryFilterEditor getEditor() {
-		// TODO Auto-generated method stub
-		//TODO: Write general validator usable for all
-		return null;
+		NameFilterEditor editor = new NameFilterEditor(firstFilter,firstFilter,secondFilter,typeOfFilter);
+		return editor;
 	}
 
 	/**
@@ -95,4 +97,47 @@ public class NameFilter implements EntryFilter {
 		return false;
 	}
 
+	// LOCAL CLASS FOR EDITOR ******************
+	// *****************************************
+	
+	private class NameFilterEditor extends EntryFilterEditor {
+
+		private static final long serialVersionUID = 8289596103885776826L;
+		private StandardFilterComponent comp;
+		
+		public NameFilterEditor(String singleContent, String minContent, String maxContent, Selection initialSelection) {
+			StandardFilterComponent comp = new StandardFilterComponent(
+					Fsfibu2StringTableMgr.getString("fs.fibu2.global.name") + ": ",
+					null,new DefaultStringComparator(),
+					typeOfFilter != Selection.RANGE? firstFilter : "",
+					typeOfFilter == Selection.RANGE? firstFilter : "",
+					typeOfFilter == Selection.RANGE? secondFilter : "",
+					typeOfFilter);
+			comp.addStandardComponentListener(new StandardComponentListener() {
+				@Override
+				public void contentChanged(StandardFilterComponent source) {fireStateChanged();}
+				@Override
+				public void selectionChanged(StandardFilterComponent source,
+						Selection newSelection) {fireStateChanged();}
+			});
+			add(comp);
+		}
+		
+		@Override
+		public EntryFilter getFilter() {
+			if(comp.validateFilter() != Result.INCORRECT) {
+				Selection selection = comp.getSelection();
+				return new NameFilter(selection,selection != Selection.RANGE ? comp.getSingleEntry() : comp.getMinEntry(),
+												selection != Selection.RANGE ? null : comp.getMaxEntry());
+			}
+			else return null;
+		}
+
+		@Override
+		public boolean isValid() {
+			return comp.validateFilter() != Result.INCORRECT;
+		}
+		
+	}
+	
 }
