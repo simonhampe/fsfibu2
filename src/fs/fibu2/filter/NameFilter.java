@@ -25,6 +25,14 @@ public class NameFilter implements EntryFilter {
 	private Pattern pattern;		//The pattern compiled for REGEX
 	
 	/**
+	 * Creates a standard name filter, where Equality is the selected filter mode and the initial
+	 * search string is the empty string
+	 */
+	public NameFilter() {
+		this(Selection.EQUALITY,"",null);
+	}
+	
+	/**
 	 * Creates a name filter
 	 * @param typeOfFilter Whether this filter checks for string equality, matching of a
 	 * regular expression or alphabetical range. If null, EQUALITY is selected.

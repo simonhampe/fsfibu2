@@ -15,7 +15,7 @@ public class DefaultStringComparator implements Comparator<String> {
 		if(o1 == null && o2 == null) return 0;
 		if(o1 == null) return -1;
 		if(o2 == null) return 1;
-		if(o1.equals("") && !o2.equals("")) return 1;
+		if(o1.equals("") && !o2.equals("")) return -1;
 		if(o2.equals("") && !o1.equals("")) return -1;
 		return o1.compareTo(o2);
 	}
