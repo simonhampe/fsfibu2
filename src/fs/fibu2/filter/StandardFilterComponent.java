@@ -2,8 +2,6 @@ package fs.fibu2.filter;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.Format;
-import java.text.ParseException;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.regex.Pattern;
@@ -22,6 +20,7 @@ import javax.swing.event.DocumentListener;
 
 import org.dom4j.Document;
 
+import fs.fibu2.data.format.FormatValidator;
 import fs.fibu2.filter.event.StandardComponentListener;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
 import fs.fibu2.resource.Fsfibu2DefaultReference;
@@ -61,7 +60,7 @@ public class StandardFilterComponent extends JPanel implements ResourceDependent
 
 	protected final static String sgroup = "fs.fibu2.filter.StandardFilterComponent";
 	
-	private Format format;
+	private FormatValidator format;
 	private Comparator<String> comparator;
 	
 	// COMPONENTS ********************************
@@ -135,7 +134,7 @@ public class StandardFilterComponent extends JPanel implements ResourceDependent
 	 * @param initialSelection The radio button which is initially selected
 	 */
 	public StandardFilterComponent(String singleLabelText, 
-			Format entryFormat, Comparator<String> entryComparator,
+			FormatValidator entryFormat, Comparator<String> entryComparator,
 			String singleContent, String minContent, String maxContent, 
 			Selection initialSelection) {
 		
@@ -204,9 +203,9 @@ public class StandardFilterComponent extends JPanel implements ResourceDependent
 					if(format == null) break;
 					else {
 						try {
-							format.parseObject(singleEntry.getText());
+							format.validateFormat(singleEntry.getText());
 						}
-						catch(ParseException e) {
+						catch(IllegalArgumentException e) {
 							result = Result.INCORRECT;
 							tooltip = Fsfibu2StringTableMgr.getString(sgroup + ".invalidformat",e.getMessage());
 						}
@@ -230,18 +229,18 @@ public class StandardFilterComponent extends JPanel implements ResourceDependent
 					if(component.getText().length() == 0) break;
 					//Check for format integrity
 					try {
-						if(format != null) format.parseObject(component.getText());
+						if(format != null) format.validateFormat(component.getText());
 					}
-					catch(ParseException e) {
+					catch(IllegalArgumentException e) {
 						result = Result.INCORRECT;
 						tooltip = Fsfibu2StringTableMgr.getString(sgroup + ".invalidformat",e.getMessage());
 						break;
 					}
 					//Only check for order integrity, if the other field is also formatted properly
 					try {
-						if(format != null) format.parseObject((component == minEntry? maxEntry : minEntry).getText());
+						if(format != null) format.validateFormat((component == minEntry? maxEntry : minEntry).getText());
 					}
-					catch(ParseException e) {
+					catch(IllegalArgumentException e) {
 						break;
 					}
 					if(!(comparator.compare(getMinEntry(),getMaxEntry()) <= 0)) {

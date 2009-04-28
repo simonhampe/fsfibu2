@@ -33,6 +33,27 @@ public class NameFilter implements EntryFilter {
 	}
 	
 	/**
+	 * Constructs a name filter for either regex or equality filtering
+	 * @param typeOfFilter Either REGEX or EQUALITY
+	 * @param filter The associated filter string
+	 * @throws IllegalArgumentException - If typeOfFilter == RANGE
+	 * @throws PatternSyntaxException - If REGEX is the type of filter and the filter string is not a valid regular expression
+	 */
+	public NameFilter(Selection typeOfFilter, String filter) {
+		this(typeOfFilter,filter,null);
+		if(typeOfFilter == Selection.RANGE) throw new IllegalArgumentException("Wrong constructor for RANGE filter.");
+	}
+	
+	/**
+	 * Constructs a range filter
+	 * @param min the minimum value. Empty, if null is passed
+	 * @param max the maximal value. Empty, if null is passed
+	 */
+	public NameFilter(String min, String max) {
+		this(Selection.RANGE, min,max);
+	}
+	
+	/**
 	 * Creates a name filter
 	 * @param typeOfFilter Whether this filter checks for string equality, matching of a
 	 * regular expression or alphabetical range. If null, EQUALITY is selected.
@@ -66,7 +87,7 @@ public class NameFilter implements EntryFilter {
 
 	@Override
 	public EntryFilterEditor getEditor() {
-		NameFilterEditor editor = new NameFilterEditor(firstFilter,firstFilter,secondFilter,typeOfFilter);
+		NameFilterEditor editor = new NameFilterEditor();
 		return editor;
 	}
 
@@ -113,7 +134,7 @@ public class NameFilter implements EntryFilter {
 		private static final long serialVersionUID = 8289596103885776826L;
 		private StandardFilterComponent comp;
 		
-		public NameFilterEditor(String singleContent, String minContent, String maxContent, Selection initialSelection) {
+		public NameFilterEditor() {
 			StandardFilterComponent comp = new StandardFilterComponent(
 					Fsfibu2StringTableMgr.getString("fs.fibu2.global.name") + ": ",
 					null,new DefaultStringComparator(),

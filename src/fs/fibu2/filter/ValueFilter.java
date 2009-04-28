@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import fs.fibu2.data.format.DefaultFloatComparator;
-import fs.fibu2.data.format.NumberInfinityFormat;
+import fs.fibu2.data.format.GivenFormatValidator;
 import fs.fibu2.data.model.Entry;
 import fs.fibu2.filter.StandardFilterComponent.Selection;
 import fs.fibu2.filter.event.StandardComponentListener;
@@ -37,6 +37,28 @@ public class ValueFilter implements EntryFilter {
 	 */
 	public ValueFilter() {
 		this(Selection.RANGE,0,0,0,null); 
+	}
+	
+	/**
+	 * Constructs an equality filter
+	 */
+	public ValueFilter(float filter) {
+		this(Selection.EQUALITY, filter, 0,0,null);
+	}
+	
+	/**
+	 * Constructs a regular expression filter
+	 * @throws PatternSyntaxException - If regex is not a valid regular expression
+	 */
+	public ValueFilter(String regex) {
+		this(Selection.REGEX, 0,0,0,regex);
+	}
+	
+	/**
+	 * Constructs a range filter
+	 */
+	public ValueFilter(float min, float max) {
+		this(Selection.RANGE, 0,min,max,null);
 	}
 	
 	/**
@@ -75,8 +97,7 @@ public class ValueFilter implements EntryFilter {
 
 	@Override
 	public EntryFilterEditor getEditor() {
-		ValueFilterEditor editor = new ValueFilterEditor(typeOfFilter == Selection.REGEX? regexFilter.pattern() : format.format(equalityFilter),
-														 format.format(minFilter), format.format(maxFilter),typeOfFilter);
+		ValueFilterEditor editor = new ValueFilterEditor();
 		return editor;
 	}
 
@@ -113,11 +134,11 @@ public class ValueFilter implements EntryFilter {
 		private static final long serialVersionUID = 2835173633883277671L;
 		private StandardFilterComponent comp;
 		
-		public ValueFilterEditor(String singleContent, String minContent, String maxContent, Selection initialSelection) {
-			comp = new StandardFilterComponent(Fsfibu2StringTableMgr.getString("fs.fibu2.Entry.value"),new NumberInfinityFormat(format),new DefaultFloatComparator(format),
-					initialSelection == Selection.REGEX? regexFilter.pattern() : (initialSelection == Selection.EQUALITY ? Float.toString(equalityFilter) : ""),
-					initialSelection == Selection.RANGE? format.format(minFilter) : "",
-					initialSelection == Selection.RANGE? format.format(maxFilter) : "",
+		public ValueFilterEditor() {
+			comp = new StandardFilterComponent(Fsfibu2StringTableMgr.getString("fs.fibu2.Entry.value") + ": ",new GivenFormatValidator(format),new DefaultFloatComparator(format),
+					typeOfFilter == Selection.REGEX? regexFilter.pattern() : (typeOfFilter == Selection.EQUALITY ? Float.toString(equalityFilter) : ""),
+					typeOfFilter == Selection.RANGE? format.format(minFilter) : "",
+					typeOfFilter == Selection.RANGE? format.format(maxFilter) : "",
 					typeOfFilter);
 			comp.addStandardComponentListener(new StandardComponentListener() {
 				@Override
