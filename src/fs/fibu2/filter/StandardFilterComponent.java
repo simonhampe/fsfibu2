@@ -226,6 +226,8 @@ public class StandardFilterComponent extends JPanel implements ResourceDependent
 					break;
 				case RANGE:
 					if(component == singleEntry) break;
+					//If the text is empty, it is valid
+					if(component.getText().length() == 0) break;
 					//Check for format integrity
 					try {
 						if(format != null) format.parseObject(component.getText());
@@ -242,7 +244,7 @@ public class StandardFilterComponent extends JPanel implements ResourceDependent
 					catch(ParseException e) {
 						break;
 					}
-					if(!(comparator.compare(minEntry.getText(), maxEntry.getText()) <= 0)) {
+					if(!(comparator.compare(getMinEntry(),getMaxEntry()) <= 0)) {
 						result = Result.WARNING;
 						tooltip = Fsfibu2StringTableMgr.getString(sgroup + ".minmaxorder",minEntry.getText(), maxEntry.getText());
 					}
@@ -309,17 +311,17 @@ public class StandardFilterComponent extends JPanel implements ResourceDependent
 	}
 	
 	/**
-	 * @return The content of the min entry box
+	 * @return The content of the min entry box. If the content is the empty string, it returns null
 	 */
 	public String getMinEntry() {
-		return minEntry.getText();
+		return minEntry.getText().length() == 0 ? null : minEntry.getText();
 	}
 	
 	/**
-	 * @return The content of the max entry box
+	 * @return The content of the max entry box. If the content is the empty string, it returns null
 	 */
 	public String getMaxEntry() {
-		return maxEntry.getText();
+		return maxEntry.getText().length() == 0 ? null : maxEntry.getText();
 	}
 	
 	/**

@@ -29,7 +29,7 @@ public abstract class EntryFilterEditor extends JPanel{
 	 * fields where a number should be inserted, contain data which can be parsed to
 	 * an Integer
 	 */
-	public abstract boolean isValid();
+	public abstract boolean hasValidContent();
 	
 	/**
 	 *  @return The filter associated to the current content. If the content is not valid,

@@ -147,7 +147,7 @@ public class ValueFilter implements EntryFilter {
 		}
 
 		@Override
-		public boolean isValid() {
+		public boolean hasValidContent() {
 			return comp.validateFilter() != Result.INCORRECT;
 		}
 		

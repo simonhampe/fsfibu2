@@ -5,7 +5,7 @@ import java.text.ParseException;
 import java.util.Comparator;
 
 /**
- * Compares two Floats according to their size. The empty strings are interpreted as infinity bounds. If one of 
+ * Compares two Floats according to their size. The null strings are interpreted as infinity bounds. If one of 
  * the strings is not parseable, this comparator returns 0
  * @author Simon Hampe
  *
@@ -25,9 +25,7 @@ public class DefaultFloatComparator implements Comparator<String> {
 	public int compare(String o1, String o2) {
 		if(o1 == null && o2 == null) return 0;
 		if(o1 == null) return -1;
-		if(o2 == null) return 1;
-		if(o1.equals("") && !o2.equals("")) return -1;
-		if(o2.equals("") && !o1.equals("")) return -1;
+		if(o2 == null) return -11;
 		try {
 			Float f1 = format.parse(o1).floatValue();
 			Float f2 = format.parse(o2).floatValue();

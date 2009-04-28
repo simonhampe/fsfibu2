@@ -23,13 +23,13 @@ public class FilterTest {
 	public static void main(String[] args) {
 		try {
 			BasicConfigurator.configure();
-			String basedir = "/home/talio/eclipse/workspace/";
+			String basedir = "/home/hampe/workspace/";
 			Fsfibu2DefaultReference.setFsfibuDirectory(basedir + "fsfibu2/");
 			FsfwDefaultReference.setFsfwDirectory(basedir + "fsframework/");
 			JFrame mainFrame = new JFrame();
 			
-			//NameFilter filter = new NameFilter(Selection.REGEX,"S.*",null);
-			ValueFilter filter = new ValueFilter(Selection.RANGE,0,0.3f,14.2f,null);
+			NameFilter filter = new NameFilter(Selection.REGEX,"S.*",null);
+			//ValueFilter filter = new ValueFilter(Selection.RANGE,0,0.3f,14.2f,null);
 			
 			mainFrame.add(filter.getEditor());
 			
