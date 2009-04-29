@@ -112,10 +112,24 @@ public class Journal implements XMLConfigurable, ReadingPointListener {
 	
 	/**
 	 * @return A description of this journal
-	 * @return
 	 */
 	public synchronized String getDescription() {
 		return description;
+	}
+	
+	/**
+	 * @return A list of all categories (including supercategories) used by entries in this journal. The root category is not included
+	 */
+	public synchronized HashSet<Category> getListOfCategories() {
+		HashSet<Category> cats = new HashSet<Category>();
+		for(Entry e : getEntries()) {
+			Category c = e.getCategory();
+			for(int i = c.getOrder(); i >= 1; i--) {
+				cats.add(c);
+				c = c.parent;
+			}
+		}
+		return cats;
 	}
 	
 	/**

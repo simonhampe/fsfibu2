@@ -1,6 +1,7 @@
 package fs.fibu2.test.model;
 
 import java.util.Arrays;
+import java.util.TreeSet;
 import java.util.Vector;
 
 import org.apache.log4j.BasicConfigurator;
@@ -64,6 +65,12 @@ public class CategoryTest {
 			System.out.println("List of all categories: " + Category.getExistingCategories());
 		}
 		
+		//Sorting and comparison
+		Category c5 = Category.getCategory(c3,"baa");
+		System.out.println("Greatest common parent: " + c5.getGreatestCommonParent(c2));
+		TreeSet<Category>  treeset = new TreeSet<Category>();
+		treeset.addAll(Category.getExistingCategories());
+		System.out.println(treeset);
 	}
 
 }

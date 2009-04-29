@@ -21,7 +21,7 @@ import fs.xml.XMLWriteConfigurationException;
  * @author Simon Hampe
  *
  */
-public final class Category implements XMLConfigurable {
+public final class Category implements XMLConfigurable, Comparable<Category>{
 
 	//A reference to the root group
 	private static Category root = null;
@@ -209,6 +209,22 @@ public final class Category implements XMLConfigurable {
 		return c.isSubCategoryOf(this);
 	}
 	
+	/**
+	 * Finds the greatest (in terms of order) category, such that both this category and o are subcategories of it. if o == null, this
+	 * returns the root category
+	 */
+	public Category getGreatestCommonParent(Category o) {
+		if(o == null) return getRootCategory();
+		//Choose the shorter category of both
+		Category shorter = o.getOrder() > getOrder()? o : this;
+		Category longer = shorter == o? this : o;
+		while(!longer.isSubCategoryOf(shorter)) {
+			shorter = shorter.parent;
+		}
+		return shorter;
+		
+	}
+	
 	// EQUALS, HASHCODE, TOSTRING ***************************************************
 	// ******************************************************************************
 		
@@ -294,6 +310,36 @@ public final class Category implements XMLConfigurable {
 	@Override
 	public boolean isConfigured() {
 		return true;
+	}
+
+	// COMPARABLE ************************************
+	// ***********************************************
+	
+	/**
+	 * Establishes an order on categories. <br>
+	 * - null is smaller than any category <br>
+	 * - The root category is the minimal category <br>
+	 * - Every category is larger than each of its supercategories <br>
+	 * - If two categories A,B are not subcategories of one another, then let l 
+	 * be the largest order such that A_upto_l = B_upto_l and then A <= B iff A.(l+1) <= B.(l+1) in 
+	 * terms of lexicographical order, where A_upto_l denotes the category defined by the first l strings and A.(l+1) denotes the l+1-st string
+	 * @return x>0,0,x<0 depending on whether this category is larger than, equal to or less than o
+	 */
+	@Override
+	public int compareTo(Category o) {
+		//Equality
+		if(this == o) return 0;
+		//Null is smaller than any
+		if(o == null) return 1;
+		//Root is smaller than any
+		if(o == getRootCategory()) return 1;
+		//Subcategory
+		if(isSubCategoryOf(o)) return 1;
+		//Supercategory
+		if(isSuperCategoryOf(o)) return -1;
+		//Find gcp and do lexicographical comparison
+		Category gcp = getGreatestCommonParent(o);
+		return orderedList.get(gcp.getOrder()).compareTo(o.getOrderedList().get(gcp.getOrder()));
 	}
 
 }
