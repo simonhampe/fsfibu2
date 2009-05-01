@@ -4,6 +4,8 @@ import java.util.TreeSet;
 import java.util.Vector;
 
 import javax.swing.AbstractListModel;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.SwingWorker;
 
 import fs.fibu2.data.event.JournalListener;
@@ -20,7 +22,7 @@ import fs.fibu2.data.model.ReadingPoint;
  * @author Simon Hampe
  *
  */
-public class CategoryListModel extends AbstractListModel implements JournalListener {
+public class CategoryListModel extends AbstractListModel implements JournalListener, ComboBoxModel {
 
 	// FIELDS *********************
 	// ****************************
@@ -33,6 +35,8 @@ public class CategoryListModel extends AbstractListModel implements JournalListe
 	private Journal associatedJournal;
 	private Vector<Category> listOfCategories;
 	
+	private DefaultComboBoxModel model = new DefaultComboBoxModel();
+	
 	// CONSTRUCTORS *******************
 	// ********************************
 	
@@ -44,6 +48,7 @@ public class CategoryListModel extends AbstractListModel implements JournalListe
 		this.associatedJournal = associatedJournal == null? new Journal() : associatedJournal;
 		this.associatedJournal.addJournalListener(this);
 		listOfCategories = new Vector<Category>(new TreeSet<Category>(this.associatedJournal.getListOfCategories()));
+		model = new DefaultComboBoxModel(listOfCategories);
 	}
 	
 	// LISTMODE INTERFACE *************
@@ -132,6 +137,16 @@ public class CategoryListModel extends AbstractListModel implements JournalListe
 		//Ignored
 	}
 
+	@Override
+	public Object getSelectedItem() {
+		return model.getSelectedItem();
+	}
+
+	@Override
+	public void setSelectedItem(Object anItem) {
+		model.setSelectedItem(anItem);
+	}
+	
 	// SWING WORKER CLASS FOR RECALCULATION *******************************
 	// ********************************************************************
 	
@@ -148,12 +163,18 @@ public class CategoryListModel extends AbstractListModel implements JournalListe
 		@Override
 		protected void done() {
 			try {
+				Category c = (Category)getSelectedItem();
 				listOfCategories = get();
+				//Preserve selection if possible
+				model = new DefaultComboBoxModel(listOfCategories);
+				if(listOfCategories.contains(c)) model.setSelectedItem(c);
 				fireContentsChanged();
 			} catch (Exception e) {
 				//Ignored, will not happen
 			} 			
 		}	
 	}
+
+	
 	
 }

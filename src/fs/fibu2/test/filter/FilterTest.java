@@ -4,7 +4,8 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.BasicConfigurator;
 
-import fs.fibu2.filter.CurrencyFilter;
+import fs.fibu2.filter.ValueFilter;
+import fs.fibu2.filter.StandardFilterComponent.Selection;
 import fs.fibu2.resource.Fsfibu2DefaultReference;
 import fs.xml.FsfwDefaultReference;
 
@@ -27,8 +28,7 @@ public class FilterTest {
 			JFrame mainFrame = new JFrame();
 			
 			//NameFilter filter = new NameFilter(Selection.REGEX,"S.*",null);
-			//ValueFilter filter = new ValueFilter(Selection.RANGE,0,0.3f,14.2f,null);
-			CurrencyFilter filter = new CurrencyFilter();
+			ValueFilter filter = new ValueFilter(Selection.RANGE,0,0.3f,14.2f,null);
 			
 			mainFrame.add(filter.getEditor());
 			
