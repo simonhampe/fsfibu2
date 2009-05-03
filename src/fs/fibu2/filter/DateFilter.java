@@ -10,6 +10,7 @@ import fs.fibu2.data.format.EntryDateComparator;
 import fs.fibu2.data.format.Fsfibu2DateFormats;
 import fs.fibu2.data.format.GivenFormatValidator;
 import fs.fibu2.data.model.Entry;
+import fs.fibu2.data.model.Journal;
 import fs.fibu2.filter.StandardFilterComponent.Selection;
 import fs.fibu2.filter.event.StandardComponentListener;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
@@ -72,7 +73,7 @@ public class DateFilter implements EntryFilter {
 	}
 
 	@Override
-	public EntryFilterEditor getEditor() {
+	public EntryFilterEditor getEditor(Journal j) {
 		return new DateFilterEditor();
 	}
 

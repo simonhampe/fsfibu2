@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema targetNamespace="fsfibu" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fsfibu="fsfibu"> 
+    
+    <xsd:element name="kassenbuch" type="fsfibu:kassenbuch"></xsd:element>
+    
+    <xsd:complexType name="kassenbuch">
+    	<xsd:sequence maxOccurs="1" minOccurs="1">
+    		<xsd:element name="startwerte" type="fsfibu:startwerte"
+    			maxOccurs="1" minOccurs="1">
+    		</xsd:element>
+    		<xsd:element name="messpunkte" type="fsfibu:messpunkte"
+    			maxOccurs="1" minOccurs="1">
+    		</xsd:element>
+    		<xsd:element name="einträge" type="fsfibu:einträge" maxOccurs="1" minOccurs="1">
+    			 <!-- Der folgende Eintrag sorgt dafür, dass alle einträge eindeutige uids haben -->
+    			<xsd:key name="uids">
+    				<xsd:selector xpath="eintrag"/>
+		    		<xsd:field xpath="@uid"/>
+    			</xsd:key>
+    		</xsd:element>
+    	</xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="startwerte">
+    	<xsd:sequence maxOccurs="1" minOccurs="1">
+    		<xsd:element name="bank" type="fsfibu:eurowert" maxOccurs="1"
+    			minOccurs="1">
+    		</xsd:element>
+    		<xsd:element name="kasse" type="fsfibu:eurowert" maxOccurs="1"
+    			minOccurs="1">
+    		</xsd:element>
+    	</xsd:sequence>
+    </xsd:complexType>
+
+
+
+
+
+
+
+    <xsd:complexType name="messpunkte">
+    	<xsd:sequence>
+    		<xsd:element name="messpunkt" type="fsfibu:messpunkt"
+    			maxOccurs="unbounded" minOccurs="0">
+    		</xsd:element>
+    	</xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="eintrag">
+    	<xsd:sequence maxOccurs="1" minOccurs="1">
+    		<xsd:element name="name" type="xsd:string" maxOccurs="1"
+    			minOccurs="1">
+    		</xsd:element>
+    		<xsd:element name="wert" type="fsfibu:eurowert"
+    			maxOccurs="1" minOccurs="1">
+    		</xsd:element>
+    		<xsd:element name="datum" type="xsd:date" maxOccurs="1"
+    			minOccurs="1">
+    		</xsd:element>
+    		<xsd:element name="echtdatum" type="xsd:dateTime"
+    			maxOccurs="1" minOccurs="1">
+    		</xsd:element>
+    		<xsd:element name="istkontobewegung" type="xsd:boolean"
+    			maxOccurs="1" minOccurs="1">
+    		</xsd:element>
+    		<xsd:element name="rnummer" type="xsd:string" maxOccurs="1"
+    			minOccurs="1">
+    		</xsd:element>
+    		<xsd:element name="auszug" type="xsd:string" maxOccurs="1"
+    			minOccurs="1">
+    		</xsd:element>
+    		<xsd:element name="gruppe" type="xsd:string" maxOccurs="1"
+    			minOccurs="1">
+    		</xsd:element>
+    		<xsd:element name="kategorie" type="xsd:string"
+    			maxOccurs="1" minOccurs="1">
+    		</xsd:element>
+    		<xsd:element name="infos" type="xsd:string" maxOccurs="1"
+    			minOccurs="1">
+    		</xsd:element>
+    	</xsd:sequence>
+
+    	<xsd:attribute name="uid" type="xsd:int"></xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:simpleType name="eurowert">
+    	<xsd:restriction base="xsd:string">
+    		<xsd:pattern value="(-)?\d+\.\d\d"></xsd:pattern>
+    	</xsd:restriction>
+    </xsd:simpleType>
+
+    
+
+
+
+    <xsd:complexType name="einträge">
+    	<xsd:sequence maxOccurs="1" minOccurs="1">
+    		<xsd:element name="eintrag" type="fsfibu:eintrag" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+    	</xsd:sequence>  	
+    </xsd:complexType>    	
+
+
+    <xsd:complexType name="messpunkt">
+    	<xsd:sequence>
+    		<xsd:element name="datum" type="xsd:dateTime" maxOccurs="1" minOccurs="1"></xsd:element>
+    		<xsd:element name="bezeichnung" type="xsd:string" maxOccurs="1" minOccurs="1"></xsd:element>
+    	</xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

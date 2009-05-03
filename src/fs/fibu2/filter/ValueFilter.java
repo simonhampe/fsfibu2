@@ -9,6 +9,7 @@ import java.util.regex.PatternSyntaxException;
 import fs.fibu2.data.format.DefaultFloatComparator;
 import fs.fibu2.data.format.GivenFormatValidator;
 import fs.fibu2.data.model.Entry;
+import fs.fibu2.data.model.Journal;
 import fs.fibu2.filter.StandardFilterComponent.Selection;
 import fs.fibu2.filter.event.StandardComponentListener;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
@@ -96,7 +97,7 @@ public class ValueFilter implements EntryFilter {
 	}
 
 	@Override
-	public EntryFilterEditor getEditor() {
+	public EntryFilterEditor getEditor(Journal j) {
 		ValueFilterEditor editor = new ValueFilterEditor();
 		return editor;
 	}

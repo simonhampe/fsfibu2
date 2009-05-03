@@ -1,9 +1,6 @@
 package fs.fibu2.filter;
 
-import java.text.ParseException;
 import java.util.Comparator;
-import java.util.GregorianCalendar;
-import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,6 +11,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -23,7 +21,6 @@ import org.dom4j.Document;
 import fs.fibu2.data.event.JournalAdapter;
 import fs.fibu2.data.event.JournalListener;
 import fs.fibu2.data.format.DefaultStringComparator;
-import fs.fibu2.data.format.Fsfibu2DateFormats;
 import fs.fibu2.data.model.Category;
 import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.Journal;
@@ -32,10 +29,9 @@ import fs.fibu2.filter.event.StandardComponentListener;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
 import fs.fibu2.resource.Fsfibu2DefaultReference;
 import fs.fibu2.view.model.CategoryListModel;
+import fs.fibu2.view.render.CategoryListRenderer;
 import fs.gui.SwitchIconLabel;
 import fs.validate.LabelIndicValidator;
-import fs.validate.ValidationResult;
-import fs.validate.ValidationValidator;
 import fs.validate.ValidationResult.Result;
 import fs.xml.ResourceDependent;
 import fs.xml.ResourceReference;
@@ -51,8 +47,6 @@ public class CategoryFilter implements EntryFilter {
 	// FIELDS ************************
 	// *******************************
 	
-	private Journal				associatedJournal;
-	
 	private Selection 			typeOfFilter;
 	private Category		  	equalityCategory;
 	
@@ -66,27 +60,17 @@ public class CategoryFilter implements EntryFilter {
 	// *********************************
 	
 	/**
-	 * Constructs a filter which selects the first catgeory in the list of categories of j for
-	 * equality filtering. If there is none, it selects the empty string for equality filtering on the 
-	 * first level
+	 * Constructs a filter which selects the root category as filter category
 	 */
-	public CategoryFilter(Journal j) {
-		associatedJournal = j == null? new Journal() : j;
+	public CategoryFilter() {
 		typeOfFilter = Selection.EQUALITY;
-		TreeSet<Category> set = new TreeSet<Category>(j.getListOfCategories());
-		if(set.size() > 0) {
-			equalityCategory = set.first();
-		}
-		else {
-			equalityString = "";
-			levelToCheck = 1;
-		}
+		equalityCategory = Category.getRootCategory();
 	}
 	
 	/**
 	 * Only accepts entries in category c (and subcategories)
 	 */
-	public CategoryFilter(Category c, Journal j) {
+	public CategoryFilter(Category c) {
 		typeOfFilter = Selection.EQUALITY;
 		equalityCategory = (c == null)? Category.getRootCategory() : c;
 	}
@@ -135,8 +119,8 @@ public class CategoryFilter implements EntryFilter {
 	}
 
 	@Override
-	public EntryFilterEditor getEditor() {
-		return new CategoryFilterEditor();
+	public EntryFilterEditor getEditor(Journal j) {
+		return new CategoryFilterEditor(j);
 	}
 
 	@Override
@@ -173,6 +157,7 @@ public class CategoryFilter implements EntryFilter {
 	// *******************************************************
 	
 	private class CategoryFilterEditor extends EntryFilterEditor implements ResourceDependent {
+		private static final long serialVersionUID = -7259619306180644175L;
 
 		private StandardFilterComponent comp;
 		
@@ -189,77 +174,127 @@ public class CategoryFilter implements EntryFilter {
 		private JournalListener listener = new JournalAdapter() {
 			@Override
 			public void entriesAdded(Journal source, Entry[] newEntries) {
-				lock
+				updateCategory(source);
 			}
-
 			@Override
 			public void entriesRemoved(Journal source, Entry[] oldEntries) {
-				// TODO Auto-generated method stub
-				super.entriesRemoved(source, oldEntries);
+				updateCategory(source);
 			}
-
 			@Override
 			public void entryReplaced(Journal source, Entry oldEntry,
 					Entry newEntry) {
-				// TODO Auto-generated method stub
-				super.entryReplaced(source, oldEntry, newEntry);
+				updateCategory(source);
 			}
-			
-			//(un)locks the category selection
-			private lockCategory(boolean lock) {
-				
+			//updates the category list and changes the selection if necessary
+			private void updateCategory(Journal j) {
+				//Save selected item
+				Category old = comboBox.getModel().getSize() > 0? (Category)comboBox.getModel().getSelectedItem() : null;
+				//Reload model
+				comboBox.setModel(new CategoryListModel(j));
+				//Change filter mode, if necessary
+				if(comboBox.getModel().getSize() == 0) {
+					selectAdvanced.setSelected(true);
+					selectCategory.setEnabled(false);
+					comboBox.setEnabled(false);
+				}
+				else {
+					selectCategory.setEnabled(true);
+					comboBox.setEnabled(true);
+					if(j.getListOfCategories().contains(old)) comboBox.setSelectedItem(old);
+				}
 			}
 		};
 		
-		public CategoryFilterEditor() {
-			//Init components
-			comboBox.setModel(new CategoryListModel(associatedJournal));
+		// CONSTRUCTOR ****************************
+		// ****************************************
+		
+		public CategoryFilterEditor(Journal j) {
+			//Listen to journal
+			if(j != null) j.addJournalListener(listener);
 			
-			selectCategory.setText(Fsfibu2StringTableMgr.getString("fs.fibu2.Entry.category" + ": "));
+			//Init components
+			comboBox.setModel(new CategoryListModel(j));
+			comboBox.setRenderer(new CategoryListRenderer(" > "));
+			
+			selectCategory.setText(Fsfibu2StringTableMgr.getString("fs.fibu2.Entry.category") + ": ");
 			selectAdvanced.setText("");
 			ButtonGroup group = new ButtonGroup();
 				group.add(selectAdvanced);
 				group.add(selectCategory);
 			levelLabel.setIconReference(warn);
-			levelLabel.setText("fs.fibu2.filter.CategoryFilter.level" + ": ");
+			levelLabel.setText(Fsfibu2StringTableMgr.getString("fs.fibu2.filter.CategoryFilter.level") + ": ");
 			levelLabel.setHorizontalTextPosition(JLabel.LEFT);
 				
 			if(typeOfFilter == Selection.EQUALITY) {
-				if(equalityCategory != null) {
-					comboBox.setSelectedItem(equalityCategory);
+				if(equalityCategory != null && comboBox.getModel().getSize() > 0) { //We only filter for categories, if at least one is used
+					//We don't filter for the root category, since it's pointless
+					comboBox.setSelectedItem(equalityCategory == Category.getRootCategory()? comboBox.getModel().getElementAt(0) : equalityCategory);
 					selectCategory.setSelected(true);
 				}
 				else {
 					selectAdvanced.setSelected(true);
-					levelField.setText(Integer.toString(levelToCheck));
+					levelField.setText(Integer.toString(levelToCheck >= 1? levelToCheck : 0));
 				}
 			}
 			
 			String singleString = (typeOfFilter == Selection.EQUALITY && equalityCategory == null? equalityString : (typeOfFilter == Selection.REGEX? regexFilter.pattern() : ""));
-			comp = new StandardFilterComponent(Fsfibu2StringTableMgr.getString("fs.fibu2.Entry.category"),null,new DefaultStringComparator(),
+			comp = new StandardFilterComponent(Fsfibu2StringTableMgr.getString("fs.fibu2.Entry.category") + ": ",null,new DefaultStringComparator(),
 										singleString,
 										typeOfFilter == Selection.RANGE? minFilter : "",
-										typeOfFilter == Selection.RANGE? maxFilter : "",typeOfFilter);
+										typeOfFilter == Selection.RANGE? maxFilter : "",typeOfFilter);			
 			
 			//Layout
 			Box layout = new Box(BoxLayout.Y_AXIS);
-			Box box1 = new Box(BoxLayout.X_AXIS);
-				box1.add(selectCategory); box1.add(comboBox);
-				layout.add(box1);
-			Box box2 = new Box(BoxLayout.X_AXIS);
-				box2.add(selectAdvanced); box2.add(levelLabel);box2.add(levelField);
-				layout.add(box2);
-			layout.add(comp);
+			Box vbox1 = new Box(BoxLayout.Y_AXIS);
+				Box hbox0 = new Box(BoxLayout.X_AXIS);
+					hbox0.add(selectCategory);
+					hbox0.add(Box.createHorizontalGlue());
+				vbox1.add(hbox0);
+				vbox1.add(Box.createVerticalStrut(5));
+				Box hbox1 = new Box(BoxLayout.X_AXIS);
+					hbox1.add(selectAdvanced); hbox1.add(levelLabel);hbox1.add(Box.createHorizontalGlue());
+				vbox1.add(hbox1);
+			Box vbox2 = new Box(BoxLayout.Y_AXIS);
+				vbox2.add(comboBox);
+				vbox2.add(Box.createVerticalStrut(5));
+				Box hbox2 = new Box(BoxLayout.X_AXIS);
+					hbox2.setAlignmentX(RIGHT_ALIGNMENT);
+					hbox2.add(levelField); hbox2.add(Box.createHorizontalGlue());
+				vbox2.add(hbox2);
+			Box hbox = new Box(BoxLayout.X_AXIS);
+				hbox.add(vbox1);
+				hbox.add(vbox2);
+			layout.add(hbox);
+//			Box box1 = new Box(BoxLayout.X_AXIS);
+//				box1.add(selectCategory); box1.add(comboBox);
+//				layout.add(box1);
+//			layout.add(Box.createVerticalStrut(5));
+//			Box box2 = new Box(BoxLayout.X_AXIS);
+//				box2.setAlignmentX(RIGHT_ALIGNMENT);
+//				box2.add(selectAdvanced); box2.add(levelLabel);box2.add(levelField);box2.add(Box.createHorizontalGlue());
+//				layout.add(box2);
+			layout.add(Box.createVerticalStrut(5));
+			layout.add(new JSeparator(JSeparator.HORIZONTAL));
+			layout.add(Box.createVerticalStrut(5));
+			Box box3 = new Box(BoxLayout.X_AXIS);
+				box3.setAlignmentX(RIGHT_ALIGNMENT);
+				box3.add(comp);box3.add(Box.createHorizontalGlue());
+				layout.add(box3);
+			add(layout);
 			
 			//Validation
 			levelValidator = new LabelIndicValidator<JTextField>(null, null, warn) {
 				@Override
 				protected void registerToComponent(JTextField arg0) {
 					levelField.getDocument().addDocumentListener(this);
+					selectCategory.addChangeListener(this);
+					selectAdvanced.addChangeListener(this);
 				}
 				@Override
 				protected void unregisterFromComponent(JTextField arg0) {
 					levelField.getDocument().removeDocumentListener(this);
+					selectCategory.removeChangeListener(this);
+					selectAdvanced.removeChangeListener(this);
 				}
 				@Override
 				public Result validate(JTextField component) {
@@ -299,7 +334,17 @@ public class CategoryFilter implements EntryFilter {
 		@Override
 		public EntryFilter getFilter() {
 			if(hasValidContent()) {
-				
+				if(selectCategory.isSelected()) {
+					return new CategoryFilter((Category)comboBox.getSelectedItem());
+				}
+				else {
+					switch(comp.getSelection()) {
+					case EQUALITY: return new CategoryFilter(comp.getSingleEntry(),Integer.parseInt(levelField.getText()));
+					case REGEX: return new CategoryFilter(Pattern.compile(comp.getSingleEntry()),Integer.parseInt(levelField.getText()));
+					case RANGE: return new CategoryFilter(comp.getMinEntry(),comp.getMaxEntry(),Integer.parseInt(levelField.getText()));
+					default: return null;
+					}
+				}
 			}
 			else return null;
 		}

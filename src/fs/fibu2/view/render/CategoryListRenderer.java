@@ -21,12 +21,12 @@ public class CategoryListRenderer extends DefaultListCellRenderer {
 	 * compiler-generated serial version uid
 	 */
 	private static final long serialVersionUID = -2253937189394942135L;
-	private String levelIndicator = " ";
+	private String levelIndicator = "  ";
 
 	/**
 	 * Constructs a CategoryListRenderer
 	 * @param levelIndicator A string which indicate hierarchical order of category strings by preceding a certain number of times lower level strings.
-	 * If null, the blank space is used.
+	 * If null, the double blank space is used.
 	 */
 	public CategoryListRenderer(String levelIndicator) { 
 		if(levelIndicator != null) this.levelIndicator = levelIndicator;
@@ -39,7 +39,7 @@ public class CategoryListRenderer extends DefaultListCellRenderer {
 				cellHasFocus);
 		StringBuilder text = new StringBuilder();
 		if(value instanceof Category) {
-			for(int i = 0; i < ((Category)value).getOrder(); i++) text.append(levelIndicator);
+			for(int i = 0; i < ((Category)value).getOrder() - 1; i++) text.append(levelIndicator);
 			text.append(((Category) value).tail);
 		}
 		label.setText(text.toString());

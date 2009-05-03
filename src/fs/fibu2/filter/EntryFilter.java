@@ -1,6 +1,7 @@
 package fs.fibu2.filter;
 
 import fs.fibu2.data.model.Entry;
+import fs.fibu2.data.model.Journal;
 
 /**
  * An EntryFilter is an object which can filter entries according to a certain criterion.
@@ -37,9 +38,10 @@ public interface EntryFilter {
 	public boolean verifyEntry(Entry e);
 	
 	/**
+	 * @param j The editor might need data about the journal in which it filters (e.g. a list of available categories). 
 	 * @return An editor for the filter. If the filter should not be editable, this should return null.
 	 * The editor component should already be filled with the data of the current configuration.
 	 */
-	public EntryFilterEditor getEditor();
+	public EntryFilterEditor getEditor(Journal j);
 	
 }

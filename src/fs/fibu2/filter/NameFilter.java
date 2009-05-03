@@ -6,6 +6,7 @@ import java.util.regex.PatternSyntaxException;
 
 import fs.fibu2.data.format.DefaultStringComparator;
 import fs.fibu2.data.model.Entry;
+import fs.fibu2.data.model.Journal;
 import fs.fibu2.filter.StandardFilterComponent.Selection;
 import fs.fibu2.filter.event.StandardComponentListener;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
@@ -86,7 +87,7 @@ public class NameFilter implements EntryFilter {
 	}
 
 	@Override
-	public EntryFilterEditor getEditor() {
+	public EntryFilterEditor getEditor(Journal j) {
 		NameFilterEditor editor = new NameFilterEditor();
 		return editor;
 	}
