@@ -140,7 +140,7 @@ public class CategoryFilter implements EntryFilter {
 		case EQUALITY: 
 			if(equalityCategory != null) return e.getCategory().isSubCategoryOf(equalityCategory);
 			else {
-				if(e.getCategory().getOrder() < levelToCheck) return false;
+				if(e.getCategory().getOrder() < levelToCheck || levelToCheck <= 0) return false;
 				return e.getCategory().getOrderedList().get(levelToCheck-1).equals(equalityString);
 			}
 		case REGEX: Matcher m = regexFilter.matcher(e.getCategory().getOrderedList().get(levelToCheck-1));
@@ -185,24 +185,6 @@ public class CategoryFilter implements EntryFilter {
 					Entry newEntry) {
 				updateCategory(source);
 			}
-			//updates the category list and changes the selection if necessary
-			private void updateCategory(Journal j) {
-				//Save selected item
-				Category old = comboBox.getModel().getSize() > 0? (Category)comboBox.getModel().getSelectedItem() : null;
-				//Reload model
-				comboBox.setModel(new CategoryListModel(j));
-				//Change filter mode, if necessary
-				if(comboBox.getModel().getSize() == 0) {
-					selectAdvanced.setSelected(true);
-					selectCategory.setEnabled(false);
-					comboBox.setEnabled(false);
-				}
-				else {
-					selectCategory.setEnabled(true);
-					comboBox.setEnabled(true);
-					if(j.getListOfCategories().contains(old)) comboBox.setSelectedItem(old);
-				}
-			}
 		};
 		
 		// CONSTRUCTOR ****************************
@@ -213,7 +195,8 @@ public class CategoryFilter implements EntryFilter {
 			if(j != null) j.addJournalListener(listener);
 			
 			//Init components
-			comboBox.setModel(new CategoryListModel(j));
+			updateCategory(j);
+			
 			comboBox.setRenderer(new CategoryListRenderer(" > "));
 			
 			selectCategory.setText(Fsfibu2StringTableMgr.getString("fs.fibu2.Entry.category") + ": ");
@@ -233,7 +216,7 @@ public class CategoryFilter implements EntryFilter {
 				}
 				else {
 					selectAdvanced.setSelected(true);
-					levelField.setText(Integer.toString(levelToCheck >= 1? levelToCheck : 0));
+					levelField.setText(Integer.toString(levelToCheck >= 1? levelToCheck : 1));
 				}
 			}
 			
@@ -265,14 +248,6 @@ public class CategoryFilter implements EntryFilter {
 				hbox.add(vbox1);
 				hbox.add(vbox2);
 			layout.add(hbox);
-//			Box box1 = new Box(BoxLayout.X_AXIS);
-//				box1.add(selectCategory); box1.add(comboBox);
-//				layout.add(box1);
-//			layout.add(Box.createVerticalStrut(5));
-//			Box box2 = new Box(BoxLayout.X_AXIS);
-//				box2.setAlignmentX(RIGHT_ALIGNMENT);
-//				box2.add(selectAdvanced); box2.add(levelLabel);box2.add(levelField);box2.add(Box.createHorizontalGlue());
-//				layout.add(box2);
 			layout.add(Box.createVerticalStrut(5));
 			layout.add(new JSeparator(JSeparator.HORIZONTAL));
 			layout.add(Box.createVerticalStrut(5));
@@ -354,6 +329,25 @@ public class CategoryFilter implements EntryFilter {
 			return comp.validateFilter() != Result.INCORRECT && levelValidator.validate().getOverallResult() != Result.INCORRECT;
 		}
 
+		//updates the category list and changes the selection if necessary
+		private void updateCategory(Journal j) {
+			//Save selected item
+			Category old = comboBox.getModel().getSize() > 0? (Category)comboBox.getModel().getSelectedItem() : null;
+			//Reload model
+			comboBox.setModel(new CategoryListModel(j));
+			//Change filter mode, if necessary
+			if(comboBox.getModel().getSize() == 0) {
+				selectAdvanced.setSelected(true);
+				selectCategory.setEnabled(false);
+				comboBox.setEnabled(false);
+			}
+			else {
+				selectCategory.setEnabled(true);
+				comboBox.setEnabled(true);
+				if(j.getListOfCategories().contains(old)) comboBox.setSelectedItem(old);
+			}
+		}
+		
 		@Override
 		public void assignReference(ResourceReference r) {
 			//Ignored

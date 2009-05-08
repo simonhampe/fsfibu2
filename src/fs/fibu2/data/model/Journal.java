@@ -133,6 +133,17 @@ public class Journal implements XMLConfigurable, ReadingPointListener {
 	}
 	
 	/**
+	 * @return A list of all accounts used by entries in this journal
+	 */
+	public synchronized HashSet<Account> getListOfAccounts() {
+		HashSet<Account> accounts = new HashSet<Account>();
+		for(Entry e : getEntries()) {
+			accounts.add(e.getAccount());
+		}
+		return accounts;
+	}
+	
+	/**
 	 * Adds the entry e to the list (if it isn't already contained in it). If e == null,
 	 * this call is ignored
 	 */
