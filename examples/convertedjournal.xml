@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<fsfibu:kassenbuch xmlns:fsfibu="fsfibu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <startwerte>
+    <bank>8000.30</bank>
+    <kasse>123.67</kasse>
+  </startwerte>
+  <messpunkte>
+    <messpunkt>
+      <datum>2008-03-12T00:00:00</datum>
+      <bezeichnung>Kassenprüfung</bezeichnung>
+    </messpunkt>
+  </messpunkte>
+  <einträge>
+    <eintrag uid="1">
+      <name>Bla</name>
+      <wert>140.00</wert>
+      <datum>2009-05-08</datum>
+      <echtdatum>2009-05-08T19:17:59</echtdatum>
+      <istkontobewegung>false</istkontobewegung>
+      <rnummer></rnummer>
+      <auszug></auszug>
+      <gruppe>blu</gruppe>
+      <kategorie>Bla</kategorie>
+      <infos>bla</infos>
+    </eintrag>
+    <eintrag uid="2">
+      <name>Getränkeeinnahmen</name>
+      <wert>140.00</wert>
+      <datum>2007-02-11</datum>
+      <echtdatum>2007-02-11T00:00:00</echtdatum>
+      <istkontobewegung>true</istkontobewegung>
+      <rnummer></rnummer>
+      <auszug>4</auszug>
+      <gruppe>Einnahmen</gruppe>
+      <kategorie>Getränke und Süßigkeiten</kategorie>
+      <infos>Eine Menge Geld...</infos>
+    </eintrag>
+  </einträge>
+</fsfibu:kassenbuch>

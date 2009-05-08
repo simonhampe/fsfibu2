@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.tree.DefaultDocument;
 
+import fs.fibu2.data.format.Fsfibu1Converter;
 import fs.fibu2.data.model.Category;
 import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.Journal;
@@ -42,8 +43,18 @@ public class JournalTest {
 			System.out.println(XMLToolbox.getDocumentAsPrettyString(d2));
 			CategoryListModel model = new CategoryListModel(j);
 			j.addEntry(new Entry("Bla",140,Currency.getInstance(Locale.getDefault()),new GregorianCalendar(),Category.getCategory(new Vector<String>(Arrays.asList("Bla","blu"))),"cash_box",new HashMap<String, String>(),"bla"));
+			for(Entry e : j.getEntries()) {
+				System.out.println(e.getCategory());
+				System.out.println(e.getCategory().getOrderedList());
+			}
+			
 			System.out.println(model.getSize());
 			System.out.println(model.getElementAt(0));
+			
+			//Export it to fsfibu1
+			Document old = Fsfibu1Converter.convertToOldJournal(j);
+			XMLToolbox.saveXML(old, "examples/convertedjournal.xml");
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		
