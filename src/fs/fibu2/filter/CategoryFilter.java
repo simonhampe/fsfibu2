@@ -15,11 +15,11 @@ import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 import org.dom4j.Document;
 
-import fs.fibu2.data.event.JournalAdapter;
-import fs.fibu2.data.event.JournalListener;
 import fs.fibu2.data.format.DefaultStringComparator;
 import fs.fibu2.data.model.Category;
 import fs.fibu2.data.model.Entry;
@@ -159,6 +159,8 @@ public class CategoryFilter implements EntryFilter {
 	private class CategoryFilterEditor extends EntryFilterEditor implements ResourceDependent {
 		private static final long serialVersionUID = -7259619306180644175L;
 
+		private Journal associatedJournal;
+		
 		private StandardFilterComponent comp;
 		
 		private JComboBox comboBox = new JComboBox();
@@ -171,31 +173,34 @@ public class CategoryFilter implements EntryFilter {
 		
 		private ImageIcon warn = new ImageIcon(Fsfibu2DefaultReference.getDefaultReference().getFullResourcePath(this, "graphics/share/warn.png"));
 		
-		private JournalListener listener = new JournalAdapter() {
+		private ListDataListener listener = new ListDataListener() {
+
 			@Override
-			public void entriesAdded(Journal source, Entry[] newEntries) {
-				updateCategory(source);
+			public void contentsChanged(ListDataEvent e) {
+				updateCategory();
 			}
+
 			@Override
-			public void entriesRemoved(Journal source, Entry[] oldEntries) {
-				updateCategory(source);
+			public void intervalAdded(ListDataEvent e) {
+				updateCategory();
 			}
+
 			@Override
-			public void entryReplaced(Journal source, Entry oldEntry,
-					Entry newEntry) {
-				updateCategory(source);
+			public void intervalRemoved(ListDataEvent e) {
+				updateCategory();
 			}
+			
 		};
 		
 		// CONSTRUCTOR ****************************
 		// ****************************************
 		
 		public CategoryFilterEditor(Journal j) {
-			//Listen to journal
-			if(j != null) j.addJournalListener(listener);
+			associatedJournal = j == null? new Journal() : j;
 			
 			//Init components
-			updateCategory(j);
+			updateCategory();
+			comboBox.getModel().addListDataListener(listener);
 			
 			comboBox.setRenderer(new CategoryListRenderer(" > "));
 			
@@ -330,11 +335,9 @@ public class CategoryFilter implements EntryFilter {
 		}
 
 		//updates the category list and changes the selection if necessary
-		private void updateCategory(Journal j) {
-			//Save selected item
-			Category old = comboBox.getModel().getSize() > 0? (Category)comboBox.getModel().getSelectedItem() : null;
+		private void updateCategory() {
 			//Reload model
-			comboBox.setModel(new CategoryListModel(j));
+			comboBox.setModel(new CategoryListModel(associatedJournal));
 			//Change filter mode, if necessary
 			if(comboBox.getModel().getSize() == 0) {
 				selectAdvanced.setSelected(true);
@@ -344,8 +347,8 @@ public class CategoryFilter implements EntryFilter {
 			else {
 				selectCategory.setEnabled(true);
 				comboBox.setEnabled(true);
-				if(j.getListOfCategories().contains(old)) comboBox.setSelectedItem(old);
 			}
+			repaint();
 		}
 		
 		@Override
