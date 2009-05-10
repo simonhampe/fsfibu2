@@ -48,6 +48,7 @@ public class AccountListModel extends AbstractListModel implements
 	 */
 	public AccountListModel(Journal j) {
 		associatedJournal = j == null? new Journal() : j;
+		associatedJournal.addJournalListener(this);
 		listOfAccounts = updateList();
 		model = new DefaultComboBoxModel(listOfAccounts);
 	}
