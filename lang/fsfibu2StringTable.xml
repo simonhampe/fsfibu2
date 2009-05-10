@@ -65,23 +65,32 @@
   <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.invalidformat" group="fs.fibu2.filter.StandardFilterComponent">
     <variant lang="en">Invalid format: %s</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.BankAccount.statement" group="fs.fibu2.BankAccount">
-    <variant lang="en">Statement sheet</variant>
+  <polyglotstring id="fs.fibu2.filter.AccountInformationFilter.rangeerror" group="fs.fibu2.filter.AccountInformationFilter">
+    <variant lang="en">Min &gt; Max as numerical value. This filter is useless.</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.undo.JournalInfoEdit.setto" group="fs.fibu2.undo.JournalInfoEdit">
     <variant lang="en">Sets %s of journal %s to '%s'</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.BankAccount.statement" group="fs.fibu2.BankAccount">
+    <variant lang="en">Statement sheet</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.undo.JournalReplaceEdit.presentation" group="fs.fibu2.undo.JournalReplaceEdit">
     <variant lang="en">Replaces an entry in journal %s by another.</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.filter.AccountInformationFilter.name" group="fs.fibu2.filter.AccountInformationFilter">
+    <variant lang="en">Account information filter</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.filter.AccountInformationFilter.numericalerror" group="fs.fibu2.filter.AccountInformationFilter">
+    <variant lang="en">Min and/or Max are not valid numerical values. This filter would be useless.</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.BankAccount.description" group="fs.fibu2.BankAccount">
     <variant lang="en">A generic bank account</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.filter.AccountFilter.advanced" group="fs.fibu2.filter.AccountFilter">
-    <variant lang="en">Advanced</variant>
-  </polyglotstring>
   <polyglotstring id="fs.fibu2.AbstractAccount.faultyinvoice" group="fs.fibu2.AbstractAccount">
     <variant lang="en">This entry has a negative value, but no invoice id is given.</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.filter.AccountFilter.advanced" group="fs.fibu2.filter.AccountFilter">
+    <variant lang="en">Advanced</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.undo.JournalInfoEdit.presentation" group="fs.fibu2.undo.JournalInfoEdit">
     <variant lang="en">Changes %s of journal %s</variant>
@@ -122,6 +131,9 @@
   <polyglotstring id="fs.fibu2.AbstractAccount.invoicename" group="fs.fibu2.AbstractAccount">
     <variant lang="en">Invoice number</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.filter.AccountInformationFilter.numericrange" group="fs.fibu2.filter.AccountInformationFilter">
+    <variant lang="en">Interpret range values as numeric</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.BankAccount.nostatement" group="fs.fibu2.BankAccount">
     <variant lang="en">No statement sheet number has been specified.</variant>
   </polyglotstring>
@@ -155,11 +167,11 @@
   <polyglotstring id="fs.fibu2.BankAccount.faultystatement" group="fs.fibu2.BankAccount">
     <variant lang="en">The statement number should be an integer value. If you don't know the number yet it is recommended you leave that field empty.</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.AbstractAccount.invoicedescription" group="fs.fibu2.AbstractAccount">
-    <variant lang="en">A registration number for the invoice associated to an entry</variant>
-  </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.minmaxorder" group="fs.fibu2.filter.StandardFilterComponent">
     <variant lang="en">'%s' &gt; '%s'. This filter is useless.</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.AbstractAccount.invoicedescription" group="fs.fibu2.AbstractAccount">
+    <variant lang="en">A registration number for the invoice associated to an entry</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.undo.add" group="fs.fibu2.undo">
     <variant lang="en">Adds</variant>
@@ -167,14 +179,17 @@
   <polyglotstring id="fs.fibu2.Entry.value" group="fs.fibu2.Entry">
     <variant lang="en">Value</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.filter.AccountInformationFilter.field" group="fs.fibu2.filter.AccountInformationFilter">
+    <variant lang="en">Field</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.BankAccount.statementdescription" group="fs.fibu2.BankAccount">
     <variant lang="en">The number of the bank account statement sheet</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.invalidregex" group="fs.fibu2.filter.StandardFilterComponent">
-    <variant lang="en">This string is not a valid regular expression</variant>
-  </polyglotstring>
   <polyglotstring id="fs.fibu2.undo.JournalStartEdit.remove" group="fs.fibu2.undo.JournalStartEdit">
     <variant lang="en">Removes the start value for account %s in journal %s.</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.invalidregex" group="fs.fibu2.filter.StandardFilterComponent">
+    <variant lang="en">This string is not a valid regular expression</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.CategoryFilter.level" group="fs.fibu2.filter.CategoryFilter">
     <variant lang="en">Level</variant>

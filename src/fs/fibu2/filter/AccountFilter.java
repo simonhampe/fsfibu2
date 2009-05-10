@@ -1,4 +1,4 @@
-package fs.fibu2.data.model;
+package fs.fibu2.filter;
 
 import java.util.Comparator;
 import java.util.regex.Matcher;
@@ -16,9 +16,10 @@ import org.dom4j.Document;
 import fs.fibu2.data.event.JournalAdapter;
 import fs.fibu2.data.event.JournalListener;
 import fs.fibu2.data.format.DefaultStringComparator;
-import fs.fibu2.filter.EntryFilter;
-import fs.fibu2.filter.EntryFilterEditor;
-import fs.fibu2.filter.StandardFilterComponent;
+import fs.fibu2.data.model.Account;
+import fs.fibu2.data.model.AccountLoader;
+import fs.fibu2.data.model.Entry;
+import fs.fibu2.data.model.Journal;
 import fs.fibu2.filter.StandardFilterComponent.Selection;
 import fs.fibu2.filter.event.StandardComponentListener;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
@@ -179,6 +180,7 @@ public class AccountFilter implements EntryFilter {
 			if(j != null) j.addJournalListener(listener);
 			
 			//Init components
+			comboBox.setModel(new AccountListModel(j));
 			updateAccount(j);
 			
 			comboBox.setRenderer(new AccountListRenderer());
@@ -198,6 +200,7 @@ public class AccountFilter implements EntryFilter {
 					selectAdvanced.setSelected(true);
 				}
 			}
+			else selectAdvanced.setSelected(true);
 			
 			String singleString = (typeOfFilter == Selection.EQUALITY && equalityAccount == null? equalityString : (typeOfFilter == Selection.REGEX? regexFilter.pattern() : ""));
 			comp = new StandardFilterComponent(Fsfibu2StringTableMgr.getString("fs.fibu2.Entry.account") + ": ",null,new DefaultStringComparator(),
@@ -259,8 +262,6 @@ public class AccountFilter implements EntryFilter {
 
 		//updates the category list and changes the selection if necessary
 		private void updateAccount(Journal j) {
-			//Reload model
-			comboBox.setModel(new AccountListModel(j));
 			//Change filter mode, if necessary
 			if(comboBox.getModel().getSize() == 0) {
 				selectAdvanced.setSelected(true);

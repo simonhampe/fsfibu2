@@ -10,12 +10,15 @@ import org.apache.log4j.BasicConfigurator;
 import org.dom4j.Document;
 
 import fs.fibu2.data.format.Fsfibu1Converter;
-import fs.fibu2.data.model.AccountFilter;
+import fs.fibu2.data.model.AccountLoader;
 import fs.fibu2.data.model.Journal;
+import fs.fibu2.filter.AccountFilter;
 import fs.fibu2.filter.CategoryFilter;
 import fs.fibu2.filter.ValueFilter;
 import fs.fibu2.filter.StandardFilterComponent.Selection;
+import fs.fibu2.filter.AccountInformationFilter;
 import fs.fibu2.resource.Fsfibu2DefaultReference;
+import fs.fibu2.view.model.AccountInformation;
 import fs.xml.FsfwDefaultReference;
 import fs.xml.XMLToolbox;
 
@@ -44,7 +47,8 @@ public class FilterTest {
 			//NameFilter filter = new NameFilter(Selection.REGEX,"S.*",null);
 			//ValueFilter filter = new ValueFilter(Selection.RANGE,0,0.3f,14.2f,null);
 			//CategoryFilter filter = new CategoryFilter();
-			AccountFilter filter = new AccountFilter();
+			//AccountFilter filter = new AccountFilter(AccountLoader.getAccount("cash_box"));
+			AccountInformationFilter filter = new AccountInformationFilter();
 			
 			mainFrame.add(filter.getEditor(j));
 			

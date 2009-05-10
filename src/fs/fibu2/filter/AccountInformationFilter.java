@@ -1,45 +1,353 @@
 package fs.fibu2.filter;
 
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import org.dom4j.Document;
+
+import fs.fibu2.data.format.DefaultFloatComparator;
+import fs.fibu2.data.format.DefaultStringComparator;
+import fs.fibu2.data.model.AccountLoader;
 import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.Journal;
+import fs.fibu2.filter.StandardFilterComponent.Selection;
+import fs.fibu2.filter.event.StandardComponentListener;
+import fs.fibu2.lang.Fsfibu2StringTableMgr;
+import fs.fibu2.resource.Fsfibu2DefaultReference;
+import fs.fibu2.view.model.AccountInformation;
+import fs.fibu2.view.model.AccountInformationListModel;
+import fs.fibu2.view.render.AccountInformationListRenderer;
+import fs.gui.SwitchIconLabel;
+import fs.validate.LabelIndicValidator;
+import fs.validate.ValidationResult.Result;
+import fs.xml.ResourceDependent;
+import fs.xml.ResourceReference;
+import fs.xml.XMLDirectoryTree;
 
 /**
- * Filters entries according to the information supplied for an account
+ * Filters entries according to the information supplied for an account. As for the range filter, the given values can optionally be interpreted as
+ * numerical values
  * @author Simon Hampe
  *
  */
-class AccountInformationFilter implements EntryFilter {
+public class AccountInformationFilter implements EntryFilter {
 
+	private AccountInformation information;
 	
+	private Selection 	typeOfFilter;
+	private String	   	equalityString;
+	private Pattern		regexFilter;
+	
+	private String		minFilter;
+	private String 		maxFilter;
+	
+	private String		minFloatFilter;
+	private String		maxFloatFilter;
+	
+	private boolean 	numericalRangeFilter;
+	
+	private static NumberFormat format = NumberFormat.getInstance();
+	
+	// CONSTRUCTORS ****************************
+	// *****************************************
+	
+	/**
+	 * Constructs a filter which looks for entries with empty 'invoice' field
+	 */
+	public AccountInformationFilter() {
+		typeOfFilter = Selection.EQUALITY;
+		information = new AccountInformation("invoice",AccountLoader.getAccount("bank_account").getFieldNames().get("invoice"),null);
+		equalityString = "";
+	}
+	
+	/**
+	 * Constructs a filter which only admits entries, whose field corresponding to info has a value equal to equalityString
+	 */
+	public AccountInformationFilter(AccountInformation info, String equalityString) {
+		this();
+		if(info != null) {
+			information = info;
+			this.equalityString = equalityString == null? "" : equalityString;
+		}
+	}
+	
+	/**
+	 * Constructs a filter which only admits entries, whose field corresponding to info matches the given pattern
+	 */
+	public AccountInformationFilter(AccountInformation info, Pattern p) {
+		this();
+		if(info!= null) {
+			information = info;
+			typeOfFilter = Selection.REGEX;
+			regexFilter = p == null? Pattern.compile("") : p;
+		}
+	}
+	
+	/**
+	 * Constructs a filter which only admits entries, whose field corresponding to info is alphabetically between min and max
+	 */
+	public AccountInformationFilter(AccountInformation info, String min, String max ) {
+		this();
+		if(info != null) {
+			information = info;
+			typeOfFilter = Selection.RANGE;
+			minFilter = min == null? "": min;
+			maxFilter = max == null? "": max;
+			numericalRangeFilter = false;
+		}
+	}
+	
+	/**
+	 * Constructs a filter which only admits entries, whose field corresponding to info contains a numerical value and is between min and max
+	 */
+	public AccountInformationFilter(AccountInformation info, Float min, Float max) {
+		this();
+		if(info != null) {
+			information = info;
+			typeOfFilter = Selection.RANGE;
+			minFloatFilter = min == null? null : format.format(min);
+			maxFloatFilter = max == null? null : format.format(max);
+			numericalRangeFilter = true;
+		}
+	}
+	
+	// FILTER METHODS **************************
+	// *****************************************
 	
 	@Override
 	public String getDescription() {
-		// TODO Auto-generated method stub
-		return null;
+		String name = information.getName();
+		switch(typeOfFilter) {
+		case EQUALITY: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.describeequals",name,equalityString);
+		case REGEX: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.describematches",name,regexFilter.pattern());
+		case RANGE: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.describerange",name,numericalRangeFilter? minFloatFilter : minFilter,
+															numericalRangeFilter? maxFloatFilter : maxFilter);
+		default: return "";
+		}
 	}
 
 	@Override
 	public EntryFilterEditor getEditor(Journal j) {
-		// TODO Auto-generated method stub
-		return null;
+		return new AccountInformationEditor(j);
 	}
 
 	@Override
 	public String getID() {
-		// TODO Auto-generated method stub
-		return null;
+		return "ff2filter_accountinformation";
 	}
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.AccountInformationFilter.name");
 	}
 
 	@Override
 	public boolean verifyEntry(Entry e) {
-		// TODO Auto-generated method stub
-		return false;
+		if(e == null) return false;
+		if(!information.getAccounts().contains(e.getAccount())) return false;
+		String entryInfo = e.getAccountInformation().get(information.getId()); 
+		if( entryInfo == null) return false;
+		switch(typeOfFilter) {
+		case EQUALITY: return equalityString.equals(entryInfo);
+		case REGEX: Matcher m = regexFilter.matcher(entryInfo);
+					return m.matches();
+		case RANGE: if(!numericalRangeFilter) {
+						DefaultStringComparator comp = new DefaultStringComparator();
+						return comp.compare(minFilter, entryInfo) <= 0 && comp.compare(entryInfo, maxFilter) <= 0;
+					}
+					else {
+						try {
+							format.parse(entryInfo).floatValue();
+							DefaultFloatComparator comp = new DefaultFloatComparator(format);
+							return  comp.compare(minFloatFilter, entryInfo) <= 0 && comp.compare(entryInfo, maxFloatFilter) <= 0;
+						}
+						catch(ParseException pe) {
+							return false; //If the info is not parseable, the entry is not valid
+						}
+					}			
+					
+		default: return false;
+		}
+	}
+	
+	// LOCAL CLASS FOR EDITOR ******************************
+	// *****************************************************
+	
+	private class AccountInformationEditor extends EntryFilterEditor implements ResourceDependent{
+
+		/**
+		 * compiler-generated serial version uid
+		 */
+		private static final long serialVersionUID = -7578243079819018105L;
+
+		private StandardFilterComponent comp;
+		
+		private JComboBox comboBox = new JComboBox();
+		private JLabel	  comboLabel = new JLabel();
+		
+		private JCheckBox 		numericBox = new JCheckBox();
+		private SwitchIconLabel numericLabel = new SwitchIconLabel();
+		
+		private ImageIcon warn = new ImageIcon(Fsfibu2DefaultReference.getDefaultReference().getFullResourcePath(this, "graphics/share/warn.png"));
+		
+		private LabelIndicValidator<JCheckBox> validator;
+		
+		private Journal associatedJournal;
+		
+		// CONSTRUCTOR ************************************
+		// ************************************************
+		
+		public AccountInformationEditor(Journal j) {
+			associatedJournal = j == null? new Journal() : j;
+			
+			//Init components
+			
+			comboBox.setModel(new AccountInformationListModel(associatedJournal));
+			comboBox.setRenderer(new AccountInformationListRenderer());
+			comboLabel.setText(Fsfibu2StringTableMgr.getString("fs.fibu2.filter.AccountInformationFilter.field") + ": ");
+			
+			numericBox.setSelected(numericalRangeFilter);
+			numericLabel.setText(Fsfibu2StringTableMgr.getString("fs.fibu2.filter.AccountInformationFilter.numericrange"));
+			numericLabel.setHorizontalTextPosition(JLabel.LEFT);
+			numericLabel.setIconReference(warn);
+		
+			comp = new StandardFilterComponent(Fsfibu2StringTableMgr.getString("fs.fibu2.filter.AccountInformationFilter.field") + ": ",null,new DefaultStringComparator(),
+									typeOfFilter == Selection.EQUALITY? equalityString : (typeOfFilter == Selection.REGEX? regexFilter.pattern() : ""),
+									typeOfFilter == Selection.RANGE? (numericalRangeFilter? minFloatFilter : minFilter): "",
+									typeOfFilter == Selection.RANGE? (numericalRangeFilter? maxFloatFilter : maxFilter): "",typeOfFilter);
+			
+			//Layout
+			
+			Box layout = new Box(BoxLayout.Y_AXIS);
+				Box hbox1 = new Box(BoxLayout.X_AXIS);
+				hbox1.add(comboLabel); hbox1.add(comboBox);
+			layout.add(hbox1);
+			layout.add(Box.createVerticalStrut(5));
+				Box hbox2 = new Box(BoxLayout.X_AXIS);
+				hbox2.add(numericBox); hbox2.add(numericLabel);
+			layout.add(hbox2);
+			layout.add(Box.createVerticalStrut(5));
+			layout.add(comp);
+			add(layout);
+			
+			//Validation
+			//This validator issues a warning, if numerical range filtering is turned on but min and max are not valid numerical values
+			validator = new LabelIndicValidator<JCheckBox> (null, warn, warn) {
+			
+				private StandardComponentListener listener = new StandardComponentListener() {
+					@Override
+					public void contentChanged(StandardFilterComponent source) {
+						fireStateChanged(new ChangeEvent(source));
+					}
+					@Override
+					public void selectionChanged(
+							StandardFilterComponent source,
+							Selection newSelection) {
+						fireStateChanged(new ChangeEvent(source));
+					}
+				};
+				
+				@Override
+				public Result validate(JCheckBox component) {
+					if(!numericBox.isSelected()) return Result.CORRECT;
+					setToolTipText(component, null);
+					try {
+						format.parse(comp.getMinEntry());
+						format.parse(comp.getMaxEntry());
+					}
+					catch(ParseException pe) {
+						setToolTipText(component,Fsfibu2StringTableMgr.getString("fs.fibu2.filter.AccountInformationFilter.numericalerror"));
+						return Result.WARNING;
+					}
+					catch(NullPointerException e) {
+						//Ignore, since null values ARE valid
+					}
+					DefaultFloatComparator c = new DefaultFloatComparator(format);
+					if(c.compare(comp.getMinEntry(), comp.getMaxEntry()) > 0) {
+						setToolTipText(component, Fsfibu2StringTableMgr.getString("fs.fibu2.filter.AccountInformationFilter.rangeerror"));
+						return Result.WARNING;
+					}
+					
+					return Result.CORRECT;
+				}
+			
+				@Override
+				protected void unregisterFromComponent(JCheckBox arg0) {
+					numericBox.removeChangeListener(this);
+					comp.removeStandardComponentListener(listener);
+				}
+			
+				@Override
+				protected void registerToComponent(JCheckBox arg0) {
+					numericBox.addChangeListener(this);
+					comp.addStandardComponentListener(listener);
+				}
+			};
+			validator.addComponent(numericBox, numericLabel);
+			validator.validate();
+			
+			//Notification
+			comp.addStandardComponentListener(new StandardComponentListener() {
+				@Override
+				public void contentChanged(StandardFilterComponent source) {fireStateChanged();}
+				@Override
+				public void selectionChanged(StandardFilterComponent source,
+						Selection newSelection) {fireStateChanged();}
+			});
+			numericBox.addChangeListener(new ChangeListener(){
+				@Override
+				public void stateChanged(ChangeEvent e) { fireStateChanged();}
+			});
+			comboBox.addItemListener(new ItemListener() {
+				@Override
+				public void itemStateChanged(ItemEvent e) {fireStateChanged();}
+			});
+		}
+		
+		// EDITOR METHODS *********************************
+		// ************************************************
+		
+		@Override
+		public EntryFilter getFilter() {
+			if(!hasValidContent()) return null;
+			
+			return null; //TODO: Do
+		}
+
+		@Override
+		public boolean hasValidContent() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		// RESOURCEDEPENDENT *****************************
+		// ***********************************************
+		
+		@Override
+		public void assignReference(ResourceReference r) {
+			//Ignored
+		}
+
+		@Override
+		public Document getExpectedResourceStructure() {
+			XMLDirectoryTree tree = new XMLDirectoryTree();
+			tree.addPath("graphics/share/warn.png");
+			return tree;
+		}
+		
 	}
 
 }

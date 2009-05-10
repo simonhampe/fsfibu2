@@ -199,6 +199,7 @@ public class CategoryFilter implements EntryFilter {
 			associatedJournal = j == null? new Journal() : j;
 			
 			//Init components
+			comboBox.setModel(new CategoryListModel(associatedJournal));
 			updateCategory();
 			comboBox.getModel().addListDataListener(listener);
 			
@@ -223,6 +224,9 @@ public class CategoryFilter implements EntryFilter {
 					selectAdvanced.setSelected(true);
 					levelField.setText(Integer.toString(levelToCheck >= 1? levelToCheck : 1));
 				}
+			}
+			else {
+				selectAdvanced.setSelected(true);
 			}
 			
 			String singleString = (typeOfFilter == Selection.EQUALITY && equalityCategory == null? equalityString : (typeOfFilter == Selection.REGEX? regexFilter.pattern() : ""));
@@ -336,8 +340,6 @@ public class CategoryFilter implements EntryFilter {
 
 		//updates the category list and changes the selection if necessary
 		private void updateCategory() {
-			//Reload model
-			comboBox.setModel(new CategoryListModel(associatedJournal));
 			//Change filter mode, if necessary
 			if(comboBox.getModel().getSize() == 0) {
 				selectAdvanced.setSelected(true);
