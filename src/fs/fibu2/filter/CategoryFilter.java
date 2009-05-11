@@ -313,6 +313,7 @@ public class CategoryFilter implements EntryFilter {
 				public void selectionChanged(StandardFilterComponent source,
 						Selection newSelection) {fireStateChanged();}
 			});
+			
 		}
 		
 		@Override

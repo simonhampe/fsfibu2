@@ -1,5 +1,7 @@
 package fs.fibu2.filter;
 
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,6 +12,8 @@ import javax.swing.ButtonGroup;
 import javax.swing.JComboBox;
 import javax.swing.JRadioButton;
 import javax.swing.JSeparator;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import org.dom4j.Document;
 
@@ -234,6 +238,16 @@ public class AccountFilter implements EntryFilter {
 				@Override
 				public void selectionChanged(StandardFilterComponent source,
 						Selection newSelection) {fireStateChanged();}
+			});
+			ChangeListener listener = new ChangeListener() {
+				@Override
+				public void stateChanged(ChangeEvent e) {fireStateChanged();}
+			};
+			selectAccount.addChangeListener(listener);
+			selectAdvanced.addChangeListener(listener);
+			comboBox.addItemListener(new ItemListener() {
+				@Override
+				public void itemStateChanged(ItemEvent e) {fireStateChanged();}
 			});
 		}
 		

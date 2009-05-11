@@ -13,6 +13,7 @@ import fs.fibu2.data.format.Fsfibu1Converter;
 import fs.fibu2.data.model.AccountLoader;
 import fs.fibu2.data.model.Journal;
 import fs.fibu2.filter.AccountFilter;
+import fs.fibu2.filter.AdditionalInformationFilter;
 import fs.fibu2.filter.CategoryFilter;
 import fs.fibu2.filter.ValueFilter;
 import fs.fibu2.filter.StandardFilterComponent.Selection;
@@ -48,7 +49,8 @@ public class FilterTest {
 			//ValueFilter filter = new ValueFilter(Selection.RANGE,0,0.3f,14.2f,null);
 			//CategoryFilter filter = new CategoryFilter();
 			//AccountFilter filter = new AccountFilter(AccountLoader.getAccount("cash_box"));
-			AccountInformationFilter filter = new AccountInformationFilter();
+			//AccountInformationFilter filter = new AccountInformationFilter();
+			AdditionalInformationFilter filter = new AdditionalInformationFilter();
 			
 			mainFrame.add(filter.getEditor(j));
 			
