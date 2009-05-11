@@ -6,7 +6,7 @@ import fs.fibu2.data.model.Journal;
 /**
  * An EntryFilter is an object which can filter entries according to a certain criterion.
  * It optionally provides a graphical component (a panel) for editing. Each class
- * implementing this interface should have a no-argument constructor or a one-argument constructor (where the one argument is of type journal), 
+ * implementing this interface should have a no-argument constructor, 
  * otherwise the FilterLoader will not be able to create an instance. 
  * @author Simon Hampe
  *

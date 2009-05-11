@@ -92,7 +92,7 @@ public class DateFilter implements EntryFilter {
 		if(e == null) return false;
 		switch(typeOfFilter) {
 		case EQUALITY: return new EntryDateComparator().compare(equalityDate, e.getDate()) == 0;
-		case REGEX: Matcher m = regexFilter.matcher(Fsfibu2DateFormats.getEntryDateFormat().format(e.getDate()));
+		case REGEX: Matcher m = regexFilter.matcher(Fsfibu2DateFormats.getEntryDateFormat().format(e.getDate().getTime()));
 					return m.matches();
 		case RANGE: EntryDateComparator c = new EntryDateComparator();
 					return c.compare(minFilter, e.getDate()) <= 0 && c.compare(e.getDate(), maxFilter) <= 0;
@@ -112,9 +112,9 @@ public class DateFilter implements EntryFilter {
 			comp = new StandardFilterComponent(Fsfibu2StringTableMgr.getString("fs.fibu2.Entry.date") + ": ",
 					new GivenFormatValidator(Fsfibu2DateFormats.getEntryDateFormat()),
 					new EntryDateComparator(),
-					typeOfFilter == Selection.REGEX? regexFilter.pattern() : (typeOfFilter == Selection.EQUALITY ? Fsfibu2DateFormats.getEntryDateFormat().format(equalityDate): ""),
-					typeOfFilter == Selection.RANGE? Fsfibu2DateFormats.getEntryDateFormat().format(minFilter) : "",
-					typeOfFilter == Selection.RANGE? Fsfibu2DateFormats.getEntryDateFormat().format(maxFilter) : "",
+					typeOfFilter == Selection.REGEX? regexFilter.pattern() : (typeOfFilter == Selection.EQUALITY ? Fsfibu2DateFormats.getEntryDateFormat().format(equalityDate.getTime()): ""),
+					typeOfFilter == Selection.RANGE? Fsfibu2DateFormats.getEntryDateFormat().format(minFilter.getTime()) : "",
+					typeOfFilter == Selection.RANGE? Fsfibu2DateFormats.getEntryDateFormat().format(maxFilter.getTime()) : "",
 					typeOfFilter);
 			comp.addStandardComponentListener(new StandardComponentListener() {
 				@Override

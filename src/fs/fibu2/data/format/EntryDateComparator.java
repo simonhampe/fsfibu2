@@ -32,18 +32,18 @@ public class EntryDateComparator implements Comparator<String> {
 		
 		int thisyear = d1.get(GregorianCalendar.YEAR);
 		int thatyear = d2.get(GregorianCalendar.YEAR);
-		if(thisyear < thatyear) return 1;
-		if(thisyear > thatyear) return -1;
+		if(thisyear < thatyear) return -1;
+		if(thisyear > thatyear) return 1;
 		
 		int thismonth = d1.get(GregorianCalendar.MONTH);
 		int thatmonth = d2.get(GregorianCalendar.MONTH);
-		if(thismonth < thatmonth) return 1;
-		if(thismonth > thatmonth) return -1;
+		if(thismonth < thatmonth) return -1;
+		if(thismonth > thatmonth) return 1;
 		
 		int thisday = d1.get(GregorianCalendar.DAY_OF_MONTH);
 		int thatday = d2.get(GregorianCalendar.DAY_OF_MONTH);
-		if(thisday < thatday) return 1;
-		if(thisday > thatday) return -1;
+		if(thisday < thatday) return -1;
+		if(thisday > thatday) return 1;
 		return 0;
 	}
 	

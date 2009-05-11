@@ -1,5 +1,7 @@
 package fs.fibu2.view.model;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TreeSet;
 import java.util.Vector;
@@ -60,27 +62,25 @@ public class AccountInformationListModel extends AbstractListModel implements
 	 */
 	protected Vector<AccountInformation> calculateModel() {
 		HashSet<Account> accounts = associatedJournal.getListOfAccounts();
-		//First create a list without associated accounts
-		Vector<AccountInformation> preset = new Vector<AccountInformation>();
-			for(Account a : accounts) {
-				for(String id : a.getFieldIDs()) preset.add(new AccountInformation(id, a.getFieldNames().get(id),null));
-			}
 		//Now create a list WITH associated accounts
-		Vector<AccountInformation> finalset = new Vector<AccountInformation>();
-		for(AccountInformation info : preset) {
-			//If the tupel has not yet been added, add it
-			if(!finalset.contains(info)) {
-				finalset.add(info);
-			}
-			//Otherwise add accounts
-			else {
-				HashSet<Account> usingaccounts = finalset.get(finalset.indexOf(info)).getAccounts();
-				usingaccounts.addAll(info.getAccounts());
-				finalset.remove(info);
-				finalset.add(new AccountInformation(info.getId(),info.getName(),usingaccounts));
+		HashMap<AccountInformation, HashSet<Account>> usingAccounts = new HashMap<AccountInformation, HashSet<Account>>();
+		for(Account a : accounts) {
+			for(String id : a.getFieldIDs()) {
+				AccountInformation info = new AccountInformation(id,a.getFieldNames().get(id),null);
+				if(!usingAccounts.containsKey(info)) {
+					usingAccounts.put(info, new HashSet<Account>(Arrays.asList(a)));
+				}
+				else {
+					usingAccounts.get(info).add(a);
+				}
 			}
 		}
-		return new Vector<AccountInformation>(new TreeSet<AccountInformation>(finalset));
+		TreeSet<AccountInformation> finalset = new TreeSet<AccountInformation>();
+		for(AccountInformation info : usingAccounts.keySet()) {
+			AccountInformation newinfo = new AccountInformation(info.getId(),info.getName(),usingAccounts.get(info));
+			finalset.add(newinfo);
+		}
+		return new Vector<AccountInformation>(finalset);
 	}
 	
 	/**

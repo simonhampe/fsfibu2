@@ -1,6 +1,9 @@
 package fs.fibu2.test.filter;
 
 import java.io.File;
+import java.util.Currency;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
@@ -11,10 +14,16 @@ import org.dom4j.Document;
 
 import fs.fibu2.data.format.Fsfibu1Converter;
 import fs.fibu2.data.model.AccountLoader;
+import fs.fibu2.data.model.Category;
+import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.Journal;
+import fs.fibu2.examples.SlushFund;
 import fs.fibu2.filter.AccountFilter;
 import fs.fibu2.filter.AdditionalInformationFilter;
 import fs.fibu2.filter.CategoryFilter;
+import fs.fibu2.filter.DateFilter;
+import fs.fibu2.filter.EntryFilter;
+import fs.fibu2.filter.FilterLoader;
 import fs.fibu2.filter.ValueFilter;
 import fs.fibu2.filter.StandardFilterComponent.Selection;
 import fs.fibu2.filter.AccountInformationFilter;
@@ -44,13 +53,20 @@ public class FilterTest {
 			Document d = XMLToolbox.loadXMLFile(new File("examples/journal.xml"));
 			//Journal j = new Journal(d.getRootElement());
 			Journal j = Fsfibu1Converter.convertFsfibu1Journal(XMLToolbox.loadXMLFile(new File("/home/talio/eclipse/workspace/fsfibu/KassenbuchAb2008.xml")));
+			AccountLoader.setAccount("slush_fund", new SlushFund());
+			j.addEntry(new Entry("bla",0,Currency.getInstance(Locale.GERMANY),new GregorianCalendar(),Category.getRootCategory(),"slush_fund",
+					null,""));
+			
+			
 			
 			//NameFilter filter = new NameFilter(Selection.REGEX,"S.*",null);
 			//ValueFilter filter = new ValueFilter(Selection.RANGE,0,0.3f,14.2f,null);
 			//CategoryFilter filter = new CategoryFilter();
-			//AccountFilter filter = new AccountFilter(AccountLoader.getAccount("cash_box"));
+			AccountFilter filter = new AccountFilter(AccountLoader.getAccount("cash_box"));
 			//AccountInformationFilter filter = new AccountInformationFilter();
-			AdditionalInformationFilter filter = new AdditionalInformationFilter();
+			//AdditionalInformationFilter filter = new AdditionalInformationFilter();
+			//DateFilter filter = new DateFilter();
+			//EntryFilter filter = FilterLoader.getFilter("ff2filter_account");
 			
 			mainFrame.add(filter.getEditor(j));
 			
