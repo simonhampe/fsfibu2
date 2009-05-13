@@ -1,17 +1,22 @@
 package fs.fibu2.filter;
 
+import java.util.prefs.Preferences;
+
 import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.Journal;
+import fs.xml.XMLConfigurable;
 
 /**
  * An EntryFilter is an object which can filter entries according to a certain criterion.
  * It optionally provides a graphical component (a panel) for editing. Each class
  * implementing this interface should have a no-argument constructor, 
- * otherwise the FilterLoader will not be able to create an instance. 
+ * otherwise the FilterLoader will not be able to create an instance. This interface implements XMLConfigurable and each implementing class
+ * should do this in a special way: The XML node used for configuration should have a root node named 'node' with attribute name='filter' and in its subtree
+ * should conform to the DTD specification used by {@link Preferences}.  
  * @author Simon Hampe
  *
  */
-public interface EntryFilter {
+public interface EntryFilter extends XMLConfigurable {
 	
 	/**
 	 * @return The general name of this filter's type, e.g. 'Date range filter'
@@ -43,5 +48,6 @@ public interface EntryFilter {
 	 * The editor component should already be filled with the data of the current configuration.
 	 */
 	public EntryFilterEditor getEditor(Journal j);
+	
 	
 }
