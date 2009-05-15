@@ -46,7 +46,7 @@ import fs.xml.XMLDirectoryTree;
  */
 public class AccountInformationFilter implements EntryFilter {
 
-	private AccountInformation information;
+	private AccountInformation information; //TODO: COntains a list of accounts using it. What if this changes?
 	
 	private Selection 	typeOfFilter;
 	private String	   	equalityString;
@@ -184,28 +184,28 @@ public class AccountInformationFilter implements EntryFilter {
 		}
 	}
 	
-//	@Override
-//	public EntryFilter createMeFromPreferences(Preferences filterNode)
-//			throws IllegalArgumentException {
-//		if(filterNode == null) throw new NullPointerException("Cannot read preferences from null node");
-//		Selection type = AbstractFilterPreferences.getType(filterNode);
-//		if(type == null) throw new IllegalArgumentException("Invalid node: No type entry");
-//		switch(type) {
-//		case EQUALITY: return new NameFilter(type, AbstractFilterPreferences.getEqualityString(filterNode));
-//		case REGEX: return new NameFilter(type, AbstractFilterPreferences.getPatternString(filterNode));
-//		case RANGE: return new NameFilter(AbstractFilterPreferences.getMinString(filterNode),AbstractFilterPreferences.getMaxString(filterNode));
-//		default: return new NameFilter();
-//		}
-//	}
-//
-//	@Override
-//	public void insertMyPreferences(Preferences node) throws NullPointerException{
-//		if(node == null) throw new NullPointerException("Cannot insert preferences in null node");
-//		AbstractFilterPreferences.insert(node, typeOfFilter, equalityString,regexFilter.pattern(),numericalRangeFilter? minFloatFilter.toString() : minFilter,
-//				numericalRangeFilter? maxFloatFilter.toString() : maxFilter);
-//		
-//	}
-//	
+	@Override
+	public EntryFilter createMeFromPreferences(Preferences filterNode)
+			throws IllegalArgumentException {
+		if(filterNode == null) throw new NullPointerException("Cannot read preferences from null node");
+		Selection type = AbstractFilterPreferences.getType(filterNode);
+		if(type == null) throw new IllegalArgumentException("Invalid node: No type entry");
+		switch(type) {
+		case EQUALITY: return new NameFilter(type, AbstractFilterPreferences.getEqualityString(filterNode));
+		case REGEX: return new NameFilter(type, AbstractFilterPreferences.getPatternString(filterNode));
+		case RANGE: return new NameFilter(AbstractFilterPreferences.getMinString(filterNode),AbstractFilterPreferences.getMaxString(filterNode));
+		default: return new NameFilter();
+		}
+	}
+
+	@Override
+	public void insertMyPreferences(Preferences node) throws NullPointerException{
+		if(node == null) throw new NullPointerException("Cannot insert preferences in null node");
+		AbstractFilterPreferences.insert(node, typeOfFilter, equalityString,regexFilter.pattern(),numericalRangeFilter? minFloatFilter.toString() : minFilter,
+				numericalRangeFilter? maxFloatFilter.toString() : maxFilter);
+		
+	}
+	
 	// LOCAL CLASS FOR EDITOR ******************************
 	// *****************************************************
 	
