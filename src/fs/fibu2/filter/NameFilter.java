@@ -1,5 +1,6 @@
 package fs.fibu2.filter;
 
+import java.util.prefs.Preferences;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -126,10 +127,30 @@ public class NameFilter implements EntryFilter {
 		//We cannot arrive here...
 		return false;
 	}
+	
+	@Override
+	public EntryFilter createMeFromPreferences(Preferences filterNode)
+			throws IllegalArgumentException {
+		if(filterNode == null) throw new NullPointerException("Cannot read preferences from null node");
+		Selection type = AbstractFilterPreferences.getType(filterNode);
+		if(type == null) throw new IllegalArgumentException("Invalid node: No type entry");
+		switch(type) {
+		case EQUALITY: return new NameFilter(type, AbstractFilterPreferences.getEqualityString(filterNode));
+		case REGEX: return new NameFilter(type, AbstractFilterPreferences.getPatternString(filterNode));
+		case RANGE: return new NameFilter(AbstractFilterPreferences.getMinString(filterNode),AbstractFilterPreferences.getMaxString(filterNode));
+		default: return new NameFilter();
+		}
+	}
+
+	@Override
+	public void insertMyPreferences(Preferences node) throws NullPointerException{
+		if(node == null) throw new NullPointerException("Cannot insert preferences in null node");
+		AbstractFilterPreferences.insert(node, typeOfFilter, firstFilter, firstFilter, firstFilter, secondFilter);
+	}
 
 	// LOCAL CLASS FOR EDITOR ******************
 	// *****************************************
-	
+
 	private class NameFilterEditor extends EntryFilterEditor {
 
 		private static final long serialVersionUID = 8289596103885776826L;

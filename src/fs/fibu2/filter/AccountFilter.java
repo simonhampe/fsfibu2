@@ -3,6 +3,7 @@ package fs.fibu2.filter;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.Comparator;
+import java.util.prefs.Preferences;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -143,6 +144,38 @@ public class AccountFilter implements EntryFilter {
 		}
 	}
 
+	@Override
+	public EntryFilter createMeFromPreferences(Preferences filterNode)
+			throws IllegalArgumentException {
+		if(filterNode == null) throw new NullPointerException("Cannot read preferences from null node");
+		Selection type = AbstractFilterPreferences.getType(filterNode);
+		if(type == null) throw new IllegalArgumentException("Invalid node: No type entry");
+		switch(type) {
+		case EQUALITY: 
+			String accountID = filterNode.get("account", null);
+			if(accountID == null) 
+				return new AccountFilter(AbstractFilterPreferences.getEqualityString(filterNode));
+			else try {
+				return new AccountFilter(AccountLoader.getAccount(filterNode.get("account", null)));
+			}
+			catch(Exception e) {
+				throw new IllegalArgumentException("Cannot create filter: Invalid or missing account id");
+			}
+		case REGEX: return new NameFilter(type, AbstractFilterPreferences.getPatternString(filterNode));
+		case RANGE: return new NameFilter(AbstractFilterPreferences.getMinString(filterNode),AbstractFilterPreferences.getMaxString(filterNode));
+		default: return new NameFilter();
+		}
+	}
+
+	@Override
+	public void insertMyPreferences(Preferences node) throws NullPointerException{
+		if(node == null) throw new NullPointerException("Cannot insert preferences in null node");
+		AbstractFilterPreferences.insert(node, typeOfFilter, equalityString,regexFilter.pattern(),minFilter,maxFilter);
+		if(equalityAccount != null) {
+			node.put("account", equalityAccount.getID());
+		}
+	}
+	
 	// LOCAL CLASS FOR EDITOR ********************************
 	// *******************************************************
 	

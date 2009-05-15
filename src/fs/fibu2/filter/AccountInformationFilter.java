@@ -4,6 +4,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.prefs.Preferences;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -183,6 +184,28 @@ public class AccountInformationFilter implements EntryFilter {
 		}
 	}
 	
+//	@Override
+//	public EntryFilter createMeFromPreferences(Preferences filterNode)
+//			throws IllegalArgumentException {
+//		if(filterNode == null) throw new NullPointerException("Cannot read preferences from null node");
+//		Selection type = AbstractFilterPreferences.getType(filterNode);
+//		if(type == null) throw new IllegalArgumentException("Invalid node: No type entry");
+//		switch(type) {
+//		case EQUALITY: return new NameFilter(type, AbstractFilterPreferences.getEqualityString(filterNode));
+//		case REGEX: return new NameFilter(type, AbstractFilterPreferences.getPatternString(filterNode));
+//		case RANGE: return new NameFilter(AbstractFilterPreferences.getMinString(filterNode),AbstractFilterPreferences.getMaxString(filterNode));
+//		default: return new NameFilter();
+//		}
+//	}
+//
+//	@Override
+//	public void insertMyPreferences(Preferences node) throws NullPointerException{
+//		if(node == null) throw new NullPointerException("Cannot insert preferences in null node");
+//		AbstractFilterPreferences.insert(node, typeOfFilter, equalityString,regexFilter.pattern(),numericalRangeFilter? minFloatFilter.toString() : minFilter,
+//				numericalRangeFilter? maxFloatFilter.toString() : maxFilter);
+//		
+//	}
+//	
 	// LOCAL CLASS FOR EDITOR ******************************
 	// *****************************************************
 	
