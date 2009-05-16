@@ -16,10 +16,11 @@ public class AbstractFilterPreferences {
 	 * might be null (If so, no entry is inserted)
 	 * @throws NullPointerException - if node or type is null
 	 */
-	public static void insert(Preferences node, Selection type, String equality, String pattern, String min, String max ) {
+	public static void insert(Preferences node, Selection type,String id, String equality, String pattern, String min, String max ) {
 		if(node == null || type == null) throw new NullPointerException("Cannot insert preferences: Node == null or Type == null");
 
 		node.put("type", type.toString());
+		if(id != null) node.put("id", id);
 		if(equality != null) node.put("equality", equality);
 		if(pattern != null) node.put("pattern", pattern);
 		if(min != null) node.put("min", min);
@@ -40,6 +41,14 @@ public class AbstractFilterPreferences {
 		catch(Exception e) {
 			return null;
 		}
+	}
+	
+	/**
+	 * @return The value of the entry with key 'id' or null, if it doesn't exist
+	 */
+	public static String getIdString(Preferences node) {
+		if(node == null) return null;
+		return node.get("id", null);
 	}
 	
 	/**

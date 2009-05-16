@@ -145,7 +145,7 @@ public class NameFilter implements EntryFilter {
 	@Override
 	public void insertMyPreferences(Preferences node) throws NullPointerException{
 		if(node == null) throw new NullPointerException("Cannot insert preferences in null node");
-		AbstractFilterPreferences.insert(node, typeOfFilter, firstFilter, firstFilter, firstFilter, secondFilter);
+		AbstractFilterPreferences.insert(node.node("filter"),typeOfFilter, getID(), firstFilter, firstFilter, firstFilter, secondFilter);
 	}
 
 	// LOCAL CLASS FOR EDITOR ******************
