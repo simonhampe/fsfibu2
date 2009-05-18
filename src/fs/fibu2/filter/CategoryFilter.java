@@ -1,6 +1,9 @@
 package fs.fibu2.filter;
 
 import java.util.Comparator;
+import java.util.Vector;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,6 +22,8 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
 import org.dom4j.Document;
+
+import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
 
 import fs.fibu2.data.format.DefaultStringComparator;
 import fs.fibu2.data.model.Category;
@@ -153,6 +158,72 @@ public class CategoryFilter implements EntryFilter {
 	}
 	
 
+	@Override
+	public EntryFilter createMeFromPreferences(Preferences filterNode)
+			throws IllegalArgumentException {
+		if(filterNode == null) throw new NullPointerException("Cannot read preferences from null node");
+		Selection type = AbstractFilterPreferences.getType(filterNode);
+		if(type == null) throw new IllegalArgumentException("Invalid node: No type entry");
+		switch(type) {
+		case EQUALITY: 
+			try {
+				if(filterNode.nodeExists("category")) {
+					Preferences tailNode = filterNode.node("category");
+					Vector<String> list = new Vector<String>();
+					while(tailNode.nodeExists("tail")) {
+						tailNode = tailNode.node("tail");
+						list.add(tailNode.get("tail", ""));
+					}
+					return new CategoryFilter(Category.getCategory(list));
+				}
+				else {
+					try {
+						int l = Integer.parseInt(filterNode.get("level", null));
+						return new CategoryFilter(AbstractFilterPreferences.getEqualityString(filterNode),l);
+					}
+					catch(ParseException pe) {
+						throw new IllegalArgumentException("Invalid node: No level entry");
+					}
+				}
+			} catch (BackingStoreException e) {
+				throw new IllegalArgumentException("Cannot access backing store");
+			}
+		case REGEX: 
+			try {
+				int l = Integer.parseInt(filterNode.get("level", null));
+				return new CategoryFilter(Pattern.compile(AbstractFilterPreferences.getPatternString(filterNode)),l);
+			}
+			catch(ParseException pe) {
+				throw new IllegalArgumentException("Invalid node: No level entry");
+			}
+		case RANGE: 
+			try {
+				int l = Integer.parseInt(filterNode.get("level", null));
+				return new CategoryFilter(AbstractFilterPreferences.getMinString(filterNode),AbstractFilterPreferences.getMaxString(filterNode),l);
+			}
+			catch(ParseException pe) {
+				throw new IllegalArgumentException("Invalid node: No level entry");
+			}
+		default: return new CategoryFilter();
+		}
+	}
+
+	@Override
+	public void insertMyPreferences(Preferences node) throws NullPointerException{
+		if(node == null) throw new NullPointerException("Cannot insert preferences in null node");
+		Preferences filterNode = node.node("filter");
+		AbstractFilterPreferences.insert(filterNode,typeOfFilter, getID(), equalityString,regexFilter != null? regexFilter.pattern(): null,minFilter,maxFilter);
+		filterNode.put("level", Integer.toString(levelToCheck));
+		if(equalityCategory != null) {
+			Preferences categoryNode = filterNode.node("category");
+			Preferences tailNode = categoryNode;
+			for(String s : equalityCategory.getOrderedList()) {
+				tailNode = tailNode.node("tail");
+				tailNode.put("tail", s);
+			}
+		}
+	}
+	
 	// LOCAL CLASS FOR EDITOR ********************************
 	// *******************************************************
 	
@@ -199,7 +270,7 @@ public class CategoryFilter implements EntryFilter {
 			associatedJournal = j == null? new Journal() : j;
 			
 			//Init components
-			comboBox.setModel(new CategoryListModel(associatedJournal));
+			comboBox.setModel(new CategoryListModel(associatedJournal,true));
 			updateCategory();
 			comboBox.getModel().addListDataListener(listener);
 			
@@ -216,8 +287,7 @@ public class CategoryFilter implements EntryFilter {
 				
 			if(typeOfFilter == Selection.EQUALITY) {
 				if(equalityCategory != null && comboBox.getModel().getSize() > 0) { //We only filter for categories, if at least one is used
-					//We don't filter for the root category, since it's pointless
-					comboBox.setSelectedItem(equalityCategory == Category.getRootCategory()? comboBox.getModel().getElementAt(0) : equalityCategory);
+					comboBox.setSelectedItem(equalityCategory);
 					selectCategory.setSelected(true);
 				}
 				else {

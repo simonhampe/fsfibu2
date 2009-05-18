@@ -18,7 +18,7 @@ import fs.fibu2.data.model.ReadingPoint;
 /**
  * This class implements a simple list of categories of a journal. It listens to the journal and reloads its content, every time the journal changes.
  * It orders the categories according to ordering induced by its Comparable interface. Recalculation of the list's content is done via a SwingWorker
- * object on a separate thread, so the application remains responsive
+ * object on a separate thread, so the application remains responsive. 
  * @author Simon Hampe
  *
  */
@@ -34,6 +34,7 @@ public class CategoryListModel extends AbstractListModel implements JournalListe
 	
 	private Journal associatedJournal;
 	private Vector<Category> listOfCategories;
+	private boolean containsRootCategory;
 	
 	private DefaultComboBoxModel model = new DefaultComboBoxModel();
 	
@@ -43,11 +44,14 @@ public class CategoryListModel extends AbstractListModel implements JournalListe
 	/**
 	 * Creates a list model representing a list of categories of a given journal. If associatedJournal == null, 
 	 * an empty dummy journal will be created internally, so the category list will be empty
+	 * @param containsRootCategory Specifies whether the root category is automatically added to the list
 	 */
-	public CategoryListModel(Journal associatedJournal) {
+	public CategoryListModel(Journal associatedJournal, boolean containsRootCategory) {
 		this.associatedJournal = associatedJournal == null? new Journal() : associatedJournal;
 		this.associatedJournal.addJournalListener(this);
 		listOfCategories = new Vector<Category>(new TreeSet<Category>(this.associatedJournal.getListOfCategories()));
+		if(containsRootCategory) listOfCategories.add(0, Category.getRootCategory());
+		this.containsRootCategory = containsRootCategory;
 		model = new DefaultComboBoxModel(listOfCategories);
 	}
 	
@@ -165,6 +169,7 @@ public class CategoryListModel extends AbstractListModel implements JournalListe
 			try {
 				Category c = (Category)getSelectedItem();
 				listOfCategories = get();
+				if(containsRootCategory) listOfCategories.add(0, Category.getRootCategory());
 				//Preserve selection if possible
 				model = new DefaultComboBoxModel(listOfCategories);
 				if(listOfCategories.contains(c)) model.setSelectedItem(c);

@@ -34,14 +34,14 @@ public class JournalTest {
 		try {
 			BasicConfigurator.configure();
 			Logger.getRootLogger().setLevel(Level.TRACE);
-			Fsfibu2DefaultReference.setFsfibuDirectory("/home/talio/eclipse/workspace/fsfibu2/");
-			FsfwDefaultReference.setFsfwDirectory("/home/talio/eclipse/workspace/fsframework/");
+			Fsfibu2DefaultReference.setFsfibuDirectory("/home/hampe/workspace/fsfibu2/");
+			FsfwDefaultReference.setFsfwDirectory("/home/hampe/workspace/fsframework/");
 			Document d = XMLToolbox.loadXMLFile(new File("examples/journal.xml"));
 			Journal j = new Journal(d.getRootElement());
 			DefaultDocument d2 = new DefaultDocument();
 			d2.setRootElement(j.getConfiguration());
 			System.out.println(XMLToolbox.getDocumentAsPrettyString(d2));
-			CategoryListModel model = new CategoryListModel(j);
+			CategoryListModel model = new CategoryListModel(j,true);
 			j.addEntry(new Entry("Bla",140,Currency.getInstance(Locale.getDefault()),new GregorianCalendar(),Category.getCategory(new Vector<String>(Arrays.asList("Bla","blu"))),"cash_box",new HashMap<String, String>(),"bla"));
 			for(Entry e : j.getEntries()) {
 				System.out.println(e.getCategory());

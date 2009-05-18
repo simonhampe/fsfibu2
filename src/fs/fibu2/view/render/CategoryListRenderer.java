@@ -7,6 +7,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 
 import fs.fibu2.data.model.Category;
+import fs.fibu2.lang.Fsfibu2StringTableMgr;
 
 /**
  * Renders cells of a category list. It does essentially the same as the {@link DefaultListCellRenderer}. For a given category, 
@@ -39,8 +40,15 @@ public class CategoryListRenderer extends DefaultListCellRenderer {
 				cellHasFocus);
 		StringBuilder text = new StringBuilder();
 		if(value instanceof Category) {
-			for(int i = 0; i < ((Category)value).getOrder() - 1; i++) text.append(levelIndicator);
-			text.append(((Category) value).tail);
+			if((Category)value == Category.getRootCategory()) {
+				text.append("<html><i>");
+				text.append(Fsfibu2StringTableMgr.getString("fs.fibu2.view.CategoryListRenderer.root"));
+				text.append("</i></html>");
+			}
+			else {
+				for(int i = 0; i < ((Category)value).getOrder() - 1; i++) text.append(levelIndicator);
+				text.append(((Category) value).tail);
+			}
 		}
 		label.setText(text.toString());
 		

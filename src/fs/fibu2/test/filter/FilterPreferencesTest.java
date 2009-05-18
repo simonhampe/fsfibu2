@@ -9,6 +9,7 @@ import org.apache.log4j.BasicConfigurator;
 import fs.fibu2.data.model.BankAccount;
 import fs.fibu2.data.model.Journal;
 import fs.fibu2.filter.AccountInformationFilter;
+import fs.fibu2.filter.CategoryFilter;
 import fs.fibu2.filter.EntryFilter;
 import fs.fibu2.filter.NameFilter;
 import fs.fibu2.resource.Fsfibu2DefaultReference;
@@ -24,7 +25,7 @@ public class FilterPreferencesTest {
 
 	public static void main(String[] args) {
 		BasicConfigurator.configure();
-		String basedir = "/home/talio/eclipse/workspace/";
+		String basedir = "/home/hampe/workspace/";
 		Fsfibu2DefaultReference.setFsfibuDirectory(basedir + "fsfibu2/");
 		FsfwDefaultReference.setFsfwDirectory(basedir + "fsframework/");
 		
@@ -33,7 +34,8 @@ public class FilterPreferencesTest {
 		node.node("filters");
 		
 		//NameFilter filter = new NameFilter("a","z");
-		AccountInformationFilter filter = new AccountInformationFilter(new AccountInformation("statement",new BankAccount().getFieldNames().get("statement"),null),"bla");
+		//AccountInformationFilter filter = new AccountInformationFilter(new AccountInformation("statement",new BankAccount().getFieldNames().get("statement"),null),"bla");
+		CategoryFilter filter = new CategoryFilter("bla",5);
 		filter.insertMyPreferences(node);
 		
 		EntryFilter filter2 = filter.createMeFromPreferences(node.node("filter"));
