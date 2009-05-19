@@ -188,44 +188,44 @@ public class AccountInformationFilter implements EntryFilter {
 		}
 	}
 	
-	@Override
-	public EntryFilter createMeFromPreferences(Preferences filterNode)
-			throws IllegalArgumentException {
-		if(filterNode == null) throw new NullPointerException("Cannot read preferences from null node");
-		Selection type = AbstractFilterPreferences.getType(filterNode);
-		if(type == null) throw new IllegalArgumentException("Invalid node: No type entry");
-		try {
-			if(!filterNode.nodeExists("accountinformation")) throw new IllegalArgumentException("Invalid node: No account information node");
-		} catch (BackingStoreException e) {
-			throw new IllegalArgumentException(e);
-		}
-		
-		String id = filterNode.node("accountinformation").get("id", null);
-		String name = filterNode.node("accountinformation").get("name", null);
-		if(id == null || name == null) throw new IllegalArgumentException("Invalid node: Name and/or id for account information field missing");
-		
-		AccountInformation info = new AccountInformation(id,name,null);
-		
-		switch(type) {
-		case EQUALITY: return new AccountInformationFilter(info,AbstractFilterPreferences.getEqualityString(filterNode));
-		case REGEX: return new AccountInformationFilter(info, Pattern.compile(AbstractFilterPreferences.getPatternString(filterNode)));
-		case RANGE: return new AccountInformationFilter(info, AbstractFilterPreferences.getMinString(filterNode),
-				AbstractFilterPreferences.getMaxString(filterNode));
-		default: return new AccountInformationFilter();
-		}
-	}
-
-	@Override
-	public void insertMyPreferences(Preferences node) throws NullPointerException{
-		if(node == null) throw new NullPointerException("Cannot insert preferences in null node");
-		Preferences fnode = node.node("filter");
-		AbstractFilterPreferences.insert(fnode, typeOfFilter, getID(),equalityString,regexFilter != null? regexFilter.pattern() : null,
-				numericalRangeFilter? minFloatFilter.toString() : minFilter,
-				numericalRangeFilter? maxFloatFilter.toString() : maxFilter);
-		Preferences accinfNode = fnode.node("accountinformation");
-			accinfNode.put("id", information.getId());
-			accinfNode.put("name", information.getName());
-	}
+//	@Override
+//	public EntryFilter createMeFromPreferences(Preferences filterNode)
+//			throws IllegalArgumentException {
+//		if(filterNode == null) throw new NullPointerException("Cannot read preferences from null node");
+//		Selection type = AbstractFilterPreferences.getType(filterNode);
+//		if(type == null) throw new IllegalArgumentException("Invalid node: No type entry");
+//		try {
+//			if(!filterNode.nodeExists("accountinformation")) throw new IllegalArgumentException("Invalid node: No account information node");
+//		} catch (BackingStoreException e) {
+//			throw new IllegalArgumentException(e);
+//		}
+//		
+//		String id = filterNode.node("accountinformation").get("id", null);
+//		String name = filterNode.node("accountinformation").get("name", null);
+//		if(id == null || name == null) throw new IllegalArgumentException("Invalid node: Name and/or id for account information field missing");
+//		
+//		AccountInformation info = new AccountInformation(id,name,null);
+//		
+//		switch(type) {
+//		case EQUALITY: return new AccountInformationFilter(info,AbstractFilterPreferences.getEqualityString(filterNode));
+//		case REGEX: return new AccountInformationFilter(info, Pattern.compile(AbstractFilterPreferences.getPatternString(filterNode)));
+//		case RANGE: return new AccountInformationFilter(info, AbstractFilterPreferences.getMinString(filterNode),
+//				AbstractFilterPreferences.getMaxString(filterNode));
+//		default: return new AccountInformationFilter();
+//		}
+//	}
+//
+//	@Override
+//	public void insertMyPreferences(Preferences node) throws NullPointerException{
+//		if(node == null) throw new NullPointerException("Cannot insert preferences in null node");
+//		Preferences fnode = node.node("filter");
+//		AbstractFilterPreferences.insert(fnode, typeOfFilter, getID(),equalityString,regexFilter != null? regexFilter.pattern() : null,
+//				numericalRangeFilter? minFloatFilter.toString() : minFilter,
+//				numericalRangeFilter? maxFloatFilter.toString() : maxFilter);
+//		Preferences accinfNode = fnode.node("accountinformation");
+//			accinfNode.put("id", information.getId());
+//			accinfNode.put("name", information.getName());
+//	}
 	
 	// LOCAL CLASS FOR EDITOR ******************************
 	// *****************************************************

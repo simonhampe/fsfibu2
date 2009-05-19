@@ -285,18 +285,14 @@ public class CategoryFilter implements EntryFilter {
 			levelLabel.setText(Fsfibu2StringTableMgr.getString("fs.fibu2.filter.CategoryFilter.level") + ": ");
 			levelLabel.setHorizontalTextPosition(JLabel.LEFT);
 				
-			if(typeOfFilter == Selection.EQUALITY) {
-				if(equalityCategory != null && comboBox.getModel().getSize() > 0) { //We only filter for categories, if at least one is used
-					comboBox.setSelectedItem(equalityCategory);
-					selectCategory.setSelected(true);
-				}
-				else {
-					selectAdvanced.setSelected(true);
-					levelField.setText(Integer.toString(levelToCheck >= 1? levelToCheck : 1));
-				}
+			if(typeOfFilter == Selection.EQUALITY && equalityCategory != null && comboBox.getModel().getSize() > 0) {
+				//We only filter for categories, if at least one is used
+				comboBox.setSelectedItem(equalityCategory);
+				selectCategory.setSelected(true);
 			}
 			else {
 				selectAdvanced.setSelected(true);
+				levelField.setText(Integer.toString(levelToCheck >= 1? levelToCheck : 1));
 			}
 			
 			String singleString = (typeOfFilter == Selection.EQUALITY && equalityCategory == null? equalityString : (typeOfFilter == Selection.REGEX? regexFilter.pattern() : ""));

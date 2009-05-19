@@ -1,6 +1,7 @@
 package fs.fibu2.test.filter;
 
 import java.util.prefs.Preferences;
+import java.util.regex.Pattern;
 
 import javax.swing.JFrame;
 
@@ -25,7 +26,7 @@ public class FilterPreferencesTest {
 
 	public static void main(String[] args) {
 		BasicConfigurator.configure();
-		String basedir = "/home/hampe/workspace/";
+		String basedir = "/home/talio/eclipse/workspace/";
 		Fsfibu2DefaultReference.setFsfibuDirectory(basedir + "fsfibu2/");
 		FsfwDefaultReference.setFsfwDirectory(basedir + "fsframework/");
 		
@@ -35,7 +36,7 @@ public class FilterPreferencesTest {
 		
 		//NameFilter filter = new NameFilter("a","z");
 		//AccountInformationFilter filter = new AccountInformationFilter(new AccountInformation("statement",new BankAccount().getFieldNames().get("statement"),null),"bla");
-		CategoryFilter filter = new CategoryFilter("bla",5);
+		CategoryFilter filter = new CategoryFilter("z","a",3);
 		filter.insertMyPreferences(node);
 		
 		EntryFilter filter2 = filter.createMeFromPreferences(node.node("filter"));
