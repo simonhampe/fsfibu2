@@ -47,7 +47,7 @@ import fs.xml.XMLDirectoryTree;
  */
 public class AccountInformationFilter implements EntryFilter {
 
-	private AccountInformation information; //TODO: COntains a list of accounts using it. What if this changes?
+	private AccountInformation information; 
 	
 	private Selection 	typeOfFilter;
 	private String	   	equalityString;
@@ -157,14 +157,13 @@ public class AccountInformationFilter implements EntryFilter {
 	}
 
 	/**
-	 * @return true, if and only if e has an account information field for the given id AND name which matches the criteria.
+	 * @return true, if and only if e has an account information field for the given id which matches the criteria.
 	 */
 	@Override
 	public boolean verifyEntry(Entry e) {
 		if(e == null) return false;
 		String entryInfo = e.getAccountInformation().get(information.getId()); 
 		if( entryInfo == null) return false;
-		if(!information.getName().equals(e.getAccount().getFieldNames().get(information.getId()))) return false;
 		switch(typeOfFilter) {
 		case EQUALITY: return equalityString.equals(entryInfo);
 		case REGEX: Matcher m = regexFilter.matcher(entryInfo);
@@ -188,44 +187,42 @@ public class AccountInformationFilter implements EntryFilter {
 		}
 	}
 	
-//	@Override
-//	public EntryFilter createMeFromPreferences(Preferences filterNode)
-//			throws IllegalArgumentException {
-//		if(filterNode == null) throw new NullPointerException("Cannot read preferences from null node");
-//		Selection type = AbstractFilterPreferences.getType(filterNode);
-//		if(type == null) throw new IllegalArgumentException("Invalid node: No type entry");
-//		try {
-//			if(!filterNode.nodeExists("accountinformation")) throw new IllegalArgumentException("Invalid node: No account information node");
-//		} catch (BackingStoreException e) {
-//			throw new IllegalArgumentException(e);
-//		}
-//		
-//		String id = filterNode.node("accountinformation").get("id", null);
-//		String name = filterNode.node("accountinformation").get("name", null);
-//		if(id == null || name == null) throw new IllegalArgumentException("Invalid node: Name and/or id for account information field missing");
-//		
-//		AccountInformation info = new AccountInformation(id,name,null);
-//		
-//		switch(type) {
-//		case EQUALITY: return new AccountInformationFilter(info,AbstractFilterPreferences.getEqualityString(filterNode));
-//		case REGEX: return new AccountInformationFilter(info, Pattern.compile(AbstractFilterPreferences.getPatternString(filterNode)));
-//		case RANGE: return new AccountInformationFilter(info, AbstractFilterPreferences.getMinString(filterNode),
-//				AbstractFilterPreferences.getMaxString(filterNode));
-//		default: return new AccountInformationFilter();
-//		}
-//	}
-//
-//	@Override
-//	public void insertMyPreferences(Preferences node) throws NullPointerException{
-//		if(node == null) throw new NullPointerException("Cannot insert preferences in null node");
-//		Preferences fnode = node.node("filter");
-//		AbstractFilterPreferences.insert(fnode, typeOfFilter, getID(),equalityString,regexFilter != null? regexFilter.pattern() : null,
-//				numericalRangeFilter? minFloatFilter.toString() : minFilter,
-//				numericalRangeFilter? maxFloatFilter.toString() : maxFilter);
-//		Preferences accinfNode = fnode.node("accountinformation");
-//			accinfNode.put("id", information.getId());
-//			accinfNode.put("name", information.getName());
-//	}
+	@Override
+	public EntryFilter createMeFromPreferences(Preferences filterNode)
+			throws IllegalArgumentException {
+		if(filterNode == null) throw new NullPointerException("Cannot read preferences from null node");
+		Selection type = AbstractFilterPreferences.getType(filterNode);
+		if(type == null) throw new IllegalArgumentException("Invalid node: No type entry");
+		try {
+			if(!filterNode.nodeExists("accountinformation")) throw new IllegalArgumentException("Invalid node: No account information node");
+		} catch (BackingStoreException e) {
+			throw new IllegalArgumentException(e);
+		}
+		
+		String id = filterNode.node("accountinformation").get("id", null);
+		if(id == null) throw new IllegalArgumentException("Invalid node: id for account information field missing");
+		
+		AccountInformation info = new AccountInformation(id,null,null);
+		
+		switch(type) {
+		case EQUALITY: return new AccountInformationFilter(info,AbstractFilterPreferences.getEqualityString(filterNode));
+		case REGEX: return new AccountInformationFilter(info, Pattern.compile(AbstractFilterPreferences.getPatternString(filterNode)));
+		case RANGE: return new AccountInformationFilter(info, AbstractFilterPreferences.getMinString(filterNode),
+				AbstractFilterPreferences.getMaxString(filterNode));
+		default: return new AccountInformationFilter();
+		}
+	}
+
+	@Override
+	public void insertMyPreferences(Preferences node) throws NullPointerException{
+		if(node == null) throw new NullPointerException("Cannot insert preferences in null node");
+		Preferences fnode = node.node("filter");
+		AbstractFilterPreferences.insert(fnode, typeOfFilter, getID(),equalityString,regexFilter != null? regexFilter.pattern() : null,
+				numericalRangeFilter? minFloatFilter.toString() : minFilter,
+				numericalRangeFilter? maxFloatFilter.toString() : maxFilter);
+		Preferences accinfNode = fnode.node("accountinformation");
+			accinfNode.put("id", information.getId());
+	}
 	
 	// LOCAL CLASS FOR EDITOR ******************************
 	// *****************************************************

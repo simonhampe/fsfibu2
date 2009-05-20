@@ -64,9 +64,9 @@ public class FilterTest {
 			
 			//NameFilter filter = new NameFilter(Selection.REGEX,"S.*",null);
 			//ValueFilter filter = new ValueFilter(Selection.RANGE,0,0.3f,14.2f,null);
-			CategoryFilter filter = new CategoryFilter();
+			//CategoryFilter filter = new CategoryFilter();
 			//AccountFilter filter = new AccountFilter(AccountLoader.getAccount("cash_box"));
-			//AccountInformationFilter filter = new AccountInformationFilter();
+			AccountInformationFilter filter = new AccountInformationFilter();
 			//AdditionalInformationFilter filter = new AdditionalInformationFilter();
 			//DateFilter filter = new DateFilter();
 			//EntryFilter filter = FilterLoader.getFilter("ff2filter_account");

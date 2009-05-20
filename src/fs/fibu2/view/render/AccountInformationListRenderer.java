@@ -26,9 +26,10 @@ public class AccountInformationListRenderer extends DefaultListCellRenderer {
 			int index, boolean isSelected, boolean cellHasFocus) {
 		JLabel l = (JLabel)super.getListCellRendererComponent(list, value, index, isSelected,
 				cellHasFocus);
+		if(!(value instanceof AccountInformation)) return l;
 		AccountInformation info = (AccountInformation) value;
 		StringBuilder b = new StringBuilder();
-		b.append(info.getName());
+		b.append(info.getName() != null? info.getName() : info.getId());
 		b.append(" (");
 		for(Account a : info.getAccounts()) {
 			b.append(a.getName());
