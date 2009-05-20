@@ -17,6 +17,8 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 import org.dom4j.Document;
 
@@ -33,7 +35,10 @@ import fs.fibu2.view.model.AccountInformation;
 import fs.fibu2.view.model.AccountInformationListModel;
 import fs.fibu2.view.render.AccountInformationListRenderer;
 import fs.gui.SwitchIconLabel;
+import fs.polyglot.validate.TabooValidator;
 import fs.validate.LabelIndicValidator;
+import fs.validate.ValidationResult;
+import fs.validate.ValidationValidator;
 import fs.validate.ValidationResult.Result;
 import fs.xml.ResourceDependent;
 import fs.xml.ResourceReference;
@@ -237,7 +242,7 @@ public class AccountInformationFilter implements EntryFilter {
 		private StandardFilterComponent comp;
 		
 		private JComboBox comboBox = new JComboBox();
-		private JLabel	  comboLabel = new JLabel();
+		private SwitchIconLabel comboLabel = new SwitchIconLabel();
 		
 		private JCheckBox 		numericBox = new JCheckBox();
 		private SwitchIconLabel numericLabel = new SwitchIconLabel();
@@ -245,6 +250,13 @@ public class AccountInformationFilter implements EntryFilter {
 		private ImageIcon warn = new ImageIcon(Fsfibu2DefaultReference.getDefaultReference().getFullResourcePath(this, "graphics/share/warn.png"));
 		
 		private LabelIndicValidator<JCheckBox> validator;
+		private LabelIndicValidator<JComboBox> comboValidator;
+		private ValidationValidator summary = new ValidationValidator() {
+			@Override
+			public void validationPerformed(ValidationResult result) {
+				fireStateChanged();
+			}
+		};
 		
 		private Journal associatedJournal;
 		
@@ -259,6 +271,7 @@ public class AccountInformationFilter implements EntryFilter {
 			comboBox.setModel(new AccountInformationListModel(associatedJournal));
 			comboBox.setRenderer(new AccountInformationListRenderer());
 			comboLabel.setText(Fsfibu2StringTableMgr.getString("fs.fibu2.filter.AccountInformationFilter.field") + ": ");
+			comboLabel.setIconReference(warn);
 			
 			numericBox.setSelected(numericalRangeFilter);
 			numericLabel.setText(Fsfibu2StringTableMgr.getString("fs.fibu2.filter.AccountInformationFilter.numericrange"));
@@ -337,8 +350,41 @@ public class AccountInformationFilter implements EntryFilter {
 					comp.addStandardComponentListener(listener);
 				}
 			};
-			validator.addComponent(numericBox, numericLabel);
-			validator.validate();
+			validator.addComponent(numericBox, numericLabel);			
+			//This validator issues an error, if the combobox model is empty
+			comboValidator = new LabelIndicValidator<JComboBox>(null, warn,warn) {
+				private ListDataListener listener = new ListDataListener() {
+					@Override
+					public void contentsChanged(ListDataEvent e) {fireStateChanged(new ChangeEvent(e.getSource()));}
+					@Override
+					public void intervalAdded(ListDataEvent e) { fireStateChanged(new ChangeEvent(e.getSource()));}
+					@Override
+					public void intervalRemoved(ListDataEvent e) { fireStateChanged(new ChangeEvent(e.getSource()));}
+				};
+				@Override
+				protected void registerToComponent(JComboBox component) {
+					comboBox.getModel().addListDataListener(listener);
+				}
+				@Override
+				protected void unregisterFromComponent(JComboBox component) {
+					comboBox.getModel().removeListDataListener(listener);
+				}
+				@Override
+				public Result validate(JComboBox component) {
+					String tooltip = null;
+					Result r = Result.CORRECT;
+					if(comboBox.getModel().getSize() == 0) {
+						r = Result.INCORRECT;
+						tooltip = Fsfibu2StringTableMgr.getString("fs.fibu2.filter.AccountInformationFilter.emptylist");
+					}
+					setToolTipText(component, tooltip);
+					return r;
+				}
+			};
+			comboValidator.addComponent(comboBox, comboLabel);
+			summary.addValidator(validator);
+			summary.addValidator(comboValidator);
+			summary.validate();
 			
 			//Notification
 			comp.addStandardComponentListener(new StandardComponentListener() {
@@ -364,14 +410,19 @@ public class AccountInformationFilter implements EntryFilter {
 		@Override
 		public EntryFilter getFilter() {
 			if(!hasValidContent()) return null;
-			
-			return null; //TODO: Do
+			else {
+				switch(comp.getSelection()) {
+				case EQUALITY: return new AccountInformationFilter(((AccountInformation)comboBox.getSelectedItem()), comp.getSingleEntry());
+				case REGEX: return new AccountInformationFilter((AccountInformation)comboBox.getSelectedItem(),comp.getSingleEntry());
+				case RANGE: return new AccountInformationFilter((AccountInformation)comboBox.getSelectedItem(),comp.getMinEntry(),comp.getMaxEntry());
+				default: return new AccountInformationFilter();
+				}
+			}
 		}
 
 		@Override
 		public boolean hasValidContent() {
-			// TODO Auto-generated method stub
-			return false;
+			return comp.validateFilter() != Result.INCORRECT && summary.validate().getOverallResult() != Result.INCORRECT;
 		}
 
 		// RESOURCEDEPENDENT *****************************
