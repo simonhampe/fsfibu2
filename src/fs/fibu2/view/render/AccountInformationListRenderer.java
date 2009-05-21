@@ -1,6 +1,7 @@
 package fs.fibu2.view.render;
 
 import java.awt.Component;
+import java.util.Iterator;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
@@ -29,14 +30,18 @@ public class AccountInformationListRenderer extends DefaultListCellRenderer {
 		if(!(value instanceof AccountInformation)) return l;
 		AccountInformation info = (AccountInformation) value;
 		StringBuilder b = new StringBuilder();
+		b.append("<html>");
 		b.append(info.getName() != null? info.getName() : info.getId());
-		b.append(" (");
-		for(Account a : info.getAccounts()) {
+		b.append("<br><i>(");
+		Iterator<Account> iterator = info.getAccounts().iterator();
+		while(iterator.hasNext()) {
+			Account a = iterator.next();
 			b.append(a.getName());
-			b.append(", ");
+			if(iterator.hasNext()) {
+				b.append(", ");
+			}
 		}
-		b.delete(b.length()-2, b.length());
-		b.append(")");
+		b.append(")</i></html>");
 		l.setText(b.toString());
 		return l;
 	}

@@ -10,6 +10,8 @@ import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import org.apache.log4j.BasicConfigurator;
 import org.dom4j.Document;
@@ -25,6 +27,7 @@ import fs.fibu2.filter.AdditionalInformationFilter;
 import fs.fibu2.filter.CategoryFilter;
 import fs.fibu2.filter.DateFilter;
 import fs.fibu2.filter.EntryFilter;
+import fs.fibu2.filter.EntryFilterEditor;
 import fs.fibu2.filter.FilterLoader;
 import fs.fibu2.filter.ValueFilter;
 import fs.fibu2.filter.StandardFilterComponent.Selection;
@@ -47,15 +50,15 @@ public class FilterTest {
 	public static void main(String[] args) {
 		try {
 			BasicConfigurator.configure();
-			String basedir = "/home/hampe/workspace/";
+			String basedir = "/home/talio/eclipse/workspace/";
 			Fsfibu2DefaultReference.setFsfibuDirectory(basedir + "fsfibu2/");
 			FsfwDefaultReference.setFsfwDirectory(basedir + "fsframework/");
 			JFrame mainFrame = new JFrame();
 			
 			//Document d = XMLToolbox.loadXMLFile(new File("examples/journal.xml"));
 			//Journal j = new Journal(d.getRootElement());
-			//Journal j = Fsfibu1Converter.convertFsfibu1Journal(XMLToolbox.loadXMLFile(new File(basedir + "/fsfibu/KassenbuchAb2008.xml")));
-			Journal j = new Journal();
+			Journal j = Fsfibu1Converter.convertFsfibu1Journal(XMLToolbox.loadXMLFile(new File(basedir + "/fsfibu/KassenbuchAb2008.xml")));
+			//final Journal j = new Journal();
 			AccountLoader.setAccount("slush_fund", new SlushFund());
 			j.addEntry(new Entry("bla",0,Currency.getInstance(Locale.GERMANY),new GregorianCalendar(),Category.getCategory(new Vector<String>(Arrays.asList("bla","blu"))),"slush_fund",
 					null,""));
@@ -71,7 +74,8 @@ public class FilterTest {
 			//DateFilter filter = new DateFilter();
 			//EntryFilter filter = FilterLoader.getFilter("ff2filter_account");
 			
-			mainFrame.add(filter.getEditor(j));
+			EntryFilterEditor editor = filter.getEditor(j);
+			mainFrame.add(editor);
 			
 			mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			mainFrame.pack();

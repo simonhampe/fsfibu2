@@ -2,6 +2,7 @@ package fs.fibu2.filter;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.prefs.Preferences;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -125,6 +126,29 @@ public class ValueFilter implements EntryFilter {
 					return m.matches();
 		default: 	return false;
 		}
+	}
+	
+	@Override
+	public EntryFilter createMeFromPreferences(Preferences filterNode)
+			throws IllegalArgumentException {
+		if(filterNode == null) throw new NullPointerException("Cannot read preferences from null node");
+		Selection type = AbstractFilterPreferences.getType(filterNode);
+		if(type == null) throw new IllegalArgumentException("Invalid node: No type entry");
+		switch(type) {
+		case EQUALITY: return new ValueFilter(Float.parseFloat(AbstractFilterPreferences.getEqualityString(filterNode)));
+		case REGEX: return new ValueFilter(AbstractFilterPreferences.getPatternString(filterNode));
+		case RANGE: return new ValueFilter(Float.parseFloat(AbstractFilterPreferences.getMinString(filterNode)),
+				Float.parseFloat(AbstractFilterPreferences.getMaxString(filterNode)));
+		default: return new ValueFilter();
+		}
+	}
+
+	@Override
+	public void insertMyPreferences(Preferences node) throws NullPointerException{
+		if(node == null) throw new NullPointerException("Cannot insert preferences in null node");
+		AbstractFilterPreferences.insert(node.node("filter"),typeOfFilter, getID(), Float.toString(equalityFilter), 
+				regexFilter != null? regexFilter.pattern() : null, 
+				Float.toString(minFilter), Float.toString(maxFilter));
 	}
 	
 	// LOCAL CLASS FOR EDITOR *************************

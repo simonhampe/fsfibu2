@@ -35,7 +35,6 @@ import fs.fibu2.view.model.AccountInformation;
 import fs.fibu2.view.model.AccountInformationListModel;
 import fs.fibu2.view.render.AccountInformationListRenderer;
 import fs.gui.SwitchIconLabel;
-import fs.polyglot.validate.TabooValidator;
 import fs.validate.LabelIndicValidator;
 import fs.validate.ValidationResult;
 import fs.validate.ValidationValidator;
@@ -272,6 +271,9 @@ public class AccountInformationFilter implements EntryFilter {
 			comboBox.setRenderer(new AccountInformationListRenderer());
 			comboLabel.setText(Fsfibu2StringTableMgr.getString("fs.fibu2.filter.AccountInformationFilter.field") + ": ");
 			comboLabel.setIconReference(warn);
+			if(comboBox.getModel().getSize() > 0) {
+				comboBox.setSelectedItem(information);
+			}
 			
 			numericBox.setSelected(numericalRangeFilter);
 			numericLabel.setText(Fsfibu2StringTableMgr.getString("fs.fibu2.filter.AccountInformationFilter.numericrange"));

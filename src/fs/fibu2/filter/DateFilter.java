@@ -2,6 +2,7 @@ package fs.fibu2.filter;
 
 import java.text.ParseException;
 import java.util.GregorianCalendar;
+import java.util.prefs.Preferences;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -98,6 +99,38 @@ public class DateFilter implements EntryFilter {
 					return c.compare(minFilter, e.getDate()) <= 0 && c.compare(e.getDate(), maxFilter) <= 0;
 		default: return false;
 		}
+	}
+	
+	@Override
+	public EntryFilter createMeFromPreferences(Preferences filterNode)
+			throws IllegalArgumentException {
+		if(filterNode == null) throw new NullPointerException("Cannot read preferences from null node");
+		Selection type = AbstractFilterPreferences.getType(filterNode);
+		if(type == null) throw new IllegalArgumentException("Invalid node: No type entry");
+		try {
+			switch(type) {
+			case EQUALITY: return new DateFilter(type,Fsfibu2DateFormats.parseEntryDateFormat(AbstractFilterPreferences.getEqualityString(filterNode)),
+												null,null,null);
+			case REGEX: return new DateFilter(type, null,null,null,AbstractFilterPreferences.getPatternString(filterNode));
+			case RANGE: return new DateFilter(type, null, 
+									Fsfibu2DateFormats.parseEntryDateFormat(AbstractFilterPreferences.getMinString(filterNode)),
+									Fsfibu2DateFormats.parseEntryDateFormat(AbstractFilterPreferences.getMaxString(filterNode)),null);
+			default: return new DateFilter();
+			}
+		}
+		catch(ParseException pe) {
+			throw new IllegalArgumentException("Invalid node: Invalid date format: " + pe.getMessage());
+		}
+	}
+
+	@Override
+	public void insertMyPreferences(Preferences node) throws NullPointerException{
+		if(node == null) throw new NullPointerException("Cannot insert preferences in null node");
+		AbstractFilterPreferences.insert(node.node("filter"),typeOfFilter, getID(), 
+				equalityDate != null? Fsfibu2DateFormats.getEntryDateFormat().format(equalityDate.getTime()) : null,
+				regexFilter != null? regexFilter.pattern() : null,
+				minFilter != null? Fsfibu2DateFormats.getEntryDateFormat().format(minFilter.getTime()) : null,
+				maxFilter != null? Fsfibu2DateFormats.getEntryDateFormat().format(maxFilter.getTime()) : null);
 	}
 	
 	// LOCAL CLASS FOR EDITOR *************************

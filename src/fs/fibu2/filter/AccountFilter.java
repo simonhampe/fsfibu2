@@ -161,8 +161,8 @@ public class AccountFilter implements EntryFilter {
 			catch(Exception e) {
 				throw new IllegalArgumentException("Cannot create filter: Invalid or missing account id");
 			}
-		case REGEX: return new NameFilter(type, AbstractFilterPreferences.getPatternString(filterNode));
-		case RANGE: return new NameFilter(AbstractFilterPreferences.getMinString(filterNode),AbstractFilterPreferences.getMaxString(filterNode));
+		case REGEX: return new AccountFilter(Pattern.compile(AbstractFilterPreferences.getPatternString(filterNode)));
+		case RANGE: return new AccountFilter(AbstractFilterPreferences.getMinString(filterNode),AbstractFilterPreferences.getMaxString(filterNode));
 		default: return new NameFilter();
 		}
 	}
@@ -170,9 +170,11 @@ public class AccountFilter implements EntryFilter {
 	@Override
 	public void insertMyPreferences(Preferences node) throws NullPointerException{
 		if(node == null) throw new NullPointerException("Cannot insert preferences in null node");
-		AbstractFilterPreferences.insert(node, typeOfFilter, equalityString,regexFilter.pattern(),minFilter,maxFilter);
+		Preferences fnode = node.node("filter");
+		AbstractFilterPreferences.insert(fnode, typeOfFilter, getID(),equalityString,regexFilter != null? regexFilter.pattern(): null
+				,minFilter,maxFilter);
 		if(equalityAccount != null) {
-			node.put("account", equalityAccount.getID());
+			fnode.put("account", equalityAccount.getID());
 		}
 	}
 	
