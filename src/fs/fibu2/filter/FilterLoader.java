@@ -1,6 +1,10 @@
 package fs.fibu2.filter;
 
 import java.util.HashMap;
+import java.util.HashSet;
+
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  * This class supplies static methods to retrieve instances of {@link EntryFilter} objects using their ID. There also is a method for
@@ -12,6 +16,9 @@ public final class FilterLoader {
 
 	//Map of String (ID) -> class object for instance retrieval
 	private static HashMap<String, Class<? extends EntryFilter>> filterMap = new HashMap<String, Class<? extends EntryFilter>>();
+	
+	//Listeners which listen to changes in the filter loader's map
+	private static HashSet<ChangeListener> listeners = new HashSet<ChangeListener>();
 	
 	//Init code, load all basic filters
 	static {
@@ -49,6 +56,7 @@ public final class FilterLoader {
 		if(id == null) return;
 		if(filter == null) filterMap.remove(id);
 		else filterMap.put(id, filter);
+		fireStateChanged(new ChangeEvent(id));
 	}
 	
 	/**
@@ -61,11 +69,41 @@ public final class FilterLoader {
 			EntryFilter f = (EntryFilter) filterClass.newInstance();
 			if(!filterMap.containsKey(f.getID())) {
 				filterMap.put(f.getID(), f.getClass());
+				fireStateChanged(new ChangeEvent(f.getID()));
 			}
 		}
 		catch(Exception e) {
 			throw new UnsupportedOperationException(e);
 		}
+	}
+	
+	/**
+	 * @return A list of all ids for which this loader has a mapping
+	 */
+	public static HashSet<String> getFilterIDs() {
+		return new HashSet<String>(filterMap.keySet());
+	}
+	
+	// LISTENER METHODS ********************************
+	// *************************************************
+	
+	/**
+	 * Adds a listener to this class. Listeners are notified, whenever a filter is added to or removed from the loader. 
+	 * The change event contains the corresponding filter id as source 
+	 */
+	public static void addChangeListener(ChangeListener l) {
+		if(l != null) listeners.add(l);
+	}
+	
+	/**
+	 * Removes l as a listener from this class
+	 */
+	public static void removeChangeListener(ChangeListener l) {
+		listeners.remove(l);
+	}
+	
+	protected static void fireStateChanged(ChangeEvent e) {
+		for(ChangeListener l : listeners) l.stateChanged(e);
 	}
 	
 }

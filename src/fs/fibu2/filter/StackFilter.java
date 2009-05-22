@@ -5,15 +5,29 @@ import java.util.Vector;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
+
 import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.Journal;
 import fs.fibu2.filter.StandardFilterComponent.Selection;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
+import fs.fibu2.view.model.FilterListModel;
+import fs.fibu2.view.render.FilterListRenderer;
+import fs.gui.SwitchIconLabel;
 
 /**
  * This class implements a stack of filters. Filters can be added / removed via the editor. Each filter can be (de)activated, negated and edited via
  * its own editor which is added to the stack filter's editor as a subcomponent. Finally, an entry will be admitted by this filter, if it is admitted
- * by all active filters in its stack. Each stack filter is associated to a unique editor.
+ * by all active filters in its stack. Each stack filter is associated to a unique editor, which is created the first time getEditor is invoked.
  * @author Simon Hampe
  *
  */
@@ -61,8 +75,10 @@ public class StackFilter implements EntryFilter {
 
 	@Override
 	public EntryFilterEditor getEditor(Journal j) {
-		// TODO Auto-generated method stub
-		return null;
+		if(editor == null) {
+			editor = new StackFilterEditor(j);
+		}
+		return editor;
 	}
 
 	@Override
@@ -150,6 +166,60 @@ public class StackFilter implements EntryFilter {
 	
 	private class StackFilterEditor extends EntryFilterEditor {	
 
+		private Journal associatedJournal;
+		
+		private JLabel listLabel = new JLabel();
+		private JComboBox filterList = new JComboBox();
+		private JButton addFilterButton = new JButton();
+		
+		private JPanel editorPanel = new JPanel();
+		
+		//This listener en/disables the add button depending on whether the filter list is empty
+		private ListDataListener comboListener = new ListDataListener() {
+			@Override
+			public void contentsChanged(ListDataEvent e) {updateButton();}
+			@Override
+			public void intervalAdded(ListDataEvent e) {updateButton();}
+			@Override
+			public void intervalRemoved(ListDataEvent e) {updateButton();}
+			protected void updateButton() {
+				addFilterButton.setEnabled(filterList.getModel().getSize() > 0);
+			}
+		};
+		
+		// CONSTRUCTOR *******************************
+		// *******************************************
+		
+		public StackFilterEditor(Journal j) {
+			associatedJournal = j == null? new Journal() : j;
+			
+			//Init components
+			listLabel.setText(Fsfibu2StringTableMgr.getString("fs.fibu2.filter.StackFilter.filter"));
+			addFilterButton.setText(Fsfibu2StringTableMgr.getString("fs.fibu2.filter.StackFilter.add"));
+			
+			filterList.setModel(new FilterListModel());
+			filterList.getModel().addListDataListener(comboListener);
+			filterList.setRenderer(new FilterListRenderer());
+			addFilterButton.setEnabled(filterList.getModel().getSize() > 0);
+			
+			JScrollPane scrollPane = new JScrollPane(editorPanel);
+			
+			//Layout
+			Box layout = new Box(BoxLayout.Y_AXIS);
+			Box firstBox = new Box(BoxLayout.X_AXIS);
+				firstBox.setAlignmentX(LEFT_ALIGNMENT);
+				firstBox.add(listLabel);
+				firstBox.add(filterList);
+				firstBox.add(addFilterButton);
+				firstBox.add(Box.createHorizontalGlue());
+			layout.add(firstBox);
+			layout.add(scrollPane);
+			add(layout);
+		}
+		
+		// FILTER METHODS ****************************
+		// *******************************************
+		
 		@Override
 		public EntryFilter getFilter() {
 			// TODO Auto-generated method stub
