@@ -1,29 +1,37 @@
 package fs.fibu2.filter;
 
+import java.awt.Dimension;
 import java.util.HashSet;
 import java.util.Vector;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.JToggleButton;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
 import org.dom4j.Document;
+import org.omg.CORBA.IMP_LIMIT;
 
 import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.Journal;
 import fs.fibu2.filter.StandardFilterComponent.Selection;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
+import fs.fibu2.resource.Fsfibu2DefaultReference;
 import fs.fibu2.view.model.FilterListModel;
 import fs.fibu2.view.render.FilterListRenderer;
 import fs.gui.SwitchIconLabel;
@@ -59,13 +67,16 @@ public class StackFilter implements EntryFilter {
 	/**
 	 * Constructs a stack filter.
 	 * @param listOfFilters The list of filters in this stack
-	 * @param isActive All filters in listOfFilters, which are contained in this list, are active filters, all others inactive
-	 * @param isNegated All filters in listOfFilters, which are contained in this list, are applied inversely, all others normally
+	 * @param isActive All filters in listOfFilters, which are contained in this list, are active filters, all others inactive. If null,
+	 * all filters are by default active
+	 * @param isNegated All filters in listOfFilters, which are contained in this list, are applied inversely, all others normally. If null,
+	 * all filters are by default NOT negated
 	 */
 	public StackFilter(Vector<EntryFilter> listOfFilters, HashSet<EntryFilter> isActive, HashSet<EntryFilter> isNegated) {
 		filterList = new Vector<StackFilterElement>();
 		for(EntryFilter f : listOfFilters) {
-			if(f != null) filterList.add(new StackFilterElement(f,isActive.contains(f),isNegated.contains(f)));
+			if(f != null) filterList.add(new StackFilterElement(f,isActive != null? isActive.contains(f) : true,
+										isNegated != null? isNegated.contains(f) : false));
 		}
 	}
 	
@@ -80,7 +91,7 @@ public class StackFilter implements EntryFilter {
 	@Override
 	public EntryFilterEditor getEditor(Journal j) {
 		if(editor == null) {
-			editor = new StackFilterEditor(j,this);
+			editor = new StackFilterEditor(j);
 		}
 		return editor;
 	}
@@ -174,12 +185,10 @@ public class StackFilter implements EntryFilter {
 		private StackFilter associatedInstance;
 		
 		private JLabel listLabel = new JLabel();
-		private JComboBox filterList = new JComboBox();
+		private JComboBox filterBox = new JComboBox();
 		private JButton addFilterButton = new JButton();
 		
-		private JPanel editorPanel = new JPanel();
-		
-		private Vector<StackElementEditor> editorList = new Vector<StackElementEditor>();
+		private Box editorPanel = new Box(BoxLayout.Y_AXIS);
 		
 		//This listener en/disables the add button depending on whether the filter list is empty
 		private ListDataListener comboListener = new ListDataListener() {
@@ -190,49 +199,54 @@ public class StackFilter implements EntryFilter {
 			@Override
 			public void intervalRemoved(ListDataEvent e) {updateButton();}
 			protected void updateButton() {
-				addFilterButton.setEnabled(filterList.getModel().getSize() > 0);
+				addFilterButton.setEnabled(filterBox.getModel().getSize() > 0);
 			}
 		};
 		
 		// CONSTRUCTOR *******************************
 		// *******************************************
 		
-		public StackFilterEditor(Journal j, StackFilter associatedInstance) {
+		public StackFilterEditor(Journal j) {
 			associatedJournal = j == null? new Journal() : j;
-			this.associatedInstance = associatedInstance == null? new StackFilter() : associatedInstance;
 			
 			//Init components
 			listLabel.setText(Fsfibu2StringTableMgr.getString("fs.fibu2.filter.StackFilter.filter") + ": ");
 			addFilterButton.setText(Fsfibu2StringTableMgr.getString("fs.fibu2.filter.StackFilter.add"));
 			
-			filterList.setModel(new FilterListModel());
-			filterList.getModel().addListDataListener(comboListener);
-			filterList.setRenderer(new FilterListRenderer());
-			addFilterButton.setEnabled(filterList.getModel().getSize() > 0);
+			filterBox.setModel(new FilterListModel());
+			filterBox.getModel().addListDataListener(comboListener);
+			filterBox.setRenderer(new FilterListRenderer());
+			addFilterButton.setEnabled(filterBox.getModel().getSize() > 0);
 			
-			JScrollPane scrollPane = new JScrollPane(editorPanel);
+			JScrollPane listingPane = new JScrollPane(editorPanel);
 			
 			//Layout
 			Box layout = new Box(BoxLayout.Y_AXIS);
 			Box firstBox = new Box(BoxLayout.X_AXIS);
-				firstBox.setAlignmentX(LEFT_ALIGNMENT);
+				firstBox.setAlignmentX(RIGHT_ALIGNMENT);
 				firstBox.add(listLabel);
-				firstBox.add(filterList);
+				firstBox.add(filterBox);
+				firstBox.add(Box.createHorizontalStrut(10));
 				firstBox.add(addFilterButton);
 				firstBox.add(Box.createHorizontalGlue());
 			layout.add(firstBox);
-			layout.add(scrollPane);
+			layout.add(Box.createVerticalStrut(5));
+			Box scrollBox = new Box(BoxLayout.X_AXIS);
+				scrollBox.setAlignmentX(CENTER_ALIGNMENT);
+				scrollBox.add(listingPane);
+				for(StackFilterElement e : filterList) {
+					editorPanel.add(new StackElementEditor(e,associatedJournal));
+				}
+			layout.add(scrollBox);
 			add(layout);
 		}
 		
 		// CONTROL METHODS ***************************
 		// *******************************************
 		
-		public Journal getAssociatedJournal() {
-			return associatedJournal;
-		}
 		
-		public void removeFilter(int index) {
+		// Deletes the ith filter and removes the given component from the editor 
+		public void removeFilter(int index, StackFilterEditor component) {
 			//TODO: Write
 		}
 		
@@ -242,7 +256,7 @@ public class StackFilter implements EntryFilter {
 		//Always returns the stack filter associated to this editor
 		@Override
 		public EntryFilter getFilter() {
-			return associatedInstance;
+			return StackFilter.this;
 		}
 
 		//This editor always has valid content
@@ -261,21 +275,77 @@ public class StackFilter implements EntryFilter {
 	private class StackElementEditor extends JPanel implements ResourceDependent {
 
 		private StackFilterElement element;
+		private Journal associatedJournal;
 		
 		private HashSet<ChangeListener> listeners = new HashSet<ChangeListener>(); 
 		
 		private JLabel descriptionLabel = new JLabel();
-		private JButton negateButton = new JButton();
-		private JButton editButton = new JButton();
+		private JToggleButton negateButton = new JToggleButton();
+		private JToggleButton activeButton = new JToggleButton();
+		private JButton cancelButton = new JButton();
+		private JButton editOkButton = new JButton();
 		private JButton deleteButton = new JButton();
+		
+		private Box buttonBox = new Box(BoxLayout.X_AXIS);
+		private Box descriptionBox = new Box(BoxLayout.Y_AXIS);
+		private Box editorBox = new Box(BoxLayout.X_AXIS);
+		
+		private boolean isEditing = false;
+		
+		private ImageIcon negate 	= new ImageIcon(Fsfibu2DefaultReference.getDefaultReference().getFullResourcePath(this, "graphics/StackFilterEditor/negate.png"));
+		private ImageIcon on		= new ImageIcon(Fsfibu2DefaultReference.getDefaultReference().getFullResourcePath(this, "graphics/StackFilterEditor/on.png"));
+		private ImageIcon off		= new ImageIcon(Fsfibu2DefaultReference.getDefaultReference().getFullResourcePath(this, "graphics/StackFilterEditor/off.png"));
+		private ImageIcon cancel 	= new ImageIcon(Fsfibu2DefaultReference.getDefaultReference().getFullResourcePath(this, "graphics/StackFilterEditor/cancel.png"));
+		private ImageIcon ok		= new ImageIcon(Fsfibu2DefaultReference.getDefaultReference().getFullResourcePath(this, "graphics/StackFilterEditor/ok.png"));
+		private ImageIcon edit 		= new ImageIcon(Fsfibu2DefaultReference.getDefaultReference().getFullResourcePath(this, "graphics/StackFilterEditor/edit.png"));
+		private ImageIcon delete	= new ImageIcon(Fsfibu2DefaultReference.getDefaultReference().getFullResourcePath(this, "graphics/StackFilterEditor/delete.png"));
+		
+		// LISTENERS *************************************************
+		// ***********************************************************
 		
 		// CONSTRUCTOR ***********************************************
 		// ***********************************************************
 		
-		public StackElementEditor(StackFilterElement e) {
+		public StackElementEditor(StackFilterElement e, Journal j) {
 			element = e;
-						
+			associatedJournal = j == null? new Journal() : j;
 			
+			//Init components
+			setBorder(BorderFactory.createEtchedBorder());
+			
+			descriptionLabel.setText(element != null? element.filter.getDescription() : "");
+			negateButton.setToolTipText(Fsfibu2StringTableMgr.getString("fs.fibu2.filter.StackFilter.negatetooltip"));
+			negateButton.setIcon(negate);
+			negateButton.setSelected(element != null? element.isNegated : false);
+			activeButton.setToolTipText(Fsfibu2StringTableMgr.getString("fs.fibu2.filter.StackFilter.activetooltip"));
+			activeButton.setIcon(element != null? (element.isActive? on : off) : off);
+			activeButton.setSelected(element != null? element.isActive : false);
+			cancelButton.setToolTipText(Fsfibu2StringTableMgr.getString("fs.fibu2.filter.StackFilter.canceltooltip"));
+			cancelButton.setIcon(cancel);
+			//cancelButton.setVisible(false);
+			editOkButton.setToolTipText(Fsfibu2StringTableMgr.getString("fs.fibu2.filter.StackFilter.edittooltip"));
+			editOkButton.setIcon(edit);
+			deleteButton.setToolTipText(Fsfibu2StringTableMgr.getString("fs.fibu2.filter.StackFilter.deletetooltip"));
+			deleteButton.setIcon(delete);
+			
+			//Layout
+			Box layout = new Box(BoxLayout.Y_AXIS);
+				buttonBox.setAlignmentX(CENTER_ALIGNMENT);
+				buttonBox.add(negateButton); buttonBox.add(activeButton);
+				buttonBox.add(Box.createHorizontalGlue());
+				buttonBox.add(editOkButton);
+				buttonBox.add(cancelButton);
+				buttonBox.add(deleteButton);
+			layout.add(buttonBox);
+				descriptionBox.setAlignmentX(CENTER_ALIGNMENT);
+				descriptionBox.add(Box.createVerticalStrut(10));
+				descriptionBox.add(descriptionLabel);
+				descriptionBox.add(Box.createVerticalStrut(10));
+			layout.add(descriptionBox);
+				if(element != null) editorBox.add(element.filter.getEditor(associatedJournal));
+			layout.add(editorBox);
+			//editorBox.setVisible(false);
+			add(layout);
 		}
 		
 		// LISTENER METHODS ******************************************

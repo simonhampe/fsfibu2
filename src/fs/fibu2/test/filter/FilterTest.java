@@ -29,6 +29,7 @@ import fs.fibu2.filter.DateFilter;
 import fs.fibu2.filter.EntryFilter;
 import fs.fibu2.filter.EntryFilterEditor;
 import fs.fibu2.filter.FilterLoader;
+import fs.fibu2.filter.NameFilter;
 import fs.fibu2.filter.StackFilter;
 import fs.fibu2.filter.ValueFilter;
 import fs.fibu2.filter.StandardFilterComponent.Selection;
@@ -74,7 +75,10 @@ public class FilterTest {
 			//AdditionalInformationFilter filter = new AdditionalInformationFilter();
 			//DateFilter filter = new DateFilter();
 			//EntryFilter filter = FilterLoader.getFilter("ff2filter_account");
-			StackFilter filter = new StackFilter();
+			Vector<EntryFilter> filterlist = new Vector<EntryFilter>();
+				filterlist.add(new NameFilter());
+				filterlist.add(new CategoryFilter(Category.getCategory(Category.getRootCategory(), "bla")));
+			StackFilter filter = new StackFilter(filterlist,null,null);
 			
 			EntryFilterEditor editor = filter.getEditor(j);
 			mainFrame.add(editor);
