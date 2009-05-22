@@ -13,8 +13,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
+
+import org.dom4j.Document;
 
 import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.Journal;
@@ -23,6 +27,9 @@ import fs.fibu2.lang.Fsfibu2StringTableMgr;
 import fs.fibu2.view.model.FilterListModel;
 import fs.fibu2.view.render.FilterListRenderer;
 import fs.gui.SwitchIconLabel;
+import fs.xml.ResourceDependent;
+import fs.xml.ResourceReference;
+import fs.xml.XMLDirectoryTree;
 
 /**
  * This class implements a stack of filters. Filters can be added / removed via the editor. Each filter can be (de)activated, negated and edited via
@@ -34,11 +41,7 @@ import fs.gui.SwitchIconLabel;
 public class StackFilter implements EntryFilter {
 
 	//The stack of filters 
-	private Vector<EntryFilter> filterStack = new Vector<EntryFilter>();
-	//All filters in this set are active, all others are not
-	private HashSet<EntryFilter> isActive = new HashSet<EntryFilter>();
-	//All filters in this set are negated, all others are not
-	private HashSet<EntryFilter> isNegated = new HashSet<EntryFilter>();
+	private Vector<StackFilterElement> filterList;
 	
 	//The editor for this filter
 	private StackFilterEditor editor;
@@ -60,9 +63,10 @@ public class StackFilter implements EntryFilter {
 	 * @param isNegated All filters in listOfFilters, which are contained in this list, are applied inversely, all others normally
 	 */
 	public StackFilter(Vector<EntryFilter> listOfFilters, HashSet<EntryFilter> isActive, HashSet<EntryFilter> isNegated) {
-		this.filterStack = listOfFilters != null? new Vector<EntryFilter>(listOfFilters) : new Vector<EntryFilter>();
-		this.isActive = isActive != null? new HashSet<EntryFilter>(isActive) : new HashSet<EntryFilter>();
-		this.isNegated = isNegated != null? new HashSet<EntryFilter>(isNegated) : new HashSet<EntryFilter>();
+		filterList = new Vector<StackFilterElement>();
+		for(EntryFilter f : listOfFilters) {
+			if(f != null) filterList.add(new StackFilterElement(f,isActive.contains(f),isNegated.contains(f)));
+		}
 	}
 	
 	// FILTER METHODS *************************
@@ -76,7 +80,7 @@ public class StackFilter implements EntryFilter {
 	@Override
 	public EntryFilterEditor getEditor(Journal j) {
 		if(editor == null) {
-			editor = new StackFilterEditor(j);
+			editor = new StackFilterEditor(j,this);
 		}
 		return editor;
 	}
@@ -98,9 +102,9 @@ public class StackFilter implements EntryFilter {
 	@Override
 	public boolean verifyEntry(Entry e) {
 		if(e == null) return false;
-		for(EntryFilter f : filterStack) {
+		for(StackFilterElement f : filterList) {
 			//NOT((f active) AND ((e valid wrt f) XOR (f negated)))
-			if(!(isActive.contains(f) && (f.verifyEntry(e) ^ isNegated.contains(f)))) return false;
+			if(!(f.isActive && (f.filter.verifyEntry(e) ^ f.isNegated))) return false;
 		}
 		return true;
 	}
@@ -153,11 +157,11 @@ public class StackFilter implements EntryFilter {
 		}
 		Preferences fnode = node.node("filter");
 		AbstractFilterPreferences.insert(fnode, Selection.EQUALITY, getID(), null, null, null, null); //The type paramter is irrelevant but has to be specified
-		for(int i = 1; i <= filterStack.size(); i++) {
+		for(int i = 1; i <= filterList.size(); i++) {
 			Preferences iNode = fnode.node(Integer.toString(i));
-			iNode.put("isActive", Boolean.toString(isActive.contains(filterStack.get(i-1))));
-			iNode.put("isNegated", Boolean.toString(isNegated.contains(filterStack.get(i-1))));
-			filterStack.get(i-1).insertMyPreferences(iNode);
+			iNode.put("isActive", Boolean.toString(filterList.get(i-1).isActive));
+			iNode.put("isNegated", Boolean.toString(filterList.get(i-1).isNegated));
+			filterList.get(i-1).filter.insertMyPreferences(iNode);
 		}
 	}
 	
@@ -167,12 +171,15 @@ public class StackFilter implements EntryFilter {
 	private class StackFilterEditor extends EntryFilterEditor {	
 
 		private Journal associatedJournal;
+		private StackFilter associatedInstance;
 		
 		private JLabel listLabel = new JLabel();
 		private JComboBox filterList = new JComboBox();
 		private JButton addFilterButton = new JButton();
 		
 		private JPanel editorPanel = new JPanel();
+		
+		private Vector<StackElementEditor> editorList = new Vector<StackElementEditor>();
 		
 		//This listener en/disables the add button depending on whether the filter list is empty
 		private ListDataListener comboListener = new ListDataListener() {
@@ -190,11 +197,12 @@ public class StackFilter implements EntryFilter {
 		// CONSTRUCTOR *******************************
 		// *******************************************
 		
-		public StackFilterEditor(Journal j) {
+		public StackFilterEditor(Journal j, StackFilter associatedInstance) {
 			associatedJournal = j == null? new Journal() : j;
+			this.associatedInstance = associatedInstance == null? new StackFilter() : associatedInstance;
 			
 			//Init components
-			listLabel.setText(Fsfibu2StringTableMgr.getString("fs.fibu2.filter.StackFilter.filter"));
+			listLabel.setText(Fsfibu2StringTableMgr.getString("fs.fibu2.filter.StackFilter.filter") + ": ");
 			addFilterButton.setText(Fsfibu2StringTableMgr.getString("fs.fibu2.filter.StackFilter.add"));
 			
 			filterList.setModel(new FilterListModel());
@@ -217,21 +225,106 @@ public class StackFilter implements EntryFilter {
 			add(layout);
 		}
 		
+		// CONTROL METHODS ***************************
+		// *******************************************
+		
+		public Journal getAssociatedJournal() {
+			return associatedJournal;
+		}
+		
+		public void removeFilter(int index) {
+			//TODO: Write
+		}
+		
 		// FILTER METHODS ****************************
 		// *******************************************
 		
+		//Always returns the stack filter associated to this editor
 		@Override
 		public EntryFilter getFilter() {
-			// TODO Auto-generated method stub
-			return null;
+			return associatedInstance;
+		}
+
+		//This editor always has valid content
+		@Override
+		public boolean hasValidContent() {
+			return true;
+		}
+		
+	}
+	
+	/**
+	 * A simple editor for editing a {@link StackFilterElement}
+	 * @author Simon Hampe
+	 *
+	 */
+	private class StackElementEditor extends JPanel implements ResourceDependent {
+
+		private StackFilterElement element;
+		
+		private HashSet<ChangeListener> listeners = new HashSet<ChangeListener>(); 
+		
+		private JLabel descriptionLabel = new JLabel();
+		private JButton negateButton = new JButton();
+		private JButton editButton = new JButton();
+		private JButton deleteButton = new JButton();
+		
+		// CONSTRUCTOR ***********************************************
+		// ***********************************************************
+		
+		public StackElementEditor(StackFilterElement e) {
+			element = e;
+						
+			
+		}
+		
+		// LISTENER METHODS ******************************************
+		// ***********************************************************
+		
+		public void addChangeListener(ChangeListener l) {
+			if(l != null) listeners.add(l);
+		}
+		
+		public void removeChangeListener(ChangeListener l) {
+			listeners.remove(l);
+		}
+		
+		protected void fireStateChanged(ChangeEvent e) {
+			for(ChangeListener l : listeners) l.stateChanged(e);
+		}
+		
+		// RESOURCEDEPENDENT METHODS *********************************
+		// ***********************************************************
+		
+		@Override
+		public void assignReference(ResourceReference r) {
+			//Ignored
 		}
 
 		@Override
-		public boolean hasValidContent() {
-			// TODO Auto-generated method stub
-			return false;
+		public Document getExpectedResourceStructure() {
+			XMLDirectoryTree tree = new XMLDirectoryTree();
+			
+			return tree;
 		}
 		
+	}
+	
+	/**
+	 * A stack filter element is a tripel consisting of a filter and two boolean values indicating whether this filter is 
+	 * active and negated.
+	 * @author Simon Hampe
+	 */
+	private class StackFilterElement {
+		public EntryFilter filter;
+		public boolean isActive;
+		public boolean isNegated;
+		
+		public StackFilterElement(EntryFilter filter, boolean isActive, boolean isNegated) {
+			this.filter = filter;
+			this.isActive = isActive;
+			this.isNegated = isNegated;
+		}
 	}
 
 }

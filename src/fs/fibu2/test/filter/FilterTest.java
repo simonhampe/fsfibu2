@@ -29,6 +29,7 @@ import fs.fibu2.filter.DateFilter;
 import fs.fibu2.filter.EntryFilter;
 import fs.fibu2.filter.EntryFilterEditor;
 import fs.fibu2.filter.FilterLoader;
+import fs.fibu2.filter.StackFilter;
 import fs.fibu2.filter.ValueFilter;
 import fs.fibu2.filter.StandardFilterComponent.Selection;
 import fs.fibu2.filter.AccountInformationFilter;
@@ -69,10 +70,11 @@ public class FilterTest {
 			//ValueFilter filter = new ValueFilter(Selection.RANGE,0,0.3f,14.2f,null);
 			//CategoryFilter filter = new CategoryFilter();
 			//AccountFilter filter = new AccountFilter(AccountLoader.getAccount("cash_box"));
-			AccountInformationFilter filter = new AccountInformationFilter();
+			//AccountInformationFilter filter = new AccountInformationFilter();
 			//AdditionalInformationFilter filter = new AdditionalInformationFilter();
 			//DateFilter filter = new DateFilter();
 			//EntryFilter filter = FilterLoader.getFilter("ff2filter_account");
+			StackFilter filter = new StackFilter();
 			
 			EntryFilterEditor editor = filter.getEditor(j);
 			mainFrame.add(editor);
