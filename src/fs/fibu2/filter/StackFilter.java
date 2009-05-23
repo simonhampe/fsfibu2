@@ -1,5 +1,6 @@
 package fs.fibu2.filter;
 
+import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Label;
 import java.util.HashSet;
@@ -194,7 +195,7 @@ public class StackFilter implements EntryFilter {
 		private JComboBox filterBox = new JComboBox();
 		private JButton addFilterButton = new JButton();
 		
-		private Box editorPanel = new Box(BoxLayout.Y_AXIS);
+		private Box editorBox = new Box(BoxLayout.Y_AXIS);
 		
 		//This listener en/disables the add button depending on whether the filter list is empty
 		private ListDataListener comboListener = new ListDataListener() {
@@ -224,6 +225,7 @@ public class StackFilter implements EntryFilter {
 			filterBox.setRenderer(new FilterListRenderer());
 			addFilterButton.setEnabled(filterBox.getModel().getSize() > 0);
 			
+			JPanel editorPanel = new JPanel();
 			JScrollPane listingPane = new JScrollPane(editorPanel);
 			
 			//Layout
@@ -242,8 +244,9 @@ public class StackFilter implements EntryFilter {
 				scrollBox.add(listingPane);
 				for(StackFilterElement e : filterList) {
 					StackElementEditor editor = new StackElementEditor(e,associatedJournal);
-					editorPanel.add(editor);
+					editorBox.add(editor);
 				}
+				editorPanel.add(editorBox);
 			layout.add(scrollBox);
 			add(layout);
 		}
