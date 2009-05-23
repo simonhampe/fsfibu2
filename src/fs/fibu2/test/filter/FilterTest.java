@@ -62,7 +62,7 @@ public class FilterTest {
 			Journal j = Fsfibu1Converter.convertFsfibu1Journal(XMLToolbox.loadXMLFile(new File(basedir + "/fsfibu/KassenbuchAb2008.xml")));
 			//final Journal j = new Journal();
 			AccountLoader.setAccount("slush_fund", new SlushFund());
-			j.addEntry(new Entry("bla",0,Currency.getInstance(Locale.GERMANY),new GregorianCalendar(),Category.getCategory(new Vector<String>(Arrays.asList("bla","blu"))),"slush_fund",
+			j.addEntry(new Entry("bla",0,Currency.getInstance(Locale.GERMANY),new GregorianCalendar(),Category.getCategory(new Vector<String>(Arrays.asList("Bla","Blu"))),"slush_fund",
 					null,""));
 			
 			
@@ -77,7 +77,7 @@ public class FilterTest {
 			//EntryFilter filter = FilterLoader.getFilter("ff2filter_account");
 			Vector<EntryFilter> filterlist = new Vector<EntryFilter>();
 				filterlist.add(new NameFilter());
-				filterlist.add(new CategoryFilter(Category.getCategory(Category.getRootCategory(), "bla")));
+				filterlist.add(new CategoryFilter(Category.getCategory(Category.getRootCategory(), "Bla")));
 			StackFilter filter = new StackFilter(filterlist,null,null);
 			
 			EntryFilterEditor editor = filter.getEditor(j);

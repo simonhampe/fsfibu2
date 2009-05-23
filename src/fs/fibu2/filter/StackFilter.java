@@ -1,6 +1,7 @@
 package fs.fibu2.filter;
 
 import java.awt.Dimension;
+import java.awt.Label;
 import java.util.HashSet;
 import java.util.Vector;
 import java.util.prefs.BackingStoreException;
@@ -19,6 +20,9 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
+import javax.swing.Box.Filler;
+import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListDataEvent;
@@ -26,6 +30,8 @@ import javax.swing.event.ListDataListener;
 
 import org.dom4j.Document;
 import org.omg.CORBA.IMP_LIMIT;
+
+import com.sun.crypto.provider.DESCipher;
 
 import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.Journal;
@@ -223,7 +229,7 @@ public class StackFilter implements EntryFilter {
 			//Layout
 			Box layout = new Box(BoxLayout.Y_AXIS);
 			Box firstBox = new Box(BoxLayout.X_AXIS);
-				firstBox.setAlignmentX(RIGHT_ALIGNMENT);
+				firstBox.setAlignmentX(LEFT_ALIGNMENT);
 				firstBox.add(listLabel);
 				firstBox.add(filterBox);
 				firstBox.add(Box.createHorizontalStrut(10));
@@ -232,10 +238,11 @@ public class StackFilter implements EntryFilter {
 			layout.add(firstBox);
 			layout.add(Box.createVerticalStrut(5));
 			Box scrollBox = new Box(BoxLayout.X_AXIS);
-				scrollBox.setAlignmentX(CENTER_ALIGNMENT);
+				scrollBox.setAlignmentX(LEFT_ALIGNMENT);
 				scrollBox.add(listingPane);
 				for(StackFilterElement e : filterList) {
-					editorPanel.add(new StackElementEditor(e,associatedJournal));
+					StackElementEditor editor = new StackElementEditor(e,associatedJournal);
+					editorPanel.add(editor);
 				}
 			layout.add(scrollBox);
 			add(layout);
@@ -282,13 +289,15 @@ public class StackFilter implements EntryFilter {
 		private JLabel descriptionLabel = new JLabel();
 		private JToggleButton negateButton = new JToggleButton();
 		private JToggleButton activeButton = new JToggleButton();
-		private JButton cancelButton = new JButton();
-		private JButton editOkButton = new JButton();
+		private JButton okButton = new JButton();
+		private JButton editCancelButton = new JButton();
 		private JButton deleteButton = new JButton();
 		
 		private Box buttonBox = new Box(BoxLayout.X_AXIS);
 		private Box descriptionBox = new Box(BoxLayout.Y_AXIS);
 		private Box editorBox = new Box(BoxLayout.X_AXIS);
+		
+		private EntryFilterEditor nextEditor;
 		
 		private boolean isEditing = false;
 		
@@ -309,6 +318,7 @@ public class StackFilter implements EntryFilter {
 		public StackElementEditor(StackFilterElement e, Journal j) {
 			element = e;
 			associatedJournal = j == null? new Journal() : j;
+			if(element != null) nextEditor = element.filter.getEditor(associatedJournal);
 			
 			//Init components
 			setBorder(BorderFactory.createEtchedBorder());
@@ -320,31 +330,45 @@ public class StackFilter implements EntryFilter {
 			activeButton.setToolTipText(Fsfibu2StringTableMgr.getString("fs.fibu2.filter.StackFilter.activetooltip"));
 			activeButton.setIcon(element != null? (element.isActive? on : off) : off);
 			activeButton.setSelected(element != null? element.isActive : false);
-			cancelButton.setToolTipText(Fsfibu2StringTableMgr.getString("fs.fibu2.filter.StackFilter.canceltooltip"));
-			cancelButton.setIcon(cancel);
-			//cancelButton.setVisible(false);
-			editOkButton.setToolTipText(Fsfibu2StringTableMgr.getString("fs.fibu2.filter.StackFilter.edittooltip"));
-			editOkButton.setIcon(edit);
+			okButton.setToolTipText(Fsfibu2StringTableMgr.getString("fs.fibu2.filter.StackFilter.oktooltip"));
+			okButton.setIcon(ok);
+			okButton.setVisible(false);
+			editCancelButton.setToolTipText(Fsfibu2StringTableMgr.getString("fs.fibu2.filter.StackFilter.edittooltip"));
+			editCancelButton.setIcon(edit);
 			deleteButton.setToolTipText(Fsfibu2StringTableMgr.getString("fs.fibu2.filter.StackFilter.deletetooltip"));
 			deleteButton.setIcon(delete);
 			
 			//Layout
+			JPanel fillPanel = new JPanel();
+			fillPanel.setPreferredSize(new Dimension(500, 0));
 			Box layout = new Box(BoxLayout.Y_AXIS);
 				buttonBox.setAlignmentX(CENTER_ALIGNMENT);
+				buttonBox.add(Box.createHorizontalStrut(5));
 				buttonBox.add(negateButton); buttonBox.add(activeButton);
-				buttonBox.add(Box.createHorizontalGlue());
-				buttonBox.add(editOkButton);
-				buttonBox.add(cancelButton);
+				int width = 200;
+				int height = 30;
+				buttonBox.add(new Filler(new Dimension(width,height),new Dimension(width,height),new Dimension(width,height)));
+				buttonBox.add(okButton);
+				buttonBox.add(editCancelButton);
 				buttonBox.add(deleteButton);
+				buttonBox.add(Box.createHorizontalStrut(5));
+				buttonBox.setBorder(BorderFactory.createEtchedBorder());
 			layout.add(buttonBox);
 				descriptionBox.setAlignmentX(CENTER_ALIGNMENT);
 				descriptionBox.add(Box.createVerticalStrut(10));
-				descriptionBox.add(descriptionLabel);
+				Box labelBox = new Box(BoxLayout.X_AXIS);
+					labelBox.add(Box.createHorizontalGlue());
+					labelBox.add(descriptionLabel);
+					labelBox.add(Box.createHorizontalGlue());
+				descriptionBox.add(labelBox);
 				descriptionBox.add(Box.createVerticalStrut(10));
+				descriptionBox.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 			layout.add(descriptionBox);
-				if(element != null) editorBox.add(element.filter.getEditor(associatedJournal));
+				if(element != null) editorBox.add(nextEditor);
+				editorBox.add(Box.createHorizontalGlue());
+				editorBox.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 			layout.add(editorBox);
-			//editorBox.setVisible(false);
+			editorBox.setVisible(false);
 			add(layout);
 		}
 		
