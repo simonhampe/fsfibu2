@@ -65,10 +65,10 @@ public class DateFilter implements EntryFilter {
 	public String getDescription() {
 		String name = Fsfibu2StringTableMgr.getString("fs.fibu2.Entry.date");
 		switch(typeOfFilter) {
-		case EQUALITY: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.describeequals",name,Fsfibu2DateFormats.getEntryDateFormat().format(equalityDate));
+		case EQUALITY: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.describeequals",name,Fsfibu2DateFormats.getEntryDateFormat().format(equalityDate.getTime()));
 		case REGEX: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.describematches",name,regexFilter.pattern());
-		case RANGE: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.describerange",name,Fsfibu2DateFormats.getEntryDateFormat().format(minFilter),
-															Fsfibu2DateFormats.getEntryDateFormat().format(maxFilter));
+		case RANGE: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.describerange",name,Fsfibu2DateFormats.getEntryDateFormat().format(minFilter.getTime()),
+															Fsfibu2DateFormats.getEntryDateFormat().format(maxFilter.getTime()));
 		default: return "";
 		}
 	}

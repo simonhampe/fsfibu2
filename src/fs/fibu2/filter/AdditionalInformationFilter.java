@@ -156,7 +156,7 @@ public class AdditionalInformationFilter implements EntryFilter {
 		private StandardFilterComponent comp;
 		
 		public AdditionalInformationFilterEditor() {
-			StandardFilterComponent comp = new StandardFilterComponent(
+			comp = new StandardFilterComponent(
 					Fsfibu2StringTableMgr.getString("fs.fibu2.filter.AdditionalInformationFilter.shortname") + ": ",
 					null,new DefaultStringComparator(),
 					typeOfFilter != Selection.RANGE? firstFilter : "",

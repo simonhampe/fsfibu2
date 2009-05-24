@@ -157,7 +157,7 @@ public class NameFilter implements EntryFilter {
 		private StandardFilterComponent comp;
 		
 		public NameFilterEditor() {
-			StandardFilterComponent comp = new StandardFilterComponent(
+			comp = new StandardFilterComponent(
 					Fsfibu2StringTableMgr.getString("fs.fibu2.global.name") + ": ",
 					null,new DefaultStringComparator(),
 					typeOfFilter != Selection.RANGE? firstFilter : "",

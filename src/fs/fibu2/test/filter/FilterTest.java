@@ -1,5 +1,8 @@
 package fs.fibu2.test.filter;
 
+import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Currency;
@@ -10,6 +13,7 @@ import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -36,6 +40,7 @@ import fs.fibu2.filter.StandardFilterComponent.Selection;
 import fs.fibu2.filter.AccountInformationFilter;
 import fs.fibu2.resource.Fsfibu2DefaultReference;
 import fs.fibu2.view.model.AccountInformation;
+import fs.gui.GUIToolbox;
 import fs.xml.FsfwDefaultReference;
 import fs.xml.XMLToolbox;
 
@@ -81,10 +86,21 @@ public class FilterTest {
 			StackFilter filter = new StackFilter(filterlist,null,null);
 			
 			EntryFilterEditor editor = filter.getEditor(j);
+			JPanel fillPanel = new JPanel();
+			GridBagLayout gbl = new GridBagLayout();
+			mainFrame.setLayout(gbl);
+			GridBagConstraints gbc = GUIToolbox.buildConstraints(1, 0, 1, 1);
+			gbc.weighty = 100;
+			GridBagConstraints gbc2 = GUIToolbox.buildConstraints(0, 0, 1, 1);
+			gbc2.weightx = 100;
+			gbl.setConstraints(fillPanel, gbc2);
+			gbl.setConstraints(editor, gbc);
+			mainFrame.add(fillPanel);
 			mainFrame.add(editor);
 			
 			mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			mainFrame.pack();
+			mainFrame.setSize(mainFrame.getMaximumSize());
 			mainFrame.setVisible(true);
 			
 			

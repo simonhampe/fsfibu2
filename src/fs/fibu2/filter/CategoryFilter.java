@@ -117,8 +117,8 @@ public class CategoryFilter implements EntryFilter {
 		switch(typeOfFilter) {
 		case EQUALITY: return equalityCategory == null? Fsfibu2StringTableMgr.getString("fs.fibu2.filter.CategoryFilter.describeequals",equalityString,levelToCheck) 
 				: Fsfibu2StringTableMgr.getString("fs.fibu2.filter.describeequals",name,equalityCategory.toString());
-		case REGEX: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.describematches",name,regexFilter.pattern());
-		case RANGE: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.describerange",name,minFilter,maxFilter);
+		case REGEX: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.CategoryFilter.describematches", regexFilter.pattern(),levelToCheck);
+		case RANGE: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.CategoryFilter.describerange",minFilter,maxFilter,levelToCheck);
 		default: return "";
 		}
 	}
