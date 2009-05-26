@@ -1,5 +1,7 @@
 package fs.fibu2.data.event;
 
+import java.util.EventListener;
+
 import fs.fibu2.data.model.ReadingPoint;
 
 /**
@@ -7,17 +9,7 @@ import fs.fibu2.data.model.ReadingPoint;
  * @author Simon Hampe
  *
  */
-public interface ReadingPointListener {
-
-	/**
-	 * Indicates that source's visibility has been changed
-	 */
-	public void visibilityChanged(ReadingPoint source);
-	
-	/**
-	 * Indicates that source's 'active' flag has been changed
-	 */
-	public void activityChanged(ReadingPoint source);
+public interface ReadingPointListener extends EventListener{
 	
 	/**
 	 * Indicates that the date of source has been changed

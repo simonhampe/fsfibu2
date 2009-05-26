@@ -1,5 +1,7 @@
 package fs.fibu2.data.event;
 
+import java.util.EventListener;
+
 import fs.fibu2.data.model.Account;
 import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.Journal;
@@ -10,7 +12,7 @@ import fs.fibu2.data.model.ReadingPoint;
  * @author Simon Hampe
  *
  */
-public interface JournalListener extends ReadingPointListener {
+public interface JournalListener extends ReadingPointListener, EventListener {
 	
 	/**
 	 * This is called, whenever some entries are added

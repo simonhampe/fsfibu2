@@ -1,32 +1,17 @@
 package fs.fibu2.test.filter;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.GregorianCalendar;
 import java.util.prefs.Preferences;
-import java.util.regex.Pattern;
 
 import javax.swing.JFrame;
 
 import org.apache.log4j.BasicConfigurator;
-import org.dom4j.DocumentException;
-import org.xml.sax.SAXException;
 
 import fs.fibu2.data.format.Fsfibu1Converter;
-import fs.fibu2.data.model.AccountLoader;
-import fs.fibu2.data.model.BankAccount;
 import fs.fibu2.data.model.Journal;
-import fs.fibu2.filter.AccountFilter;
-import fs.fibu2.filter.AccountInformationFilter;
-import fs.fibu2.filter.AdditionalInformationFilter;
-import fs.fibu2.filter.CategoryFilter;
-import fs.fibu2.filter.DateFilter;
 import fs.fibu2.filter.EntryFilter;
-import fs.fibu2.filter.NameFilter;
 import fs.fibu2.filter.ValueFilter;
-import fs.fibu2.filter.StandardFilterComponent.Selection;
 import fs.fibu2.resource.Fsfibu2DefaultReference;
-import fs.fibu2.view.model.AccountInformation;
 import fs.xml.FsfwDefaultReference;
 import fs.xml.XMLToolbox;
 

@@ -42,7 +42,8 @@ import fs.xml.XMLDirectoryTree;
 /**
  * This class implements a stack of filters. Filters can be added / removed via the editor. Each filter can be (de)activated, negated and edited via
  * its own editor which is added to the stack filter's editor as a subcomponent. Finally, an entry will be admitted by this filter, if it is admitted
- * by all active filters in its stack. Each stack filter is associated to a unique editor, which is created the first time getEditor is invoked.
+ * by all active filters in its stack. Each stack filter is associated to a unique editor, which is created the first time getEditor is invoked. Stack
+ * filters implement a listener mechanism, notifying listeners if any of their filters change
  * @author Simon Hampe
  *
  */
@@ -53,6 +54,14 @@ public class StackFilter implements EntryFilter {
 	
 	//The editor for this filter
 	private StackFilterEditor editor;
+	
+	//A list of listeners
+	private HashSet<ChangeListener> listeners = new HashSet<ChangeListener>();
+	
+	private ChangeListener editorListener = new ChangeListener() {
+		@Override
+		public void stateChanged(ChangeEvent e) {fireStateChanged();}
+	};
 	
 	// CONSTRUCTOR ****************************
 	// ****************************************
@@ -92,6 +101,7 @@ public class StackFilter implements EntryFilter {
 	public EntryFilterEditor getEditor(Journal j) {
 		if(editor == null) {
 			editor = new StackFilterEditor(j);
+			editor.addChangeListener(editorListener);
 		}
 		return editor;
 	}
@@ -176,6 +186,21 @@ public class StackFilter implements EntryFilter {
 		}
 	}
 	
+	// LISTENER MECHANISM **********************************************
+	// *****************************************************************
+	
+	public void addChangeListener(ChangeListener l) {
+		if(l != null) listeners.add(l);
+	}
+	
+	public void removeChangeListener(ChangeListener l) {
+		listeners.remove(l);
+	}
+	
+	protected void fireStateChanged() {
+		for(ChangeListener l : listeners) l.stateChanged(new ChangeEvent(this));
+	}
+	
 	// LOCAL CLASS FOR EDITOR ******************************************
 	// *****************************************************************
 	
@@ -227,6 +252,7 @@ public class StackFilter implements EntryFilter {
 					editorPanel.add(editComp);
 					editComp.setEditing(true);
 					editorPanel.revalidate();
+					fireStateChanged();
 				} catch (Exception ex) {
 					//This should not happen (by definition of the FilterListModel)
 					ex.printStackTrace();

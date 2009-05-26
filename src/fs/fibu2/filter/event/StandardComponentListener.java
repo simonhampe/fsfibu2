@@ -1,5 +1,7 @@
 package fs.fibu2.filter.event;
 
+import java.util.EventListener;
+
 import fs.fibu2.filter.StandardFilterComponent;
 import fs.fibu2.filter.StandardFilterComponent.Selection;
 
@@ -8,7 +10,7 @@ import fs.fibu2.filter.StandardFilterComponent.Selection;
  * @author Simon Hampe
  *
  */
-public interface StandardComponentListener {
+public interface StandardComponentListener extends EventListener {
 
 	/**
 	 * Notifies of a change in the selection of the filter type

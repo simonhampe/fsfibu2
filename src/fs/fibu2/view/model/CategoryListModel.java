@@ -36,6 +36,9 @@ public class CategoryListModel extends AbstractListModel implements JournalListe
 	private Vector<Category> listOfCategories;
 	private boolean containsRootCategory;
 	
+	//Not null, if a recalculation is currently running
+	private Recalculator currentRecalculator = null;
+	
 	private DefaultComboBoxModel model = new DefaultComboBoxModel();
 	
 	// CONSTRUCTORS *******************
@@ -72,7 +75,11 @@ public class CategoryListModel extends AbstractListModel implements JournalListe
 	// *****************************************************
 	
 	protected void recalculateModel() {
-		(new Recalculator()).execute();
+		if(currentRecalculator != null) {
+			currentRecalculator.cancel(true);
+		}
+		currentRecalculator = new Recalculator();
+		currentRecalculator.execute();
 	}
 	
 	protected void fireContentsChanged() {
@@ -122,11 +129,6 @@ public class CategoryListModel extends AbstractListModel implements JournalListe
 	}
 
 	@Override
-	public void activityChanged(ReadingPoint source) {
-		//Ignored
-	}
-
-	@Override
 	public void dateChanged(ReadingPoint source) {
 		//Ignored
 	}
@@ -135,12 +137,7 @@ public class CategoryListModel extends AbstractListModel implements JournalListe
 	public void nameChanged(ReadingPoint source) {
 		//Ignored
 	}
-
-	@Override
-	public void visibilityChanged(ReadingPoint source) {
-		//Ignored
-	}
-
+	
 	@Override
 	public Object getSelectedItem() {
 		return model.getSelectedItem();
@@ -173,6 +170,7 @@ public class CategoryListModel extends AbstractListModel implements JournalListe
 				//Preserve selection if possible
 				model = new DefaultComboBoxModel(listOfCategories);
 				if(listOfCategories.contains(c)) model.setSelectedItem(c);
+				currentRecalculator = null;
 				fireContentsChanged();
 			} catch (Exception e) {
 				//Ignored, will not happen

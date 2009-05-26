@@ -559,16 +559,8 @@ public class Journal implements XMLConfigurable, ReadingPointListener {
 		listeners.remove(l);
 	}
 	
-	protected void fireActivityChanged(ReadingPoint source) {
-		for(JournalListener l : listeners) l.activityChanged(source);
-	}
-	
 	protected void fireDateChanged(ReadingPoint source) {
 		for(JournalListener l : listeners) l.dateChanged(source);
-	}
-	
-	protected void fireVisibilityChanged(ReadingPoint source) {
-		for(JournalListener l : listeners) l.visibilityChanged(source);
 	}
 	
 	protected void fireNameChanged(ReadingPoint source) {
@@ -611,20 +603,10 @@ public class Journal implements XMLConfigurable, ReadingPointListener {
 	// *************************************************************
 
 	@Override
-	public void activityChanged(ReadingPoint source) {
-		fireActivityChanged(source);
-	}
-
-	@Override
 	public void dateChanged(ReadingPoint source) {
 		fireDateChanged(source);
 	}
 
-	@Override
-	public void visibilityChanged(ReadingPoint source) {
-		fireVisibilityChanged(source);
-	}
-	
 	@Override
 	public void nameChanged(ReadingPoint source) {
 		fireNameChanged(source);

@@ -39,8 +39,7 @@ public class Fsfibu1Converter {
 	 * Converts an xml document containing an fsfibu1 journal into an fsfibu2 journal. The conversion works as follows: <br>
 	 * - Bank and Kasse startvalues are considered as bank_account and cash_box start values<br>
 	 * - All entries are either bank_account or cash_box entries <br>
-	 * - All Messpunkte are imported as ReadingPoints with their name and the date. All
-	 * derived ReadingPoints are initially active and visible <br>
+	 * - All Messpunkte are imported as ReadingPoints with their name and the date.<br>
 	 * - The currency of each entry is EUR <br>
 	 * - Account information for bank_account and cash_box will be inserted appropriately, coming from the fields
 	 * 'rnummer', 'auszug' <br>
@@ -79,7 +78,7 @@ public class Fsfibu1Converter {
 			} catch (ParseException e) {
 				//Will not happen
 			}
-			ReadingPoint rp = new ReadingPoint(mp.selectSingleNode("./bezeichnung").getText(),c,true,true);
+			ReadingPoint rp = new ReadingPoint(mp.selectSingleNode("./bezeichnung").getText(),c);
 			j.addReadingPoint(rp);
 		}
 		
@@ -120,7 +119,7 @@ public class Fsfibu1Converter {
 	/**
 	 * Converts a journal into a valid fsfibu1 journal XML document. The conversion takes place in the following way:<br>
 	 * - Only start values for "bank_account" and "cash_box" are adopted. <br>
-	 * - All reading points are adopted, information about activity and visibility is lost <br>
+	 * - All reading points are adopted<br>
 	 * - The entry fields name, value, date, additionalInformation are adopted in the obvious way <br>
 	 * - The entry field currency is ignored <br>
 	 * - The field 'echtdatum' is filled with the same value as the 'datum' field

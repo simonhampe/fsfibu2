@@ -34,6 +34,9 @@ public class AccountListModel extends AbstractListModel implements
 	
 	private DefaultComboBoxModel model;
 	
+	//Not null, if a recalculation is currently running
+	private SwingWorker<Vector<Account>, Vector<Account>> currentRecalculator = null; 
+	
 	private Comparator<Account> comparator = new Comparator<Account>() {
 		@Override
 		public int compare(Account o1, Account o2) {
@@ -73,7 +76,11 @@ public class AccountListModel extends AbstractListModel implements
 	 * Creates and executes a swing worker to recalculate the model
 	 */
 	protected void updateThreaded() {
-		(new Recalculator()).execute();
+		if(currentRecalculator != null) {
+			currentRecalculator.cancel(true);
+		}
+		currentRecalculator = new Recalculator();
+		currentRecalculator.execute();
 	}
 	
 	@Override
@@ -142,12 +149,7 @@ public class AccountListModel extends AbstractListModel implements
 			Float newValue) {
 		updateThreaded();
 	}
-
-	@Override
-	public void activityChanged(ReadingPoint source) {
-		//Ignored
-	}
-
+	
 	@Override
 	public void dateChanged(ReadingPoint source) {
 		//Ignored
@@ -155,11 +157,6 @@ public class AccountListModel extends AbstractListModel implements
 
 	@Override
 	public void nameChanged(ReadingPoint source) {
-		//Ignored
-	}
-
-	@Override
-	public void visibilityChanged(ReadingPoint source) {
 		//Ignored
 	}
 
@@ -181,6 +178,7 @@ public class AccountListModel extends AbstractListModel implements
 				Account c = (Account)getSelectedItem();
 				model = new DefaultComboBoxModel(listOfAccounts);
 				if(listOfAccounts.contains(c)) model.setSelectedItem(c);
+				currentRecalculator = null;
 				fireContentsChanged();
 			} catch (Exception e) {
 				//Ignored, will not happen

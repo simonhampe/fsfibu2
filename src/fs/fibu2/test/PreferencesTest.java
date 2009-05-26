@@ -1,12 +1,6 @@
 package fs.fibu2.test;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Vector;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
+import java.util.HashMap;
 
 public class PreferencesTest {
 
@@ -15,7 +9,10 @@ public class PreferencesTest {
 	 */
 	public static void main(String[] args) {
 		
-		
+		HashMap<String, String> map = new HashMap<String, String>();
+		map.put("a", "c");
+		map.put("b", "c");
+		System.out.println(map.values());
 		
 	}
 

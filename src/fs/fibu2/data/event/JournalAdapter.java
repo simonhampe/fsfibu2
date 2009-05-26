@@ -47,19 +47,11 @@ public class JournalAdapter implements JournalListener {
 	}
 
 	@Override
-	public void activityChanged(ReadingPoint source) {
-	}
-
-	@Override
 	public void dateChanged(ReadingPoint source) {
 	}
 
 	@Override
 	public void nameChanged(ReadingPoint source) {
-	}
-
-	@Override
-	public void visibilityChanged(ReadingPoint source) {
 	}
 
 }

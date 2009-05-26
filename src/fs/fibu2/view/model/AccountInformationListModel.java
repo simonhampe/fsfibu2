@@ -37,6 +37,9 @@ public class AccountInformationListModel extends AbstractListModel implements
 	
 	private Journal associatedJournal;
 	
+	//Not null, if the model is currently being recalculated
+	private SwingWorker<Vector<AccountInformation>, Vector<AccountInformation>> currentRecalculator = null;
+	
 	// CONSTRUCTOR ******************************************
 	// ******************************************************
 	
@@ -84,10 +87,15 @@ public class AccountInformationListModel extends AbstractListModel implements
 	}
 	
 	/**
-	 * Executes a swing worker object for model recalculation
+	 * Executes a swing worker object for model recalculation. If a recalculation is already running, it is aborted and 
+	 * the new one started immediately
 	 */
 	protected void updateThreaded() {
-		(new Recalculator()).execute();
+		if(currentRecalculator != null) {
+			currentRecalculator.cancel(true);
+		}
+		currentRecalculator = new Recalculator();
+		currentRecalculator.execute();
 	}
 	
 	// LIST AND COMBOBOX METHODS ****************************
@@ -160,11 +168,6 @@ public class AccountInformationListModel extends AbstractListModel implements
 	}
 
 	@Override
-	public void activityChanged(ReadingPoint source) {
-		//Ignored
-	}
-
-	@Override
 	public void dateChanged(ReadingPoint source) {
 		//IGnored
 	}
@@ -172,11 +175,6 @@ public class AccountInformationListModel extends AbstractListModel implements
 	@Override
 	public void nameChanged(ReadingPoint source) {
 		//Ignored
-	}
-
-	@Override
-	public void visibilityChanged(ReadingPoint source) {
-		//IGnored
 	}
 	
 	// SWING WORKER CLASS FOR MODEL RECALCULATION *****************************
@@ -197,6 +195,7 @@ public class AccountInformationListModel extends AbstractListModel implements
 				AccountInformation c = (AccountInformation)getSelectedItem();
 				model = new DefaultComboBoxModel(listOfInformation);
 				if(listOfInformation.contains(c)) model.setSelectedItem(c);
+				currentRecalculator = null;
 				fireContentsChanged();
 			} catch (Exception e) {
 				//Ignore
