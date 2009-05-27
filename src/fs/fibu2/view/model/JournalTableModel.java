@@ -1,6 +1,5 @@
 package fs.fibu2.view.model;
 
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Vector;
@@ -12,7 +11,6 @@ import javax.swing.table.TableModel;
 
 import fs.fibu2.data.event.JournalListener;
 import fs.fibu2.data.model.Account;
-import fs.fibu2.data.model.Category;
 import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.EntrySeparator;
 import fs.fibu2.data.model.Journal;
