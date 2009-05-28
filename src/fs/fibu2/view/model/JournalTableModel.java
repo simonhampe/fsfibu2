@@ -32,11 +32,13 @@ public class JournalTableModel implements TableModel, JournalListener {
 	//Data ******
 	
 	//The list of row objects
-	Vector<Object> listOfRows = new Vector<Object>();
+	private Vector<Object> listOfRows = new Vector<Object>();
 	//The set of linked separators
-	HashSet<LinkedSeparator> linkedSeparators = new HashSet<LinkedSeparator>();
+	private HashSet<LinkedSeparator> linkedSeparators = new HashSet<LinkedSeparator>();
 	//The list of bilancial information (in 1:1-correspondance to listOfRows)
-	Vector<HashMap<EntrySeparator, BilancialInformation>> bilancialRows = new Vector<HashMap<EntrySeparator, BilancialInformation>>();
+	private Vector<HashMap<EntrySeparator, BilancialInformation>> bilancialRows = new Vector<HashMap<EntrySeparator, BilancialInformation>>();
+	//The associated stack filter
+	private StackFilter associatedFilter;
 	
 	//Listeners ******
 	
