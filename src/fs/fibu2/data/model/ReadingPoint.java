@@ -101,9 +101,9 @@ public class ReadingPoint implements EntrySeparator, XMLConfigurable {
 	
 	/**
 	 * @return An integer value depending on whether: <br>
-	 * - the day of the entry is less or equal (i.e. before or identical) than the date of this 
-	 * entry (1) or <br>
-	 * - the day of the entry is greater (i.e. after) than this reading point's date (-1) <br>
+	 * - the date of the entry is less or equal (i.e. before or identical) than the date of this 
+	 * entry (-1) or <br>
+	 * - the day of the entry is greater (i.e. after) than this reading point's date (1) <br>
 	 * Only day/month/year values are considered in the comparison. More precise information is ignored.
 	 * If entry == null, 0 is returned
 	 */

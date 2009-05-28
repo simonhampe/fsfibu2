@@ -43,7 +43,7 @@ public class FilterTest {
 	public static void main(String[] args) {
 		try {
 			BasicConfigurator.configure();
-			String basedir = "/home/talio/eclipse/workspace/";
+			String basedir = "/home/hampe/workspace/";
 			Fsfibu2DefaultReference.setFsfibuDirectory(basedir + "fsfibu2/");
 			FsfwDefaultReference.setFsfwDirectory(basedir + "fsframework/");
 			JFrame mainFrame = new JFrame();

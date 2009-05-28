@@ -550,8 +550,10 @@ public class StackFilter implements EntryFilter {
 				nextEditor.removeChangeListener(editorListener);
 			}
 			nextEditor = e;
-			nextEditor.addChangeListener(editorListener);
-			editorPanel.add(nextEditor);
+			if(nextEditor != null) {
+				nextEditor.addChangeListener(editorListener);
+				editorPanel.add(nextEditor);
+			}
 		}
 		
 		/**
