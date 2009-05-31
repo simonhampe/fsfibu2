@@ -1,6 +1,8 @@
 package fs.fibu2.test;
 
-import java.util.HashMap;
+import java.util.GregorianCalendar;
+
+import fs.fibu2.data.format.Fsfibu2DateFormats;
 
 public class PreferencesTest {
 
@@ -9,10 +11,7 @@ public class PreferencesTest {
 	 */
 	public static void main(String[] args) {
 		
-		HashMap<String, String> map = new HashMap<String, String>();
-		map.put("a", "c");
-		map.put("b", "c");
-		System.out.println(map.values());
+		System.out.println(Fsfibu2DateFormats.getEntryDateFormat().format(new GregorianCalendar(2001,11,31).getTime()));
 		
 	}
 

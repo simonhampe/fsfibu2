@@ -9,7 +9,7 @@ import fs.fibu2.data.model.Category;
  * A BilancialInformation is a tupel of bilancial sums for a fsfibu2 journal table row. It contains sums for: <br>
  * - The sum of all entries (up to a certain point)<br>
  * - The sum of all entries in certain categories <br>
- * - The sum of all entries in certain accounts <br>
+ * - The sum of all entries in certain accounts PLUS the starting values <br>
  * All elements can be publicly modified
  * @author Simon Hampe
  *
