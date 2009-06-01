@@ -41,4 +41,8 @@ public class LinkedSeparator implements EntrySeparator {
 		
 		return comparator.compare(e, linkedEntry) < 0;
 	}
+	
+	public Entry getLinkedEntry() {
+		return linkedEntry;
+	}
 }

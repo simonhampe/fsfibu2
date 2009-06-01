@@ -1,5 +1,7 @@
 package fs.fibu2.view.model;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TreeSet;
@@ -10,7 +12,11 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
+import sun.awt.image.ImageWatched.Link;
+
 import fs.fibu2.data.event.JournalListener;
+import fs.fibu2.data.format.EntryComparator;
+import fs.fibu2.data.format.EntryDateComparator;
 import fs.fibu2.data.model.Account;
 import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.EntrySeparator;
@@ -50,6 +56,7 @@ public class JournalTableModel implements TableModel, JournalListener, YearsSepa
 	private int indexToStartDisplay; //The index of the first element which is actually displayed (this will always be the index of startSeparator)
 	
 	private StackFilter filter;
+	private Journal		associatedJournal;
 	
 	//Displayed data (including bilancial data)
 	private Vector<Object> displayedData = new Vector<Object>();
@@ -153,6 +160,17 @@ public class JournalTableModel implements TableModel, JournalListener, YearsSepa
 	@Override
 	public void setValueAt(Object value, int rowIndex, int columnIndex) {
 		throw new UnsupportedOperationException("Cannot modify journal from model");
+	}
+	
+	// RECALCULATION METHODS ***************************************
+	// *************************************************************
+	
+	/**
+	 * This method recalculates the sorted lists of entries/reading points. The unsorted reading point collections
+	 * are not reloaded but used as they are.  
+	 */
+	protected void recalculateLists() {
+		
 	}
 	
 	// YEARSSEPARATOR LISTENER *************************************
@@ -263,6 +281,60 @@ public class JournalTableModel implements TableModel, JournalListener, YearsSepa
 	@Override
 	public void nameChanged(ReadingPoint source) {
 		// TODO Auto-generated method stub
+		
+	}
+	
+	// COMPARATOR *************************************************************
+	// ************************************************************************
+	
+	/**
+	 * An instance of this class compares objects which are displayed in a journal table, i.e.
+	 * {@link Entry} and {@link EntrySeparator} objects. If objects of any other type are compared or any of them is null,
+	 * it throws an {@link IllegalArgumentException}.
+	 */
+	public static class TableModelComparator implements Comparator<Object> {
+
+		private EntryComparator entryComparator = new EntryComparator(false);
+		private EntryDateComparator entryDateComparator = new EntryDateComparator();
+		
+		@Override
+		public int compare(Object o1, Object o2) {
+			if(o1 == null || o2 == null) throw new IllegalArgumentException("Cannot compare null objects");
+			
+			//First try all cases where both are of same type
+			
+			if(o1 instanceof Entry && o2 instanceof Entry) {
+				return entryComparator.compare((Entry)o1, (Entry)o2); 
+			}
+			
+			if(o1 instanceof ReadingPoint && o2 instanceof ReadingPoint) {
+				return entryDateComparator.compare(((ReadingPoint)o1).getReadingDay(), ((ReadingPoint)o2).getReadingDay());
+			}
+			
+			if(o1 instanceof ExtremeSeparator && o2 instanceof ExtremeSeparator) {
+				if(((ExtremeSeparator)o1).isBeforeAll()) {
+					return ((ExtremeSeparator)o2).isBeforeAll()? 0 : -1;
+				}
+				else return ((ExtremeSeparator)o2).isBeforeAll()? 1 : 0;
+			}
+			
+			if(o1 instanceof LinkedSeparator && o2 instanceof LinkedSeparator) {
+				return entryComparator.compare(((LinkedSeparator)o1).getLinkedEntry(),((LinkedSeparator)o2).getLinkedEntry());
+			}
+			
+			//Now try heterogeneous pairings
+			for(Object p1 : Arrays.asList(o1,o2)) {
+				Object p2 = (p1 == o1) ? o2 : o1;
+				
+				if(p1 instanceof Entry && p2 instanceof EntrySeparator) {
+					return ((EntrySeparator)p2).isLessOrEqualThanMe(((Entry)p1)) ? -1 : 1;
+				}
+				
+			}
+			
+			//If we arrive here, this is not a valid call
+			throw new IllegalArgumentException("Cannot compare: Only Entry and EntrySeparator types are allowed.");
+		}
 		
 	}
 

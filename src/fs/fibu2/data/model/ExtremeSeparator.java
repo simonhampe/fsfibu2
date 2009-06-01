@@ -30,5 +30,9 @@ public class ExtremeSeparator implements EntrySeparator {
 	public boolean isLessOrEqualThanMe(Entry e) {
 		return !isBeforeAll;
 	}
+	
+	public boolean isBeforeAll() {
+		return isBeforeAll;
+	}
 
 }
