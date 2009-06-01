@@ -44,11 +44,7 @@ public class JournalTableModel implements TableModel, JournalListener, YearsSepa
 	//Reading Point lists
 	private ExtremeSeparator startSeparator = new ExtremeSeparator(Fsfibu2StringTableMgr.getString(sgroup + ".start"),true);
 	private ExtremeSeparator endSeparator = new ExtremeSeparator(Fsfibu2StringTableMgr.getString(sgroup + ".end"),false);
-	private HashSet<ReadingPoint> journalReadingPoints = new HashSet<ReadingPoint>();
-	private HashSet<ReadingPoint> yearSeparators = new HashSet<ReadingPoint>();
 	private HashSet<LinkedSeparator> linkedSeparators = new HashSet<LinkedSeparator>();
-	
-	private TreeSet<EntrySeparator> visibleSeparators; //A subset of the union of the above lists
 	
 	//Backing data (= visible entries + all entries before)
 	private TreeSet<Object> sortedData;
@@ -60,8 +56,9 @@ public class JournalTableModel implements TableModel, JournalListener, YearsSepa
 	
 	//Displayed data (including bilancial data)
 	private Vector<Object> displayedData = new Vector<Object>();
-		//In 1:1-corr. with the above list, contains for each element a mapping from preceding EntrySeparators to BilancialInformation relative
-		//to that separator. For the starting separator (which is always the first element), this is a mapping for itself
+		//In 1:1-corr. with indexedData, contains for each element a mapping from preceding EntrySeparators to BilancialInformation relative
+		//to that separator. For the starting separator (which is always the first element), this is a mapping for itself, for
+		//all entries before indexToStartDisplay, this is just one single mapping for null, containing an overall sum
 	private Vector<HashMap<EntrySeparator,BilancialInformation>> bilancialData = new Vector<HashMap<EntrySeparator,BilancialInformation>>();	
 	
 	//Listeners ******
@@ -74,6 +71,11 @@ public class JournalTableModel implements TableModel, JournalListener, YearsSepa
 	//Misc ******
 	
 	private final static String sgroup = "fs.fibu2.model.JournalTableModel";
+	
+	//Visibility flags
+	private boolean displayYearSeparators = true;
+	private boolean displayLinkedSeparators = true;
+	private boolean displayReadingPoints = true;
 	
 	// CONSTRUCTOR **************************************
 	// **************************************************
@@ -170,6 +172,69 @@ public class JournalTableModel implements TableModel, JournalListener, YearsSepa
 	 * are not reloaded but used as they are.  
 	 */
 	protected void recalculateLists() {
+		TreeSet<Object> sortedSet = new TreeSet<Object>(new TableModelComparator());
+		//Load all entries and add separators
+		sortedSet.addAll(associatedJournal.getEntries());
+		if(displayLinkedSeparators) sortedSet.addAll(linkedSeparators);
+		if(displayReadingPoints) sortedSet.addAll(associatedJournal.getReadingPoints());
+		if(displayYearSeparators) sortedSet.addAll(YearSeparators.getInstance(associatedJournal).getNecessarySeparators());
+		sortedSet.add(startSeparator);
+		sortedSet.add(endSeparator);
+		
+		//Remove unused entries and reading points
+		int firstContainedIndex = -1; 	//The index of the first element actually displayed
+		int currentIndex = 0;			//The index we're currently at
+		Entry lastEntry = null;			//The last entry displayed
+		HashSet<Entry> elementsToRemove = new HashSet<Entry>(); //The set of entries thrown out
+		HashSet<Entry> elementsNotDisplayed = new HashSet<Entry>(); //Entries not thrown out, but also not displayed
+		for(Object o : sortedSet) {
+			if(o instanceof Entry) {
+				//We keep entries which are filtered out, if we have not reached any accepted entry yet
+				if(filter != null && !filter.verifyEntry(((Entry)o))) {
+					if(firstContainedIndex  >= 0) {
+						elementsToRemove.add(((Entry)o));
+					}
+					else {
+						elementsNotDisplayed.add(((Entry)o));
+					}
+				}
+				else {
+					//If this is the first accepted entry, mark the point
+					if(firstContainedIndex < 0) firstContainedIndex = currentIndex;
+					
+				}
+			}
+			else {
+				
+			}
+			currentIndex++;
+		}
+		sortedSet.removeAll(elementsToRemove);
+		
+		//Copy data
+		synchronized (this) {
+			sortedData = sortedSet;
+			indexedData = new Vector<Object>(sortedData);
+			indexToStartDisplay = firstContainedIndex;
+			displayedData = new Vector<Object>(indexedData);
+			displayedData.removeAll(elementsNotDisplayed);
+		}
+	}
+	
+	/**
+	 * Recalculates the bilancial vector, starting from a given index in the range of the size of indexedData. All preceding bilancial 
+	 * data will be used as a base for further calculation. If index <= 0, the data is computed completely anew. If the
+	 * index is greater than the actual size of indexedData, nothing changes. Only the bilancial data for displayed elements is stored in detail.
+	 * The bilancial data for all elements which come before is only stored in sum in the start separator.
+	 */
+	protected void recalculateBilancials(int index) {
+		if(index >= displayedData.size()) return;
+		
+		Vector<HashMap<EntrySeparator,BilancialInformation>> newbilancials = new Vector<HashMap<EntrySeparator,BilancialInformation>>();
+		//Copy correct data
+		synchronized (this) {
+			for(int i = 0; i < index; i++) newbilancials.add(bilancialData.get(i));
+		}
 		
 	}
 	
