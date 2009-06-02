@@ -57,7 +57,7 @@ public class JournalTableModel implements TableModel, JournalListener, YearsSepa
 	//Displayed data (including bilancial data)
 	private Vector<Object> displayedData = new Vector<Object>();
 		//In 1:1-corr. with indexedData, contains for each element a mapping from preceding EntrySeparators to BilancialInformation relative
-		//to that separator. For the starting separator (which is always the first element), this is a mapping for itself, for
+		//to that separator. For the starting separator (which is always the first element) and for
 		//all entries before indexToStartDisplay, this is just one single mapping for null, containing an overall sum
 	private Vector<HashMap<EntrySeparator,BilancialInformation>> bilancialData = new Vector<HashMap<EntrySeparator,BilancialInformation>>();	
 	
@@ -184,9 +184,10 @@ public class JournalTableModel implements TableModel, JournalListener, YearsSepa
 		//Remove unused entries and reading points
 		int firstContainedIndex = -1; 	//The index of the first element actually displayed
 		int currentIndex = 0;			//The index we're currently at
-		Entry lastEntry = null;			//The last entry displayed
 		HashSet<Entry> elementsToRemove = new HashSet<Entry>(); //The set of entries thrown out
 		HashSet<Entry> elementsNotDisplayed = new HashSet<Entry>(); //Entries not thrown out, but also not displayed
+		HashSet<EntrySeparator> separatorsToRemoveBefore = new HashSet<EntrySeparator>(); //Separators before the first displayed entry
+		HashSet<EntrySeparator> separatorsToRemoveAfter = new HashSet<EntrySeparator>(); //Separators after the last displayed entry 
 		for(Object o : sortedSet) {
 			if(o instanceof Entry) {
 				//We keep entries which are filtered out, if we have not reached any accepted entry yet
@@ -200,12 +201,19 @@ public class JournalTableModel implements TableModel, JournalListener, YearsSepa
 				}
 				else {
 					//If this is the first accepted entry, mark the point
-					if(firstContainedIndex < 0) firstContainedIndex = currentIndex;
-					
+					if(firstContainedIndex < 0) firstContainedIndex = currentIndex;	
+					//Clear list of deleted reading points
+					separatorsToRemoveAfter.clear();
 				}
 			}
 			else {
-				
+				//Remove reading points which are before the first displayed entry
+				if(firstContainedIndex <0 && !(o instanceof ExtremeSeparator)) separatorsToRemoveBefore.add((EntrySeparator)o);
+				//For each displayed rp we initially assume, that it has to be removed. If another entry occurs
+				//afterwards, it is not removed
+				else {
+					if(!(o instanceof ExtremeSeparator)) separatorsToRemoveAfter.add((EntrySeparator)o);
+				}
 			}
 			currentIndex++;
 		}
@@ -234,6 +242,34 @@ public class JournalTableModel implements TableModel, JournalListener, YearsSepa
 		//Copy correct data
 		synchronized (this) {
 			for(int i = 0; i < index; i++) newbilancials.add(bilancialData.get(i));
+		}
+		
+		//Derive last valid bilancial data
+		HashMap<EntrySeparator, BilancialInformation> lastBilancial = new HashMap<EntrySeparator, BilancialInformation>();
+		HashSet<EntrySeparator> precedingSeparators = new HashSet<EntrySeparator>();
+		if(index == 0) {
+			BilancialInformation initInfo = new BilancialInformation();
+			for(Account a : associatedJournal.getListOfAccounts()) initInfo.accountSums.put(a, associatedJournal.getStartValue(a));
+			lastBilancial.put(null, initInfo);
+			precedingSeparators.add(null);
+		}
+		else {
+			lastBilancial = newbilancials.get(index -1);
+			precedingSeparators.addAll(lastBilancial.keySet());
+		}
+		
+		//Calculate new bilancials
+		for(int i = index; i < indexedData.size(); i++) {
+			Object o = indexedData.get(i);
+			//If it is a reading point, just copy the last bilancial info and add it to the separator list
+			if(o instanceof EntrySeparator) {
+				newbilancials.add(lastBilancial);
+				precedingSeparators.add((EntrySeparator)o);
+			}
+			//If it is an entry, add values
+			if(o instanceof Entry) {
+				
+			}
 		}
 		
 	}

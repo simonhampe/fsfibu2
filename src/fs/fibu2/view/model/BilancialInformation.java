@@ -19,17 +19,17 @@ public class BilancialInformation {
 	/**
 	 * The overall sum of all entries
 	 */
-	public int overallSum = 0;
+	public float overallSum = 0;
 	
 	/**
 	 * Sums of entries in certain categories
 	 */
-	public HashMap<Category, Integer> categorySums = new HashMap<Category, Integer>();
+	public HashMap<Category, Float> categorySums = new HashMap<Category, Float>();
 	
 	/**
 	 * Sums of entries using certain accounts
 	 */
-	public HashMap<Account, Integer> accountSums = new HashMap<Account, Integer>();
+	public HashMap<Account, Float> accountSums = new HashMap<Account, Float>();
 	
 	
 }
