@@ -10,7 +10,7 @@ import fs.fibu2.data.event.JournalAdapter;
 import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.Journal;
 import fs.fibu2.data.model.ReadingPoint;
-import fs.fibu2.view.event.YearsSeparatorListener;
+import fs.fibu2.view.event.YearSeparatorListener;
 
 /**
  * This class keeps track of the default year separators necessary for a journal. There is at most one instance for each journal object. Listeners
@@ -35,7 +35,7 @@ public class YearSeparators extends JournalAdapter {
 	private Journal associatedJournal;
 	
 	//A list of listeners
-	private HashSet<YearsSeparatorListener> listeners = new HashSet<YearsSeparatorListener>();
+	private HashSet<YearSeparatorListener> listeners = new HashSet<YearSeparatorListener>();
 	
 	// CONSTRUCTION ******************************
 	// *******************************************
@@ -206,18 +206,18 @@ public class YearSeparators extends JournalAdapter {
 	}
 	
 	protected void fireSeparatorAdded(ReadingPoint r) {
-		for(YearsSeparatorListener l : listeners) l.separatorAdded(associatedJournal, r);
+		for(YearSeparatorListener l : listeners) l.separatorAdded(associatedJournal, r);
 	}
 	
 	protected void fireSeparatorRemoved(ReadingPoint r) {
-		for(YearsSeparatorListener l : listeners) l.separatorRemoved(associatedJournal, r);
+		for(YearSeparatorListener l : listeners) l.separatorRemoved(associatedJournal, r);
 	}
 	
-	public void addYearsSeparatorListener(YearsSeparatorListener l) {
+	public void addYearSeparatorListener(YearSeparatorListener l) {
 		if(l != null) listeners.add(l);
 	}
 	
-	public void removeYearsSeparatorListener(YearsSeparatorListener l) {
+	public void removeYearSeparatorListener(YearSeparatorListener l) {
 		listeners.remove(l);
 	}
 	

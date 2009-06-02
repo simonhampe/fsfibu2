@@ -32,4 +32,14 @@ public class BilancialInformation {
 	public HashMap<Account, Float> accountSums = new HashMap<Account, Float>();
 	
 	
+	public BilancialInformation clone() {
+		BilancialInformation clone = new BilancialInformation();
+		
+		clone.overallSum = overallSum;
+		clone.categorySums = new HashMap<Category, Float>(categorySums);
+		clone.accountSums = new HashMap<Account, Float>(accountSums);
+		
+		return clone;
+	}
+	
 }

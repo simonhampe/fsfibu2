@@ -9,7 +9,7 @@ import fs.fibu2.view.model.YearSeparators;
  * @author Simon Hampe
  *
  */
-public interface YearsSeparatorListener {
+public interface YearSeparatorListener {
 
 	/**
 	 * Indicates that a given separator has been added for the given journal

@@ -14,7 +14,7 @@ import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.Journal;
 import fs.fibu2.data.model.ReadingPoint;
 import fs.fibu2.resource.Fsfibu2DefaultReference;
-import fs.fibu2.view.event.YearsSeparatorListener;
+import fs.fibu2.view.event.YearSeparatorListener;
 import fs.fibu2.view.model.YearSeparators;
 import fs.xml.FsfwDefaultReference;
 import fs.xml.XMLToolbox;
@@ -35,7 +35,7 @@ public class YearsSeparatorTest {
 		try {
 			Journal j = Fsfibu1Converter.convertFsfibu1Journal(XMLToolbox.loadXMLFile(new File(basedir + "/fsfibu/KassenbuchAb2008.xml")));
 			final YearSeparators ys = YearSeparators.getInstance(j);
-			ys.addYearsSeparatorListener(new YearsSeparatorListener() {
+			ys.addYearSeparatorListener(new YearSeparatorListener() {
 				@Override
 				public void separatorAdded(Journal source,
 						ReadingPoint yearSeparator) {

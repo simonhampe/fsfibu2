@@ -8,6 +8,8 @@ import java.util.TreeSet;
 import java.util.Vector;
 
 import javax.swing.SwingWorker;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
@@ -27,7 +29,7 @@ import fs.fibu2.data.model.ReadingPoint;
 import fs.fibu2.filter.StackFilter;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
 import fs.fibu2.view.event.ProgressListener;
-import fs.fibu2.view.event.YearsSeparatorListener;
+import fs.fibu2.view.event.YearSeparatorListener;
 
 /**
  * This class implements a model for a Journal table. Each model is associated to a {@link StackFilter} to which is listens, as well as to the associated {@link Journal}.
@@ -37,7 +39,7 @@ import fs.fibu2.view.event.YearsSeparatorListener;
  * @author Simon Hampe
  *
  */
-public class JournalTableModel implements TableModel, JournalListener, YearsSeparatorListener {
+public class JournalTableModel implements TableModel, JournalListener, YearSeparatorListener, ChangeListener {
 
 	//Data ******
 	
@@ -84,8 +86,23 @@ public class JournalTableModel implements TableModel, JournalListener, YearsSepa
 	 * Creates a table model, where all contained reading points are initially visible and entries are filtered according to
 	 * the given filter.
 	 */
-	public JournalTableModel(StackFilter filter) {
+	public JournalTableModel(Journal associatedJournal, StackFilter filter, boolean displayYearSeparators, 
+									boolean displayLinkedSeparators, boolean displayReadingPoints) {
+		//Copy data
+		this.associatedJournal = associatedJournal == null? new Journal() : associatedJournal;
+		this.filter = filter;
+		this.displayYearSeparators = displayYearSeparators;
+		this.displayLinkedSeparators = displayLinkedSeparators;
+		this.displayReadingPoints = displayReadingPoints;
 		
+		//Register listeners
+		associatedJournal.addJournalListener(this);
+		YearSeparators.getInstance(associatedJournal).addYearSeparatorListener(this);
+		if(filter != null) filter.addChangeListener(this);
+		
+		//Recalculate (when instantiating, this is actually done in the AWT thread)
+		recalculateLists();
+		recalculateBilancials(0);
 	}
 	
 	// TABLEMODEL ***************************************
@@ -246,16 +263,16 @@ public class JournalTableModel implements TableModel, JournalListener, YearsSepa
 		
 		//Derive last valid bilancial data
 		HashMap<EntrySeparator, BilancialInformation> lastBilancial = new HashMap<EntrySeparator, BilancialInformation>();
-		HashSet<EntrySeparator> precedingSeparators = new HashSet<EntrySeparator>();
+		EntrySeparator unhandledSeparator = null; //If a separator is added, the corresponding bilancial information is only added in the next step
+		//TODO: How to manage bilancial mapping creation for new separators?
 		if(index == 0) {
 			BilancialInformation initInfo = new BilancialInformation();
 			for(Account a : associatedJournal.getListOfAccounts()) initInfo.accountSums.put(a, associatedJournal.getStartValue(a));
 			lastBilancial.put(null, initInfo);
-			precedingSeparators.add(null);
 		}
 		else {
 			lastBilancial = newbilancials.get(index -1);
-			precedingSeparators.addAll(lastBilancial.keySet());
+			if(indexedData.get(index -1) instanceof EntrySeparator) unhandledSeparator = (EntrySeparator)indexedData.get(index -1);
 		}
 		
 		//Calculate new bilancials
@@ -263,14 +280,40 @@ public class JournalTableModel implements TableModel, JournalListener, YearsSepa
 			Object o = indexedData.get(i);
 			//If it is a reading point, just copy the last bilancial info and add it to the separator list
 			if(o instanceof EntrySeparator) {
-				newbilancials.add(lastBilancial);
-				precedingSeparators.add((EntrySeparator)o);
+				HashMap<EntrySeparator, BilancialInformation> nextBilancial = new HashMap<EntrySeparator, BilancialInformation>();
+				for(EntrySeparator s : lastBilancial.keySet()) {
+					nextBilancial.put(s, lastBilancial.get(s).clone());
+				}
 			}
 			//If it is an entry, add values
 			if(o instanceof Entry) {
-				
+				HashMap<EntrySeparator,BilancialInformation> nextInfo = new HashMap<EntrySeparator, BilancialInformation>();
+				for(EntrySeparator s : lastBilancial.keySet()) {
+					BilancialInformation nextBilancial = lastBilancial.get(s).clone();
+					float entryValue = ((Entry)o).getValue();					
+					
+					nextBilancial.overallSum += entryValue;
+					
+					Float catValue = nextBilancial.categorySums.get(((Entry)o).getCategory());
+					nextBilancial.categorySums.put(((Entry)o).getCategory(), entryValue + (catValue == null? 0 : catValue));
+					
+					Float accValue = nextBilancial.accountSums.get(((Entry)o).getAccount());
+					nextBilancial.accountSums.put(((Entry)o).getAccount(), entryValue + (accValue == null? 0 : accValue));
+					
+					nextInfo.put(s, nextBilancial);
+				}
 			}
 		}
+		
+	}
+	
+	// CHANGELISTENER **********************************************
+	// *************************************************************
+	
+	//Called when filter changes
+	@Override
+	public void stateChanged(ChangeEvent e) {
+		// TODO Auto-generated method stub
 		
 	}
 	
@@ -426,11 +469,17 @@ public class JournalTableModel implements TableModel, JournalListener, YearsSepa
 			//Now try heterogeneous pairings
 			for(Object p1 : Arrays.asList(o1,o2)) {
 				Object p2 = (p1 == o1) ? o2 : o1;
+				int factor = (p1 == o1)? 1 : -1;
 				
 				if(p1 instanceof Entry && p2 instanceof EntrySeparator) {
-					return ((EntrySeparator)p2).isLessOrEqualThanMe(((Entry)p1)) ? -1 : 1;
+					return factor * (((EntrySeparator)p2).isLessOrEqualThanMe(((Entry)p1)) ? -1 : 1);
 				}
 				
+				if(p1 instanceof ExtremeSeparator) return factor * (((ExtremeSeparator)p1).isBeforeAll()? -1 : 1);
+				
+				if(p1 instanceof ReadingPoint && p2 instanceof LinkedSeparator) {
+					return factor * (((ReadingPoint)p1).isLessOrEqualThanMe(((LinkedSeparator)p2).getLinkedEntry()) ? 1 : -1);
+				}
 			}
 			
 			//If we arrive here, this is not a valid call
