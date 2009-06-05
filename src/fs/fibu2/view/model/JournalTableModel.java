@@ -235,6 +235,8 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 			currentIndex++;
 		}
 		sortedSet.removeAll(elementsToRemove);
+		sortedSet.removeAll(separatorsToRemoveBefore);
+		sortedSet.removeAll(separatorsToRemoveAfter);
 		
 		//Copy data
 		synchronized (this) {
@@ -263,16 +265,16 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 		
 		//Derive last valid bilancial data
 		HashMap<EntrySeparator, BilancialInformation> lastBilancial = new HashMap<EntrySeparator, BilancialInformation>();
-		EntrySeparator unhandledSeparator = null; //If a separator is added, the corresponding bilancial information is only added in the next step
-		//TODO: How to manage bilancial mapping creation for new separators?
+		HashSet<EntrySeparator> precedingSeparators = new HashSet<EntrySeparator>();
 		if(index == 0) {
 			BilancialInformation initInfo = new BilancialInformation();
 			for(Account a : associatedJournal.getListOfAccounts()) initInfo.accountSums.put(a, associatedJournal.getStartValue(a));
 			lastBilancial.put(null, initInfo);
+			precedingSeparators.add(null);
 		}
 		else {
 			lastBilancial = newbilancials.get(index -1);
-			if(indexedData.get(index -1) instanceof EntrySeparator) unhandledSeparator = (EntrySeparator)indexedData.get(index -1);
+			precedingSeparators.addAll(lastBilancial.keySet());
 		}
 		
 		//Calculate new bilancials
@@ -284,12 +286,27 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 				for(EntrySeparator s : lastBilancial.keySet()) {
 					nextBilancial.put(s, lastBilancial.get(s).clone());
 				}
+				precedingSeparators.add((EntrySeparator)o);
 			}
 			//If it is an entry, add values
 			if(o instanceof Entry) {
 				HashMap<EntrySeparator,BilancialInformation> nextInfo = new HashMap<EntrySeparator, BilancialInformation>();
-				for(EntrySeparator s : lastBilancial.keySet()) {
-					BilancialInformation nextBilancial = lastBilancial.get(s).clone();
+				for(EntrySeparator s : precedingSeparators) {
+					BilancialInformation nextBilancial = lastBilancial.get(s);
+					//If there is not yet a mapping for this separator, create a new one
+					//otherwise clone it
+					if(nextBilancial == null) {
+						nextBilancial = new BilancialInformation();
+						//Get account information
+						HashMap<Account,Float> nullBilancial = lastBilancial.get(null).accountSums;
+						for(Account a : nullBilancial.keySet()) {
+							nextBilancial.accountSums.put(a, nullBilancial.get(a));
+						}
+					}
+					else {
+						nextBilancial = nextBilancial.clone();
+					}
+					
 					float entryValue = ((Entry)o).getValue();					
 					
 					nextBilancial.overallSum += entryValue;
