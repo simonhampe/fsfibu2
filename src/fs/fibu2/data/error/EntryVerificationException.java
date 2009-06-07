@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Vector;
 
 import fs.fibu2.data.model.Entry;
+import fs.fibu2.lang.Fsfibu2StringTableMgr;
 
 /**
  * This exception is thrown whenever an fsfibu2 journal entry contains invalid or insufficient information.
@@ -18,6 +19,9 @@ public class EntryVerificationException extends Exception {
 	 * Compiler-generated version id 
 	 */
 	private static final long serialVersionUID = 260009525496259815L;
+	
+	private final static String color_report_critical = "\"#FF0000\"";
+	private final static String color_report_normal = "\"000000\"";
 	
 	
 	private Entry verifiedEntry;
@@ -84,6 +88,25 @@ public class EntryVerificationException extends Exception {
 		for(String s : getListOfFaultyFields()) {
 			b.append(s + ": " + "(Critical: " + getListOfCriticality().get(s) + ") " + getFaultDescriptions().get(s) + "\n");
 		}
+		return b.toString();
+	}
+	
+	/**
+	 * @return A string in html format which can be used for tooltips
+	 */
+	public String getHTMLRepresentation() {
+		StringBuilder b = new StringBuilder();
+		b.append("<html><b>");
+		b.append(Fsfibu2StringTableMgr.getString("fs.fibu2.error.EntryVerificationException.report"));
+		b.append(":</b><br>");
+		for(String s : getListOfFaultyFields()) {
+			b.append("<font color =");
+			b.append(getListOfCriticality().get(s) ? color_report_critical : color_report_normal);
+			b.append(">- ");
+			b.append(getFaultDescriptions().get(s));
+			b.append("</font>");
+		}
+		b.append("</html>");
 		return b.toString();
 	}
 	

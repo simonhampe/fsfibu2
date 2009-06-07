@@ -89,6 +89,9 @@
   <polyglotstring id="fs.fibu2.model.JournalTableModel.columnDate" group="fs.fibu2.model.JournalTableModel">
     <variant lang="en">Date</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.error.EntryVerificationException.report" group="fs.fibu2.error.EntryVerificationException">
+    <variant lang="en">Error report</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.AdditionalInformationFilter.shortname" group="fs.fibu2.filter.AdditionalInformationFilter">
     <variant lang="en">Info</variant>
   </polyglotstring>
@@ -187,6 +190,9 @@
   </polyglotstring>
   <polyglotstring id="fs.fibu2.model.JournalTableModel.columnName" group="fs.fibu2.model.JournalTableModel">
     <variant lang="en">Name</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.model.BilancialInformation.report" group="fs.fibu2.model.BilancialInformation">
+    <variant lang="en">Bilancial</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.StackFilter.canceltooltip" group="fs.fibu2.filter.StackFilter">
     <variant lang="en">Cancel changes to filter</variant>

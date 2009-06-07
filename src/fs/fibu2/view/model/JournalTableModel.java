@@ -58,10 +58,13 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 	
 	//Displayed data (including bilancial data)
 	private Vector<Object> displayedData = new Vector<Object>();
+	//In 1:1-correspondance with displayedData, containing for each row element an ordered(!) list of Separators relative to which
+	//bilancial information is stored. This is kept for technical reasons
+	private Vector<Vector<EntrySeparator>> relevantSeparators = new Vector<Vector<EntrySeparator>>();
 		//In 1:1-corr. with indexedData, contains for each element a mapping from preceding EntrySeparators to BilancialInformation relative
 		//to that separator. For the starting separator (which is always the first element) and for
 		//all entries before indexToStartDisplay, this is just one single mapping for null, containing an overall sum
-	private Vector<HashMap<EntrySeparator,BilancialInformation>> bilancialData = new Vector<HashMap<EntrySeparator,BilancialInformation>>();	
+	private Vector<BilancialMapping> bilancialData = new Vector<BilancialMapping>();	
 	
 	//Listeners ******
 	
@@ -103,6 +106,24 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 		//Recalculate (when instantiating, this is actually done in the AWT thread)
 		recalculateLists();
 		recalculateBilancials(0);
+	}
+	
+	// GETTERS / SETTERS ********************************
+	// **************************************************
+	
+	/**
+	 * @returns The bilancial mapping for the given row or null, if there is none
+	 */
+	public BilancialMapping getBilancialMapping(Object row) {
+		return getBilancialMapping(displayedData.indexOf(row));
+	}
+	
+	/**
+	 * @return The bilancial mapping for the given row index or null, if the index is out of bounds
+	 */
+	public BilancialMapping getBilancialMapping(int index) {
+		if(index < 0 || index >= bilancialData.size()) return null;
+		else return bilancialData.get(index);
 	}
 	
 	// TABLEMODEL ***************************************
@@ -256,72 +277,54 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 	 */
 	protected void recalculateBilancials(int index) {
 		if(index >= displayedData.size()) return;
+		if(index <= 0) index = 0;
 		
-		Vector<HashMap<EntrySeparator,BilancialInformation>> newbilancials = new Vector<HashMap<EntrySeparator,BilancialInformation>>();
+		Vector<BilancialMapping> newbilancials = new Vector<BilancialMapping>();
 		//Copy correct data
 		synchronized (this) {
-			for(int i = 0; i < index; i++) newbilancials.add(bilancialData.get(i));
+			for(int i = 0; i < index; i++) {
+				newbilancials.add(bilancialData.get(i));
+			}
 		}
 		
 		//Derive last valid bilancial data
-		HashMap<EntrySeparator, BilancialInformation> lastBilancial = new HashMap<EntrySeparator, BilancialInformation>();
-		HashSet<EntrySeparator> precedingSeparators = new HashSet<EntrySeparator>();
+		BilancialMapping lastMapping = new BilancialMapping();
+		Vector<EntrySeparator> precedingSeparators = new Vector<EntrySeparator>();
 		if(index == 0) {
-			BilancialInformation initInfo = new BilancialInformation();
-			for(Account a : associatedJournal.getListOfAccounts()) initInfo.accountSums.put(a, associatedJournal.getStartValue(a));
-			lastBilancial.put(null, initInfo);
+			BilancialInformation initInfo = new BilancialInformation(associatedJournal);
+			lastMapping.put(null, initInfo);
 			precedingSeparators.add(null);
 		}
 		else {
-			lastBilancial = newbilancials.get(index -1);
-			precedingSeparators.addAll(lastBilancial.keySet());
+			lastMapping= newbilancials.get(index -1);
+			precedingSeparators.addAll(lastMapping.keySet());
 		}
 		
-		//Calculate new bilancials
+		//Calculate new bilancial
 		for(int i = index; i < indexedData.size(); i++) {
 			Object o = indexedData.get(i);
+			BilancialMapping nextMapping = lastMapping.clone();
 			//If it is a reading point, just copy the last bilancial info and add it to the separator list
 			if(o instanceof EntrySeparator) {
-				HashMap<EntrySeparator, BilancialInformation> nextBilancial = new HashMap<EntrySeparator, BilancialInformation>();
-				for(EntrySeparator s : lastBilancial.keySet()) {
-					nextBilancial.put(s, lastBilancial.get(s).clone());
-				}
 				precedingSeparators.add((EntrySeparator)o);
 			}
 			//If it is an entry, add values
 			if(o instanceof Entry) {
-				HashMap<EntrySeparator,BilancialInformation> nextInfo = new HashMap<EntrySeparator, BilancialInformation>();
 				for(EntrySeparator s : precedingSeparators) {
-					BilancialInformation nextBilancial = lastBilancial.get(s);
-					//If there is not yet a mapping for this separator, create a new one
-					//otherwise clone it
-					if(nextBilancial == null) {
-						nextBilancial = new BilancialInformation();
-						//Get account information
-						HashMap<Account,Float> nullBilancial = lastBilancial.get(null).accountSums;
-						for(Account a : nullBilancial.keySet()) {
-							nextBilancial.accountSums.put(a, nullBilancial.get(a));
-						}
+					BilancialInformation info = lastMapping.get(s);
+					//If there is not yet a mapping, create one
+					if(info == null) {
+						info = new BilancialInformation(lastMapping.getMostRecent().information());
 					}
-					else {
-						nextBilancial = nextBilancial.clone();
-					}
-					
-					float entryValue = ((Entry)o).getValue();					
-					
-					nextBilancial.overallSum += entryValue;
-					
-					Float catValue = nextBilancial.categorySums.get(((Entry)o).getCategory());
-					nextBilancial.categorySums.put(((Entry)o).getCategory(), entryValue + (catValue == null? 0 : catValue));
-					
-					Float accValue = nextBilancial.accountSums.get(((Entry)o).getAccount());
-					nextBilancial.accountSums.put(((Entry)o).getAccount(), entryValue + (accValue == null? 0 : accValue));
-					
-					nextInfo.put(s, nextBilancial);
+					info = info.increment((Entry)o);
+					nextMapping.put(s, info);
 				}
 			}
+			newbilancials.add(nextMapping);
 		}
-		
+		synchronized (this) {
+			bilancialData = newbilancials;
+		}
 	}
 	
 	// CHANGELISTENER **********************************************
@@ -448,62 +451,7 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 	// COMPARATOR *************************************************************
 	// ************************************************************************
 	
-	/**
-	 * An instance of this class compares objects which are displayed in a journal table, i.e.
-	 * {@link Entry} and {@link EntrySeparator} objects. If objects of any other type are compared or any of them is null,
-	 * it throws an {@link IllegalArgumentException}.
-	 */
-	public static class TableModelComparator implements Comparator<Object> {
-
-		private EntryComparator entryComparator = new EntryComparator(false);
-		private EntryDateComparator entryDateComparator = new EntryDateComparator();
-		
-		@Override
-		public int compare(Object o1, Object o2) {
-			if(o1 == null || o2 == null) throw new IllegalArgumentException("Cannot compare null objects");
-			
-			//First try all cases where both are of same type
-			
-			if(o1 instanceof Entry && o2 instanceof Entry) {
-				return entryComparator.compare((Entry)o1, (Entry)o2); 
-			}
-			
-			if(o1 instanceof ReadingPoint && o2 instanceof ReadingPoint) {
-				return entryDateComparator.compare(((ReadingPoint)o1).getReadingDay(), ((ReadingPoint)o2).getReadingDay());
-			}
-			
-			if(o1 instanceof ExtremeSeparator && o2 instanceof ExtremeSeparator) {
-				if(((ExtremeSeparator)o1).isBeforeAll()) {
-					return ((ExtremeSeparator)o2).isBeforeAll()? 0 : -1;
-				}
-				else return ((ExtremeSeparator)o2).isBeforeAll()? 1 : 0;
-			}
-			
-			if(o1 instanceof LinkedSeparator && o2 instanceof LinkedSeparator) {
-				return entryComparator.compare(((LinkedSeparator)o1).getLinkedEntry(),((LinkedSeparator)o2).getLinkedEntry());
-			}
-			
-			//Now try heterogeneous pairings
-			for(Object p1 : Arrays.asList(o1,o2)) {
-				Object p2 = (p1 == o1) ? o2 : o1;
-				int factor = (p1 == o1)? 1 : -1;
-				
-				if(p1 instanceof Entry && p2 instanceof EntrySeparator) {
-					return factor * (((EntrySeparator)p2).isLessOrEqualThanMe(((Entry)p1)) ? -1 : 1);
-				}
-				
-				if(p1 instanceof ExtremeSeparator) return factor * (((ExtremeSeparator)p1).isBeforeAll()? -1 : 1);
-				
-				if(p1 instanceof ReadingPoint && p2 instanceof LinkedSeparator) {
-					return factor * (((ReadingPoint)p1).isLessOrEqualThanMe(((LinkedSeparator)p2).getLinkedEntry()) ? 1 : -1);
-				}
-			}
-			
-			//If we arrive here, this is not a valid call
-			throw new IllegalArgumentException("Cannot compare: Only Entry and EntrySeparator types are allowed.");
-		}
-		
-	}
+	
 
 	// RECALCULATOR CLASS *******************************************************
 	// *************************************************************************
