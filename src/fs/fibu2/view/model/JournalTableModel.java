@@ -1,8 +1,5 @@
 package fs.fibu2.view.model;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TreeSet;
 import java.util.Vector;
@@ -14,11 +11,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
-import sun.awt.image.ImageWatched.Link;
-
 import fs.fibu2.data.event.JournalListener;
-import fs.fibu2.data.format.EntryComparator;
-import fs.fibu2.data.format.EntryDateComparator;
 import fs.fibu2.data.model.Account;
 import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.EntrySeparator;
@@ -51,7 +44,6 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 	//Backing data (= visible entries + all entries before)
 	private TreeSet<Object> sortedData;
 	private Vector<Object> indexedData = new Vector<Object>();
-	private int indexToStartDisplay; //The index of the first element which is actually displayed (this will always be the index of startSeparator)
 	
 	private StackFilter filter;
 	private Journal		associatedJournal;
@@ -263,7 +255,6 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 		synchronized (this) {
 			sortedData = sortedSet;
 			indexedData = new Vector<Object>(sortedData);
-			indexToStartDisplay = firstContainedIndex;
 			displayedData = new Vector<Object>(indexedData);
 			displayedData.removeAll(elementsNotDisplayed);
 		}
