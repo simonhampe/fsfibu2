@@ -46,10 +46,14 @@ public class BilancialMapping {
 		if(value != null) {
 			BilancialPairing pair = new BilancialPairing(key, value);
 			BilancialPairing previous = mapping.put(key, pair);
-			pairing.add(pair);
 			if(previous != null) {
 				pairing.remove(previous);
+				pairing.add(pair);
 				return previous.information;
+			}
+			else {
+				pairing.add(pair);
+				return null;
 			}
 		}
 		return null;

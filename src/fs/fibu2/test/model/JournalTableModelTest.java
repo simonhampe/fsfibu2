@@ -23,6 +23,9 @@ import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.EntrySeparator;
 import fs.fibu2.data.model.Journal;
 import fs.fibu2.examples.SlushFund;
+import fs.fibu2.filter.DefaultFilters;
+import fs.fibu2.filter.EntryFilter;
+import fs.fibu2.filter.StackFilter;
 import fs.fibu2.resource.Fsfibu2DefaultReference;
 import fs.fibu2.view.model.JournalTableModel;
 import fs.fibu2.view.render.JournalTableRenderer;
@@ -45,14 +48,16 @@ public class JournalTableModelTest {
 		
 		try {
 			Journal j = Fsfibu1Converter.convertFsfibu1Journal(XMLToolbox.loadXMLFile(new File(basedir + "/fsfibu/KassenbuchAb2008.xml")));
-			AccountLoader.setAccount("slush_fund", new SlushFund());
-			HashMap<String, String> falseMap = new HashMap<String, String>();
-			falseMap.put("invoice", "F 4");
-			Entry e = new Entry("Bla",23,Currency.getInstance("EUR"),new GregorianCalendar(),Category.getRootCategory(),"slush_fund",falseMap,null);
-			j.addEntry(e);
+//			AccountLoader.setAccount("slush_fund", new SlushFund());
+//			HashMap<String, String> falseMap = new HashMap<String, String>();
+//			falseMap.put("invoice", "F 4");
+//			Entry e = new Entry("Bla",23,Currency.getInstance("EUR"),new GregorianCalendar(),Category.getRootCategory(),"slush_fund",falseMap,null);
+//			j.addEntry(e);
+			
+			EntryFilter filter = DefaultFilters.getYearFilter(2009);
 			
 			long time1 = System.currentTimeMillis();
-			JournalTableModel model = new JournalTableModel(j,null,true,true,true);
+			JournalTableModel model = new JournalTableModel(j,filter,true,true,false);
 			long time2 = System.currentTimeMillis();
 			System.out.println("Time for model calculation: " + (time2-time1));
 			System.out.println("Model size: " + model.getRowCount());

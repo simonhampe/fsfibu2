@@ -19,6 +19,7 @@ import fs.fibu2.data.model.ExtremeSeparator;
 import fs.fibu2.data.model.Journal;
 import fs.fibu2.data.model.LinkedSeparator;
 import fs.fibu2.data.model.ReadingPoint;
+import fs.fibu2.filter.EntryFilter;
 import fs.fibu2.filter.StackFilter;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
 import fs.fibu2.view.event.ProgressListener;
@@ -45,7 +46,7 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 	private TreeSet<Object> sortedData;
 	private Vector<Object> indexedData = new Vector<Object>();
 	
-	private StackFilter filter;
+	private EntryFilter filter;
 	private Journal		associatedJournal;
 	
 	//Displayed data (including bilancial data)
@@ -81,7 +82,7 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 	 * Creates a table model, where all contained reading points are initially visible and entries are filtered according to
 	 * the given filter.
 	 */
-	public JournalTableModel(Journal associatedJournal, StackFilter filter, boolean displayYearSeparators, 
+	public JournalTableModel(Journal associatedJournal, EntryFilter filter, boolean displayYearSeparators, 
 									boolean displayLinkedSeparators, boolean displayReadingPoints) {
 		//Copy data
 		this.associatedJournal = associatedJournal == null? new Journal() : associatedJournal;
@@ -93,7 +94,7 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 		//Register listeners
 		associatedJournal.addJournalListener(this);
 		YearSeparators.getInstance(associatedJournal).addYearSeparatorListener(this);
-		if(filter != null) filter.addChangeListener(this);
+		if(filter != null && (filter instanceof StackFilter)) ((StackFilter)filter).addChangeListener(this);
 		
 		//Recalculate (when instantiating, this is actually done in the AWT thread)
 		recalculateLists();
@@ -312,6 +313,7 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 				}
 			}
 			newbilancials.add(nextMapping);
+			lastMapping = nextMapping;
 		}
 		synchronized (this) {
 			bilancialData = newbilancials;
