@@ -51,9 +51,6 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 	
 	//Displayed data (including bilancial data)
 	private Vector<Object> displayedData = new Vector<Object>();
-	//In 1:1-correspondance with displayedData, containing for each row element an ordered(!) list of Separators relative to which
-	//bilancial information is stored. This is kept for technical reasons
-	private Vector<Vector<EntrySeparator>> relevantSeparators = new Vector<Vector<EntrySeparator>>();
 		//In 1:1-corr. with indexedData, contains for each element a mapping from preceding EntrySeparators to BilancialInformation relative
 		//to that separator. For the starting separator (which is always the first element) and for
 		//all entries before indexToStartDisplay, this is just one single mapping for null, containing an overall sum

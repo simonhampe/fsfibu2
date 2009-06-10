@@ -57,7 +57,7 @@ public class JournalTableModelTest {
 			EntryFilter filter = DefaultFilters.getYearFilter(2009);
 			
 			long time1 = System.currentTimeMillis();
-			JournalTableModel model = new JournalTableModel(j,filter,true,true,false);
+			JournalTableModel model = new JournalTableModel(j,null,true,true,false);
 			long time2 = System.currentTimeMillis();
 			System.out.println("Time for model calculation: " + (time2-time1));
 			System.out.println("Model size: " + model.getRowCount());
