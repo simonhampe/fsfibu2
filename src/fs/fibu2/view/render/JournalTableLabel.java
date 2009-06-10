@@ -34,11 +34,11 @@ public class JournalTableLabel extends JLabel {
 	//A slightly darker green for selected EntrySeparator cells
 	private final static Color color_separator_selected = new Color(134,213,124);
 	
-	//The default border color is a dark grey
-	private final static Color color_border_normal = new Color(111,111,111);
-	
-	//A darker blue for borders of selected cells
-	private final static Color color_border_selected = new Color(60,35,215);
+//	//The default border color is a dark grey
+//	private final static Color color_border_normal = new Color(111,111,111);
+//	
+//	//A darker blue for borders of selected cells
+//	private final static Color color_border_selected = new Color(60,35,215);
 	
 	/**
 	 * Creates a basic label with colors and borders set to appropriate default values
@@ -51,8 +51,6 @@ public class JournalTableLabel extends JLabel {
 		setOpaque(true);
 		setBackground(isSelected? (isSeparator? color_separator_selected : color_background_selected) : 
 								(isSeparator? color_separator_normal : color_background_normal));
-		Color borderColor = isSelected? color_border_selected : color_border_normal;
-		setBorder(isSeparator? BorderFactory.createMatteBorder(1, 0, 1, 0, borderColor) :
-					BorderFactory.createLineBorder(borderColor,1));	
+		if(!isSeparator) setFont(getFont().deriveFont(10));
 	}
 }

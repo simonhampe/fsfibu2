@@ -45,15 +45,17 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 	//Backing data (= visible entries + all entries before)
 	private TreeSet<Object> sortedData;
 	private Vector<Object> indexedData = new Vector<Object>();
+	//The index of the first element displayed in indexedData
+	private int firstIndexDisplayed;
 	
 	private EntryFilter filter;
 	private Journal		associatedJournal;
 	
 	//Displayed data (including bilancial data)
 	private Vector<Object> displayedData = new Vector<Object>();
-		//In 1:1-corr. with indexedData, contains for each element a mapping from preceding EntrySeparators to BilancialInformation relative
-		//to that separator. For the starting separator (which is always the first element) and for
-		//all entries before indexToStartDisplay, this is just one single mapping for null, containing an overall sum
+		//In 1:1-corr. with indexedData, contains for each element a bilancial mapping. For the starting separator (which is always the first element) and for
+		//all entries before indexToStartDisplay, this is just one single mapping for null, containing an overall sum. For the starting separator this is actually a
+		//an overall sum over all entries not displayed. 
 	private Vector<BilancialMapping> bilancialData = new Vector<BilancialMapping>();	
 	
 	//Listeners ******
@@ -255,6 +257,7 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 			indexedData = new Vector<Object>(sortedData);
 			displayedData = new Vector<Object>(indexedData);
 			displayedData.removeAll(elementsNotDisplayed);
+			firstIndexDisplayed = firstContainedIndex;
 		}
 	}
 	
@@ -266,7 +269,7 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 	 */
 	protected void recalculateBilancials(int index) {
 		if(index >= displayedData.size()) return;
-		if(index <= 0) index = 0;
+		if(index <  0) index = 0;
 		
 		Vector<BilancialMapping> newbilancials = new Vector<BilancialMapping>();
 		//Copy correct data
@@ -293,8 +296,13 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 		for(int i = index; i < indexedData.size(); i++) {
 			Object o = indexedData.get(i);
 			BilancialMapping nextMapping = lastMapping.clone();
+			//If this is the first displayed element, add the StartSeparator
+			if(i == firstIndexDisplayed) {
+				precedingSeparators.add(startSeparator);
+			}
 			//If it is a reading point, just copy the last bilancial info and add it to the separator list
-			if(o instanceof EntrySeparator) {
+			//But if we are not yet at the displayed elements, we don't add the separator
+			if(o instanceof EntrySeparator && i > firstIndexDisplayed) {
 				precedingSeparators.add((EntrySeparator)o);
 			}
 			//If it is an entry, add values
