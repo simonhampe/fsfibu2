@@ -65,8 +65,8 @@ public class JournalTableModelTest {
 		Locale.setDefault(Locale.GERMANY);
 		
 		try {
-			final Journal j = //Fsfibu1Converter.convertFsfibu1Journal(XMLToolbox.loadXMLFile(new File(basedir + "/fsfibu/KassenbuchAb2008.xml")));
-								new Journal();
+			final Journal j = Fsfibu1Converter.convertFsfibu1Journal(XMLToolbox.loadXMLFile(new File(basedir + "/fsfibu/KassenbuchAb2008.xml")));
+								//new Journal();
 			
 			EntryFilter filter = DefaultFilters.getYearFilter(2009);
 								//new CategoryFilter(Category.getCategory(new Vector<String>(Arrays.asList("Fachschaft"))));

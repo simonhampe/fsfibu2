@@ -29,10 +29,11 @@ public class JournalTableLabel extends JLabel {
 	private final static Color color_background_selected = new Color(211,220,229);
 	
 	//A light green background for EntrySeparators
-	private final static Color color_separator_normal = new Color(157,249,145);
+	private final static Color color_separator_normal = new Color(177,237,241);
 	
 	//A slightly darker green for selected EntrySeparator cells
-	private final static Color color_separator_selected = new Color(134,213,124);
+	private final static Color color_separator_selected = //new Color(250,197,247);
+															new Color(151,202,206);
 	
 //	//The default border color is a dark grey
 //	private final static Color color_border_normal = new Color(111,111,111);
