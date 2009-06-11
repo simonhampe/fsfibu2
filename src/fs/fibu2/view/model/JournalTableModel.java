@@ -273,7 +273,7 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 
 		//Insert the start separator
 		Vector<Object> finalData = new Vector<Object>(sortedSet);
-		finalData.add(firstContainedIndex, startSeparator);
+		finalData.add(firstContainedIndex < 0 ? 0 : firstContainedIndex, startSeparator);
 		
 		finalData.removeAll(elementsToRemove);
 		finalData.removeAll(separatorsToRemoveBefore);
