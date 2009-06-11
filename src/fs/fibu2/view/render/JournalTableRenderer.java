@@ -19,6 +19,7 @@ import fs.fibu2.data.format.DefaultCurrencyFormat;
 import fs.fibu2.data.format.Fsfibu2DateFormats;
 import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.EntrySeparator;
+import fs.fibu2.data.model.ExtremeSeparator;
 import fs.fibu2.data.model.Journal;
 import fs.fibu2.data.model.ReadingPoint;
 import fs.fibu2.resource.Fsfibu2DefaultReference;
@@ -141,11 +142,19 @@ public class JournalTableRenderer implements TableCellRenderer, ResourceDependen
 		//For an EntrySeparator, only the second to fourth column contain something (i.e.: the name and (if it is a ReadingPoint) the date and the overall
 		//value
 		if(value instanceof EntrySeparator) {
-			if(column == 1) label.setText(((EntrySeparator)value).getName());
-			if(column == 3) label.setText(DefaultCurrencyFormat.getFormat(currency).format(associatedModel.getBilancialMapping(row).getMostRecent().
-					information().getOverallSum()));
-			if(value instanceof ReadingPoint && column == 2) label.setText(Fsfibu2DateFormats.getEntryDateFormat().format(
-					((ReadingPoint)value).getReadingDay().getTime()));
+			switch(column) {
+			case 1: label.setText(((EntrySeparator)value).getName());break;
+			case 2: if(value instanceof ReadingPoint) {
+				label.setText(Fsfibu2DateFormats.getEntryDateFormat().format(
+						((ReadingPoint)value).getReadingDay().getTime()));
+			}
+			break;
+			case 3: if(!((value instanceof ExtremeSeparator) && ((ExtremeSeparator)value).isBeforeAll())) {
+						label.setText(DefaultCurrencyFormat.getFormat(currency).format(associatedModel.getBilancialMapping(row).getMostRecent().
+								information().getOverallSum()));
+					}
+					break;
+			} 
 		}
 		return label;
 	}

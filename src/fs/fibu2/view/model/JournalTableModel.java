@@ -42,20 +42,20 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 	private ExtremeSeparator endSeparator = new ExtremeSeparator(Fsfibu2StringTableMgr.getString(sgroup + ".end"),false);
 	private HashSet<LinkedSeparator> linkedSeparators = new HashSet<LinkedSeparator>();
 	
-	//Backing data (= visible entries + all entries before)
-	private TreeSet<Object> sortedData;
+	//A sorted list of all displayed entries and separators + all entries not displayed which come before the first entry displayed
+	//Despite the order induced by the comparator the starting separator will be moved to firstIndexDisplayed when creating the list
 	private Vector<Object> indexedData = new Vector<Object>();
-	//The index of the first element displayed in indexedData
+	//The index of the first element displayed in indexedData (i.e. of the start separator)
 	private int firstIndexDisplayed;
 	
 	private EntryFilter filter;
 	private Journal		associatedJournal;
 	
-	//Displayed data (including bilancial data)
+	//Displayed elements
 	private Vector<Object> displayedData = new Vector<Object>();
-		//In 1:1-corr. with indexedData, contains for each element a bilancial mapping. For the starting separator (which is always the first element) and for
+	//In 1:1-corr. with indexedData, contains for each element a bilancial mapping. For the starting separator and for
 		//all entries before indexToStartDisplay, this is just one single mapping for null, containing an overall sum. For the starting separator this is actually a
-		//an overall sum over all entries not displayed. 
+		//an overall sum (for the account mappings) over all entries not displayed. 
 	private Vector<BilancialMapping> bilancialData = new Vector<BilancialMapping>();	
 	
 	//Listeners ******
@@ -115,7 +115,7 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 	 */
 	public BilancialMapping getBilancialMapping(int index) {
 		if(index < 0 || index >= bilancialData.size()) return null;
-		else return bilancialData.get(index);
+		else return bilancialData.get(index+ firstIndexDisplayed);
 	}
 	
 	// TABLEMODEL ***************************************
@@ -208,7 +208,6 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 		if(displayLinkedSeparators) sortedSet.addAll(linkedSeparators);
 		if(displayReadingPoints) sortedSet.addAll(associatedJournal.getReadingPoints());
 		if(displayYearSeparators) sortedSet.addAll(YearSeparators.getInstance(associatedJournal).getNecessarySeparators());
-		sortedSet.add(startSeparator);
 		sortedSet.add(endSeparator);
 		
 		//Remove unused entries and reading points
@@ -247,14 +246,19 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 			}
 			currentIndex++;
 		}
-		sortedSet.removeAll(elementsToRemove);
-		sortedSet.removeAll(separatorsToRemoveBefore);
-		sortedSet.removeAll(separatorsToRemoveAfter);
+
+		//Insert the start separator
+		Vector<Object> finalData = new Vector<Object>(sortedSet);
+		finalData.add(firstContainedIndex, startSeparator);
+		
+		finalData.removeAll(elementsToRemove);
+		finalData.removeAll(separatorsToRemoveBefore);
+		finalData.removeAll(separatorsToRemoveAfter);
+		firstContainedIndex = finalData.indexOf(startSeparator);
 		
 		//Copy data
 		synchronized (this) {
-			sortedData = sortedSet;
-			indexedData = new Vector<Object>(sortedData);
+			indexedData = finalData;
 			displayedData = new Vector<Object>(indexedData);
 			displayedData.removeAll(elementsNotDisplayed);
 			firstIndexDisplayed = firstContainedIndex;

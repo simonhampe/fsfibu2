@@ -68,7 +68,7 @@ public class JournalTableModelTest {
 								//new CategoryFilter(Category.getCategory(new Vector<String>(Arrays.asList("Fachschaft"))));
 			
 			long time1 = System.currentTimeMillis();
-			final JournalTableModel model = new JournalTableModel(j,null,true,true,false);
+			final JournalTableModel model = new JournalTableModel(j,filter,true,true,false);
 			long time2 = System.currentTimeMillis();
 			System.out.println("Time for model calculation: " + (time2-time1));
 			System.out.println("Model size: " + model.getRowCount());
