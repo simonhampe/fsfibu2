@@ -2,7 +2,7 @@ package fs.fibu2.data.model;
 
 /**
  * An extreme separator is a separator which comes before all entries or
- * after all entries.
+ * after all entries. Optionally, a filter can be given when creating the separator.
  * @author Simon Hampe
  *
  */

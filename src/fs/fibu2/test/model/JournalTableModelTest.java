@@ -64,11 +64,11 @@ public class JournalTableModelTest {
 //			Entry e = new Entry("Bla",23,Currency.getInstance("EUR"),new GregorianCalendar(),Category.getRootCategory(),"slush_fund",falseMap,null);
 //			j.addEntry(e);
 			
-			EntryFilter filter = //DefaultFilters.getYearFilter(2009);
-								new CategoryFilter(Category.getCategory(new Vector<String>(Arrays.asList("Fachschaft"))));
+			EntryFilter filter = DefaultFilters.getYearFilter(2009);
+								//new CategoryFilter(Category.getCategory(new Vector<String>(Arrays.asList("Fachschaft"))));
 			
 			long time1 = System.currentTimeMillis();
-			final JournalTableModel model = new JournalTableModel(j,filter,true,true,false);
+			final JournalTableModel model = new JournalTableModel(j,null,true,true,false);
 			long time2 = System.currentTimeMillis();
 			System.out.println("Time for model calculation: " + (time2-time1));
 			System.out.println("Model size: " + model.getRowCount());
@@ -84,12 +84,13 @@ public class JournalTableModelTest {
 				table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 					@Override
 					public void valueChanged(ListSelectionEvent e) {
+						if(e.getValueIsAdjusting()) return;
 						if(table.getSelectedRow() >= 0) {
 							BilancialMapping map = model.getBilancialMapping(table.getSelectedRow());
 							System.out.println("Bilancial map: ");
 							System.out.println("Last separator: " + (map.getMostRecent().separator() != null? map.getMostRecent().separator().getName() : "-"));
 							for(EntrySeparator s : map.keySet()) {
-								System.out.println("Name: " + (s == null? "-" : s.getName()));
+								System.out.println("Name: " + (s == null? "-" : s.getName()) + "--------------");
 								BilancialInformation info = map.get(s);
 								System.out.println("Overall: "  + info.getOverallSum());
 								for(Account a : info.getAccountMappings().keySet()) {

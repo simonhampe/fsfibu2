@@ -309,7 +309,7 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 			if(o instanceof Entry) {
 				for(EntrySeparator s : precedingSeparators) {
 					BilancialInformation info = lastMapping.get(s);
-					//If there is not yet a mapping, create one
+					//If there is not yet a mapping, create one 
 					if(info == null) {
 						info = new BilancialInformation(lastMapping.getMostRecent().information());
 					}
