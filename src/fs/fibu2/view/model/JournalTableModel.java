@@ -69,6 +69,9 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 	
 	private final static String sgroup = "fs.fibu2.model.JournalTableModel";
 	
+	//The currently running/last requested instance of the recalculator
+	private static Recalculator runningInstance = null;
+	
 	//Visibility flags
 	private boolean displayYearSeparators = true;
 	private boolean displayLinkedSeparators = true;
@@ -114,8 +117,29 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 	 * @return The bilancial mapping for the given row index or null, if the index is out of bounds
 	 */
 	public BilancialMapping getBilancialMapping(int index) {
-		if(index < 0 || index >= bilancialData.size()) return null;
+		if(index < 0 || index >= getRowCount()) return null;
 		else return bilancialData.get(index+ firstIndexDisplayed);
+	}
+	
+	/**
+	 * @return An instance of Recalculator. Cancels a running instance, if it exists 
+	 */
+	private synchronized Recalculator getRecalculatorInstance() {
+		if(runningInstance == null) {
+			runningInstance = new Recalculator();
+			return runningInstance;
+		}
+		else {
+			runningInstance.cancel(true);
+			runningInstance = new Recalculator();
+			return runningInstance;
+		}
+	}
+	
+	private void doRecalculation() {
+		Recalculator c = getRecalculatorInstance();
+		fireTaskBegins(c);
+		c.execute();
 	}
 	
 	// TABLEMODEL ***************************************
@@ -335,8 +359,7 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 	//Called when filter changes
 	@Override
 	public void stateChanged(ChangeEvent e) {
-		// TODO Auto-generated method stub
-		
+		doRecalculation();
 	}
 	
 	// YEARSSEPARATOR LISTENER *************************************
@@ -344,14 +367,12 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 	
 	@Override
 	public void separatorAdded(Journal source, ReadingPoint yearSeparator) {
-		// TODO Auto-generated method stub
-		
+		doRecalculation();
 	}
 
 	@Override
 	public void separatorRemoved(Journal source, ReadingPoint yearSeparator) {
-		// TODO Auto-generated method stub
-		
+		doRecalculation();
 	}
 
 	// LISTENER MECHANISM ***********************************************
@@ -398,20 +419,17 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 
 	@Override
 	public void entriesAdded(Journal source, Entry[] newEntries) {
-		// TODO Auto-generated method stub
-		
+		doRecalculation();
 	}
 
 	@Override
 	public void entriesRemoved(Journal source, Entry[] oldEntries) {
-		// TODO Auto-generated method stub
-		
+		doRecalculation();
 	}
 
 	@Override
 	public void entryReplaced(Journal source, Entry oldEntry, Entry newEntry) {
-		// TODO Auto-generated method stub
-		
+		doRecalculation();
 	}
 
 	@Override
@@ -421,100 +439,55 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 
 	@Override
 	public void readingPointAdded(Journal source, ReadingPoint point) {
-		// TODO Auto-generated method stub
-		
+		doRecalculation();
 	}
 
 	@Override
 	public void readingPointRemoved(Journal source, ReadingPoint point) {
-		// TODO Auto-generated method stub
-		
+		doRecalculation();
 	}
 
 	@Override
 	public void startValueChanged(Journal source, Account a, Float oldValue,
 			Float newValue) {
-		// TODO Auto-generated method stub
-		
+		doRecalculation();
 	}
 
 	@Override
 	public void dateChanged(ReadingPoint source) {
-		// TODO Auto-generated method stub
-		
+		doRecalculation();
 	}
 
 	@Override
 	public void nameChanged(ReadingPoint source) {
-		// TODO Auto-generated method stub
-		
+		doRecalculation();
 	}
 	
-	// COMPARATOR *************************************************************
-	// ************************************************************************
-	
-	
-
 	// RECALCULATOR CLASS *******************************************************
 	// *************************************************************************
 
 	/**
-	 * Recalculates the bilancial information of the model in a separate thread, starting from a certain index. There is always only one running instance of this object.
-	 * If one is requested, while one is still running, the old one is cancelled and a new calculation is started from the lower index of both
+	 * Recalculates all entries and their bilancials. Originally this class was intended to do this in a faster way, depending on the changes made, but
+	 * the recalculation is still so quick that it did eventually seem a bit too much effort. Its background method does not return anything, it
+	 * just calls the corresponding calculation methods of the {@link JournalTableModel}
 	 */
-	private static class BilancialRecalculator extends SwingWorker<Object, Object> {
-
-		//The currently running/last requested instance
-		private static BilancialRecalculator runningInstance = null;
-		
-		private int calculationIndex = 0;
-		
-		// CONSTRUCTION **************************************
-		// ***************************************************
-		
-		private BilancialRecalculator(int index) {
-			calculationIndex = index >= 0? index : 0;
-		}
-		
-		/**
-		 * @param startCalculationAt The index in the list of data at which to start the calculation
-		 * @return An instance of Recalculator. Cancels a running instance, if it exists and returns one which has the lower 
-		 * index of both as calculation index
-		 */
-		public static synchronized BilancialRecalculator getInstance(int startCalculationAt) {
-			if(runningInstance == null) {
-				runningInstance = new BilancialRecalculator(startCalculationAt);
-				return runningInstance;
-			}
-			else {
-				runningInstance.cancel(true);
-				runningInstance = new BilancialRecalculator(
-						runningInstance.getCalculationIndex() <= startCalculationAt? runningInstance.getCalculationIndex() : startCalculationAt);
-				return runningInstance;
-			}
-		}
-		
-		// GETTERS *******************************************
-		// ***************************************************
-		
-		public int getCalculationIndex() {
-			return calculationIndex;
-		}
-		
-		// OVERRIDDEN ****************************************
-		// ***************************************************
+	private class Recalculator extends SwingWorker<Object, Object> {
 		
 		@Override
 		protected Object doInBackground() throws Exception {
-			// TODO Auto-generated method stub
+			recalculateLists();
+			recalculateBilancials(0);
 			return null;
 		}
 
 		@Override
 		protected void done() {
-			// TODO Auto-generated method stub
-			super.done();
-		}		
+			fireTaskFinished(this);
+			fireTableChanged(new TableModelEvent(JournalTableModel.this));
+		}	
+		
+		
+		
 	}
 	
 	
