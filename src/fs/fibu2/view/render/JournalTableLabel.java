@@ -2,13 +2,12 @@ package fs.fibu2.view.render;
 
 import java.awt.Color;
 
-import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 
 import fs.fibu2.data.model.EntrySeparator;
 
 /**
- * This class provides a label with default colors and borders for a {@link JournalTableRenderer}.
+ * This class provides a label with default colors and borders for a {@link JournalTableRenderer}. 
  * @author Simon Hampe
  *
  */
@@ -22,6 +21,9 @@ public class JournalTableLabel extends JLabel {
 	 */
 	private static final long serialVersionUID = 6924486351932614378L;
 
+	//Black is the standard foreground color
+	private final static Color color_foreground_normal = new Color(0,0,0);
+	
 	//A normal, white background
 	private final static Color color_background_normal = new Color(255,255,255);
 	
@@ -49,9 +51,25 @@ public class JournalTableLabel extends JLabel {
 	 */
 	public JournalTableLabel(boolean isSelected, boolean isSeparator) {
 		super();
+		setValues(isSelected, isSeparator);
+	}
+	
+	/**
+	 * Adjusts color and font values according to the given parameters and resets the following parameters:<br>
+	 * - Icon = null<br>
+	 * - Foreground= black <br>
+	 * - Alignment = left <br>
+	 * - Text = ""
+	 */
+	public void setValues(boolean isSelected, boolean isSeparator) {
 		setOpaque(true);
 		setBackground(isSelected? (isSeparator? color_separator_selected : color_background_selected) : 
 								(isSeparator? color_separator_normal : color_background_normal));
 		if(!isSeparator) setFont(getFont().deriveFont(10));
+		setIcon(null);
+		setForeground(color_foreground_normal);
+		setHorizontalAlignment(LEFT);
+		setText("");
 	}
+	
 }

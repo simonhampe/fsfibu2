@@ -55,6 +55,9 @@ public class JournalTableRenderer implements TableCellRenderer, ResourceDependen
 	private ImageIcon indic_double = new ImageIcon(Fsfibu2DefaultReference.getDefaultReference().getFullResourcePath(this, "graphics/JournalTableRenderer/indic_double.png"));
 	private ImageIcon indic_info = new ImageIcon(Fsfibu2DefaultReference.getDefaultReference().getFullResourcePath(this, "graphics/JournalTableRenderer/indic_info.png"));
 	private ImageIcon indic_error = new ImageIcon(Fsfibu2DefaultReference.getDefaultReference().getFullResourcePath(this, "graphics/JournalTableRenderer/indic_error.png"));
+		
+	//A global label
+	private JournalTableLabel label = new JournalTableLabel(false,false);
 	
 	// CONSTRUCTOR ********************************************
 	// ********************************************************
@@ -75,7 +78,7 @@ public class JournalTableRenderer implements TableCellRenderer, ResourceDependen
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value,
 			boolean isSelected, boolean hasFocus, int row, int column) {
-		JournalTableLabel label = new JournalTableLabel(isSelected,value instanceof EntrySeparator);
+		label.setValues(isSelected,value instanceof EntrySeparator);
 		if(value instanceof Entry) {
 			Entry e = (Entry)value;
 			switch(column) {
