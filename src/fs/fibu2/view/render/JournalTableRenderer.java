@@ -22,6 +22,7 @@ import fs.fibu2.data.model.EntrySeparator;
 import fs.fibu2.data.model.ExtremeSeparator;
 import fs.fibu2.data.model.Journal;
 import fs.fibu2.data.model.ReadingPoint;
+import fs.fibu2.lang.Fsfibu2StringTableMgr;
 import fs.fibu2.resource.Fsfibu2DefaultReference;
 import fs.fibu2.view.model.JournalTableModel;
 import fs.xml.ResourceDependent;
@@ -130,12 +131,23 @@ public class JournalTableRenderer implements TableCellRenderer, ResourceDependen
 					label.setText(cb.toString());
 					break;
 			case 6: StringBuilder b = new StringBuilder();
-					b.append("<html>");
+					StringBuilder tooltip = new StringBuilder();
+					tooltip.append("<html><b>");
+					tooltip.append(Fsfibu2StringTableMgr.getString("fs.fibu2.view.JournalTableRenderer.accountreport"));
+					tooltip.append("</b><br>");
 					TreeSet<String> ids = new TreeSet<String>(e.getAccountInformation().keySet()); 
 					for(String id : ids) {
 						b.append(e.getAccountInformation().get(id));
-						if(id != ids.last()) b.append(" / ");
+						tooltip.append(e.getAccount().getFieldNames().get(id));
+						tooltip.append(": ");
+						tooltip.append(e.getAccountInformation().get(id));
+						if(id != ids.last()) {
+							b.append(" / ");
+							tooltip.append("<br>");
+						}
 					}
+					tooltip.append("</html>");
+					if(e.getAccountInformation().keySet().size() > 0) label.setToolTipText(tooltip.toString());
 					label.setText(b.toString());
 					break;
 			case 7: label.setText(e.getAdditionalInformation());

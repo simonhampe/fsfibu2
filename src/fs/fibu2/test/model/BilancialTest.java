@@ -1,7 +1,6 @@
 package fs.fibu2.test.model;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Currency;
 import java.util.GregorianCalendar;
@@ -9,8 +8,6 @@ import java.util.Locale;
 import java.util.Vector;
 
 import org.apache.log4j.BasicConfigurator;
-import org.dom4j.DocumentException;
-import org.xml.sax.SAXException;
 
 import fs.fibu2.data.format.Fsfibu1Converter;
 import fs.fibu2.data.model.Account;
