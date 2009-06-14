@@ -59,6 +59,7 @@ public class JournalTableLabel extends JLabel {
 	 * - Icon = null<br>
 	 * - Foreground= black <br>
 	 * - Alignment = left <br>
+	 * - Tooltip = null <br>
 	 * - Text = ""
 	 */
 	public void setValues(boolean isSelected, boolean isSeparator) {
@@ -70,6 +71,7 @@ public class JournalTableLabel extends JLabel {
 		setForeground(color_foreground_normal);
 		setHorizontalAlignment(LEFT);
 		setText("");
+		setToolTipText(null);
 	}
 	
 }

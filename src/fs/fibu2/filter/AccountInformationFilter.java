@@ -161,13 +161,14 @@ public class AccountInformationFilter implements EntryFilter {
 	}
 
 	/**
-	 * @return true, if and only if e has an account information field for the given id which matches the criteria.
+	 * @return true, if and only if e has an account information field for the given id which matches the criteria (If e has no account information field
+	 * for the chosen id, this is interpreted as if e has the empty string as value).
 	 */
 	@Override
 	public boolean verifyEntry(Entry e) {
 		if(e == null) return false;
 		String entryInfo = e.getAccountInformation().get(information.getId()); 
-		if( entryInfo == null) return false;
+		if( entryInfo == null) entryInfo = "";
 		switch(typeOfFilter) {
 		case EQUALITY: return equalityString.equals(entryInfo);
 		case REGEX: Matcher m = regexFilter.matcher(entryInfo);
@@ -253,7 +254,7 @@ public class AccountInformationFilter implements EntryFilter {
 		private ValidationValidator summary = new ValidationValidator() {
 			@Override
 			public void validationPerformed(ValidationResult result) {
-				fireStateChanged();
+				//fireStateChanged();
 			}
 		};
 		
@@ -415,8 +416,19 @@ public class AccountInformationFilter implements EntryFilter {
 			else {
 				switch(comp.getSelection()) {
 				case EQUALITY: return new AccountInformationFilter(((AccountInformation)comboBox.getSelectedItem()), comp.getSingleEntry());
-				case REGEX: return new AccountInformationFilter((AccountInformation)comboBox.getSelectedItem(),comp.getSingleEntry());
-				case RANGE: return new AccountInformationFilter((AccountInformation)comboBox.getSelectedItem(),comp.getMinEntry(),comp.getMaxEntry());
+				case REGEX: return new AccountInformationFilter((AccountInformation)comboBox.getSelectedItem(),Pattern.compile(comp.getSingleEntry()));
+				case RANGE:
+					if(numericBox.isSelected()) {
+						try {
+							Float min = format.parse(comp.getMinEntry()).floatValue();
+							Float max = format.parse(comp.getMaxEntry()).floatValue();
+							return new AccountInformationFilter((AccountInformation)comboBox.getSelectedItem(),min,max);
+						}
+						catch(ParseException ne) {
+							//Just return the standard filter
+						}
+					}
+					return new AccountInformationFilter((AccountInformation)comboBox.getSelectedItem(),comp.getMinEntry(),comp.getMaxEntry());
 				default: return new AccountInformationFilter();
 				}
 			}

@@ -93,8 +93,8 @@ public class AccountFilter implements EntryFilter {
 	 */
 	public AccountFilter(String min, String max) {
 		typeOfFilter = Selection.RANGE;
-		minFilter = min == null? "" : min;
-		maxFilter = max == null? "" : max;
+		minFilter = min;
+		maxFilter = max;
 	}
 	
 	// FILTER METHODS ******************

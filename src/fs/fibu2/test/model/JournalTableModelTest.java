@@ -22,6 +22,7 @@ import fs.fibu2.data.format.Fsfibu1Converter;
 import fs.fibu2.data.model.Category;
 import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.Journal;
+import fs.fibu2.filter.StackFilter;
 import fs.fibu2.resource.Fsfibu2DefaultReference;
 import fs.fibu2.view.event.ProgressListener;
 import fs.fibu2.view.model.JournalTableModel;
@@ -49,11 +50,12 @@ public class JournalTableModelTest {
 			
 			//EntryFilter filter = DefaultFilters.getYearFilter(2009);
 								//new CategoryFilter(Category.getCategory(new Vector<String>(Arrays.asList("Fachschaft"))));
+			StackFilter filter = new StackFilter();
 			
 			//Init table model
 			
 			long time1 = System.currentTimeMillis();
-			final JournalTableModel model = new JournalTableModel(j,null,true,true,false);
+			final JournalTableModel model = new JournalTableModel(j,filter,true,true,false);
 			long time2 = System.currentTimeMillis();
 			System.out.println("Time for model calculation: " + (time2-time1));
 			System.out.println("Model size: " + model.getRowCount());
@@ -96,6 +98,7 @@ public class JournalTableModelTest {
 				}
 			});
 			frame.add(bar, BorderLayout.NORTH);
+			frame.add(filter.getEditor(j), BorderLayout.EAST);
 			frame.add(button,BorderLayout.SOUTH);
 			frame.add(pane, BorderLayout.CENTER);
 			

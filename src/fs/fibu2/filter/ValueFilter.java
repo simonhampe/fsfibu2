@@ -28,24 +28,25 @@ public class ValueFilter implements EntryFilter {
 	
 	private Selection typeOfFilter;
 	private float equalityFilter;
-	private float minFilter;
-	private float maxFilter;
+	private Float minFilter;
+	private Float maxFilter;
 	private Pattern regexFilter;
 	
 	private static NumberFormat format = NumberFormat.getInstance();
+	private DefaultFloatComparator comp = new DefaultFloatComparator(format);
 	
 	/**
 	 * Creates a value filter using range filtering between 0 and 0
 	 */
 	public ValueFilter() {
-		this(Selection.RANGE,0,0,0,null); 
+		this(Selection.RANGE,0,new Float(0),new Float(0),null); 
 	}
 	
 	/**
 	 * Constructs an equality filter
 	 */
 	public ValueFilter(float filter) {
-		this(Selection.EQUALITY, filter, 0,0,null);
+		this(Selection.EQUALITY, filter, null,null,null);
 	}
 	
 	/**
@@ -53,14 +54,21 @@ public class ValueFilter implements EntryFilter {
 	 * @throws PatternSyntaxException - If regex is not a valid regular expression
 	 */
 	public ValueFilter(String regex) {
-		this(Selection.REGEX, 0,0,0,regex);
+		this(Selection.REGEX, 0,null,null,regex);
+	}
+	
+	/**
+	 * Constructs a range filter
+	 */
+	public ValueFilter(Float min, Float max) {
+		this(Selection.RANGE, 0,min,max,null);
 	}
 	
 	/**
 	 * Constructs a range filter
 	 */
 	public ValueFilter(float min, float max) {
-		this(Selection.RANGE, 0,min,max,null);
+		this(Selection.RANGE,0, new Float(min), new Float(max),null);
 	}
 	
 	/**
@@ -75,7 +83,7 @@ public class ValueFilter implements EntryFilter {
 	 * @throws PatternSyntaxException - If regex is not a valid regular expression and REGEX is selected
 	 */
 	public ValueFilter(Selection typeOfFilter, float equalityFilter,
-			float minFilter, float maxFilter, String regexFilter) {
+			Float minFilter, Float maxFilter, String regexFilter) {
 		super();
 		this.typeOfFilter = typeOfFilter == null? Selection.EQUALITY : typeOfFilter;
 		this.equalityFilter = equalityFilter;
@@ -92,7 +100,9 @@ public class ValueFilter implements EntryFilter {
 		switch(typeOfFilter) {
 		case EQUALITY: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.describeequals",name,format.format(equalityFilter));
 		case REGEX: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.describematches",name,regexFilter.pattern());
-		case RANGE: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.describerange",name,format.format(minFilter),format.format(maxFilter));
+		case RANGE: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.describerange",name,
+				minFilter == null? Fsfibu2StringTableMgr.getString("fs.fibu2.filter.minusinfinity") : format.format(minFilter),
+				maxFilter == null? Fsfibu2StringTableMgr.getString("fs.fibu2.filter.plusinfinity") : format.format(maxFilter));
 		default: return "";
 		}
 	}
@@ -121,7 +131,7 @@ public class ValueFilter implements EntryFilter {
 		if(e == null) return false;
 		switch(typeOfFilter) {
 		case EQUALITY: return e.getValue() == equalityFilter;
-		case RANGE: return minFilter <= e.getValue() && e.getValue() <= maxFilter;
+		case RANGE: return comp.compare(minFilter, e.getValue()) <= 0 && comp.compare(e.getValue(), maxFilter) <= 0;
 		case REGEX: Matcher m = (regexFilter.matcher(format.format(e.getValue())));
 					return m.matches();
 		default: 	return false;
@@ -162,8 +172,8 @@ public class ValueFilter implements EntryFilter {
 		public ValueFilterEditor() {
 			comp = new StandardFilterComponent(Fsfibu2StringTableMgr.getString("fs.fibu2.Entry.value") + ": ",new GivenFormatValidator(format),new DefaultFloatComparator(format),
 					typeOfFilter == Selection.REGEX? regexFilter.pattern() : (typeOfFilter == Selection.EQUALITY ? Float.toString(equalityFilter) : ""),
-					typeOfFilter == Selection.RANGE? format.format(minFilter) : "",
-					typeOfFilter == Selection.RANGE? format.format(maxFilter) : "",
+					(typeOfFilter == Selection.RANGE && minFilter != null)? format.format(minFilter) : "",
+					(typeOfFilter == Selection.RANGE && maxFilter != null)? format.format(maxFilter) : "",
 					typeOfFilter);
 			comp.addStandardComponentListener(new StandardComponentListener() {
 				@Override
@@ -180,9 +190,12 @@ public class ValueFilter implements EntryFilter {
 			if(comp.validateFilter() != Result.INCORRECT) {
 				Selection selection = comp.getSelection();
 				try {
+					Float min = null;
+						if(selection == Selection.RANGE && comp.getMinEntry() != null) min = format.parse(comp.getMinEntry()).floatValue();
+					Float max = null;
+						if(selection == Selection.RANGE && comp.getMaxEntry() != null) max = format.parse(comp.getMaxEntry()).floatValue();
 					return new ValueFilter(selection, selection == Selection.EQUALITY? format.parse(comp.getSingleEntry()).floatValue() : 0,
-													  selection == Selection.RANGE? format.parse(comp.getMinEntry()).floatValue() : 0,
-													  selection == Selection.RANGE? format.parse(comp.getMaxEntry()).floatValue() : 0,
+													  min,max,
 													  selection == Selection.REGEX? comp.getSingleEntry() : "");
 				} catch (ParseException e) {
 					//Will not happen

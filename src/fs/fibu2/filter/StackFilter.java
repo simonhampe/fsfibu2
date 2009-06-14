@@ -83,9 +83,11 @@ public class StackFilter implements EntryFilter {
 	 */
 	public StackFilter(Vector<EntryFilter> listOfFilters, HashSet<EntryFilter> isActive, HashSet<EntryFilter> isNegated) {
 		filterList = new Vector<StackFilterElement>();
-		for(EntryFilter f : listOfFilters) {
-			if(f != null) filterList.add(new StackFilterElement(f,isActive != null? isActive.contains(f) : true,
-										isNegated != null? isNegated.contains(f) : false));
+		if(listOfFilters != null) {
+			for(EntryFilter f : listOfFilters) {
+				if(f != null) filterList.add(new StackFilterElement(f,isActive != null? isActive.contains(f) : true,
+											isNegated != null? isNegated.contains(f) : false));
+			}
 		}
 	}
 	
@@ -124,8 +126,8 @@ public class StackFilter implements EntryFilter {
 	public boolean verifyEntry(Entry e) {
 		if(e == null) return false;
 		for(StackFilterElement f : filterList) {
-			//NOT((f active) AND ((e valid wrt f) XOR (f negated)))
-			if(!(f.isActive && (f.filter.verifyEntry(e) ^ f.isNegated))) return false;
+			//(f active) AND (NOT((e valid wrt f) XOR (f negated)))
+			if(f.isActive && !(f.filter.verifyEntry(e) ^ f.isNegated)) return false;
 		}
 		return true;
 	}
@@ -539,7 +541,7 @@ public class StackFilter implements EntryFilter {
 				editorPanel.setVisible(isEditing);
 				okButton.setVisible(isEditing);
 				editCancelButton.setToolTipText(isEditing? Fsfibu2StringTableMgr.getString("fs.fibu2.filter.StackFilter.canceltooltip") : 
-												Fsfibu2StringTableMgr.getString("fs.fibu2.StackFilter.edittooltip"));
+												Fsfibu2StringTableMgr.getString("fs.fibu2.filter.StackFilter.edittooltip"));
 				editCancelButton.setIcon(isEditing? cancel : edit);				
 			}
 		}

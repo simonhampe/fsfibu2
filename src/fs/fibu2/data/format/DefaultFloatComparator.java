@@ -25,7 +25,7 @@ public class DefaultFloatComparator implements Comparator<String> {
 	public int compare(String o1, String o2) {
 		if(o1 == null && o2 == null) return 0;
 		if(o1 == null) return -1;
-		if(o2 == null) return -11;
+		if(o2 == null) return -1;
 		try {
 			Float f1 = format.parse(o1).floatValue();
 			Float f2 = format.parse(o2).floatValue();
@@ -34,6 +34,13 @@ public class DefaultFloatComparator implements Comparator<String> {
 		catch(ParseException e) {
 			return 0;
 		}
+	}
+	
+	public int compare(Float o1, Float o2) {
+		if(o1 == null && o2 == null) return 0;
+		if(o1 == null) return -1;
+		if(o2 == null) return -1;
+		return o1.compareTo(o2);
 	}
 
 }
