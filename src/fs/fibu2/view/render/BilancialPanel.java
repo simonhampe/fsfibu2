@@ -1,6 +1,9 @@
 package fs.fibu2.view.render;
 
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
@@ -9,6 +12,8 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
 import fs.fibu2.view.model.JournalTableModel;
+import fs.gui.SwitchIconLabel;
+import fs.polyglot.view.TableEditPane;
 
 /**
  * The bilancial panel is used in Journal table views to indicate the bilancials of either all the displayed data or
@@ -42,6 +47,20 @@ public class BilancialPanel extends JPanel {
 	
 	// GUI COMPONENTS *************************
 	// ****************************************
+	
+	private JRadioButton radioAll = new JRadioButton();
+	private JRadioButton radioSelection = new JRadioButton();
+	private JLabel labelDescription = new JLabel();
+		
+	private JComboBox comboFrom = new JComboBox();
+	private JComboBox comboTo = new JComboBox();
+	
+	private JComboBox comboAccount = new JComboBox();
+	private JLabel labelAccountBefore = new JLabel();
+	private JLabel labelAccountAfter = new JLabel();
+	
+	private JComboBox comboCategory = new JComboBox();
+	private JLabel labelCategory = new JLabel();
 	
 	
 	

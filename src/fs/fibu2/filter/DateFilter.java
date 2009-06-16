@@ -67,8 +67,9 @@ public class DateFilter implements EntryFilter {
 		switch(typeOfFilter) {
 		case EQUALITY: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.describeequals",name,Fsfibu2DateFormats.getEntryDateFormat().format(equalityDate.getTime()));
 		case REGEX: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.describematches",name,regexFilter.pattern());
-		case RANGE: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.describerange",name,Fsfibu2DateFormats.getEntryDateFormat().format(minFilter.getTime()),
-															Fsfibu2DateFormats.getEntryDateFormat().format(maxFilter.getTime()));
+		case RANGE: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.describerange", name,
+				minFilter == null? Fsfibu2StringTableMgr.getString("fs.fibu2.filter.minusinfinity") : Fsfibu2DateFormats.getEntryDateFormat().format(minFilter.getTime()),
+				maxFilter == null? Fsfibu2StringTableMgr.getString("fs.fibu2.filter.plusinfinity"): Fsfibu2DateFormats.getEntryDateFormat().format(maxFilter.getTime()));
 		default: return "";
 		}
 	}
@@ -146,8 +147,8 @@ public class DateFilter implements EntryFilter {
 					new GivenFormatValidator(Fsfibu2DateFormats.getEntryDateFormat()),
 					new EntryDateComparator(),
 					typeOfFilter == Selection.REGEX? regexFilter.pattern() : (typeOfFilter == Selection.EQUALITY ? Fsfibu2DateFormats.getEntryDateFormat().format(equalityDate.getTime()): ""),
-					typeOfFilter == Selection.RANGE? Fsfibu2DateFormats.getEntryDateFormat().format(minFilter.getTime()) : "",
-					typeOfFilter == Selection.RANGE? Fsfibu2DateFormats.getEntryDateFormat().format(maxFilter.getTime()) : "",
+					typeOfFilter == Selection.RANGE? (minFilter == null? "" : Fsfibu2DateFormats.getEntryDateFormat().format(minFilter.getTime())) : "",
+					typeOfFilter == Selection.RANGE? (maxFilter == null? "" : Fsfibu2DateFormats.getEntryDateFormat().format(maxFilter.getTime())) : "",
 					typeOfFilter);
 			comp.addStandardComponentListener(new StandardComponentListener() {
 				@Override

@@ -106,7 +106,9 @@ public class AccountFilter implements EntryFilter {
 		switch(typeOfFilter) {
 		case EQUALITY: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.describeequals",name,equalityAccount == null? equalityString : equalityAccount.getName());
 		case REGEX: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.describematches",name,regexFilter.pattern());
-		case RANGE: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.describerange",name,minFilter,maxFilter);
+		case RANGE: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.describerange",name,
+				minFilter == null? Fsfibu2StringTableMgr.getString("fs.fibu2.filter.minusinfinity") : minFilter,
+				maxFilter == null? Fsfibu2StringTableMgr.getString("fs.fibu2.filter.plusinfinity"): maxFilter);
 		default: return "";
 		}
 	}

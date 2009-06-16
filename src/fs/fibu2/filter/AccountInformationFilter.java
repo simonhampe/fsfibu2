@@ -110,8 +110,8 @@ public class AccountInformationFilter implements EntryFilter {
 		if(info != null) {
 			information = info;
 			typeOfFilter = Selection.RANGE;
-			minFilter = min == null? "": min;
-			maxFilter = max == null? "": max;
+			minFilter = min;
+			maxFilter = max;
 			numericalRangeFilter = false;
 		}
 	}
@@ -139,8 +139,13 @@ public class AccountInformationFilter implements EntryFilter {
 		switch(typeOfFilter) {
 		case EQUALITY: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.describeequals",name,equalityString);
 		case REGEX: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.describematches",name,regexFilter.pattern());
-		case RANGE: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.describerange",name,numericalRangeFilter? minFloatFilter : minFilter,
-															numericalRangeFilter? maxFloatFilter : maxFilter);
+		case RANGE: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.describerange",name,
+						numericalRangeFilter? 
+								(minFloatFilter == null? Fsfibu2StringTableMgr.getString("fs.fibu2.filter.minusinfinity") : minFloatFilter): 
+								(minFilter == null? Fsfibu2StringTableMgr.getString("fs.fibu2.filter.minusinfinity") : minFilter),
+						numericalRangeFilter? 
+								(maxFloatFilter == null? Fsfibu2StringTableMgr.getString("fs.fibu2.filter.plusinfinity") : maxFloatFilter) : 
+								(maxFilter == null? Fsfibu2StringTableMgr.getString("fs.fibu2.filter.plusinfinity") : maxFilter));
 		default: return "";
 		}
 	}
@@ -424,7 +429,7 @@ public class AccountInformationFilter implements EntryFilter {
 							Float max = format.parse(comp.getMaxEntry()).floatValue();
 							return new AccountInformationFilter((AccountInformation)comboBox.getSelectedItem(),min,max);
 						}
-						catch(ParseException ne) {
+						catch(Exception ne) {
 							//Just return the standard filter
 						}
 					}

@@ -56,7 +56,9 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 	//In 1:1-corr. with indexedData, contains for each element a bilancial mapping. For the starting separator and for
 		//all entries before indexToStartDisplay, this is just one single mapping for null, containing an overall sum. For the starting separator this is actually a
 		//an overall sum (for the account mappings) over all entries not displayed. 
-	private Vector<BilancialMapping> bilancialData = new Vector<BilancialMapping>();	
+	private Vector<BilancialMapping> bilancialData = new Vector<BilancialMapping>();
+	//Displayed separators, sorted
+	private Vector<EntrySeparator> displayedSeparators = new Vector<EntrySeparator>();
 	
 	//Listeners ******
 	
@@ -140,6 +142,13 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 		Recalculator c = getRecalculatorInstance();
 		fireTaskBegins(c);
 		c.execute();
+	}
+	
+	/**
+	 * @return A sorted list of displayed separators 
+	 */
+	public Vector<EntrySeparator> getDisplayedSeparators() {
+		return new Vector<EntrySeparator>(displayedSeparators);
 	}
 	
 	// TABLEMODEL ***************************************
@@ -227,6 +236,7 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 	 */
 	protected void recalculateLists() {
 		TreeSet<Object> sortedSet = new TreeSet<Object>(new TableModelComparator());
+		TreeSet<EntrySeparator> sortedSeparators = new TreeSet<EntrySeparator>(new TableModelComparator());
 		//Load all entries and add separators
 		sortedSet.addAll(associatedJournal.getEntries());
 		if(displayLinkedSeparators) sortedSet.addAll(linkedSeparators);
@@ -260,6 +270,7 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 				}
 			}
 			else {
+				sortedSeparators.add((EntrySeparator)o);
 				//Remove reading points which are before the first displayed entry
 				if(firstContainedIndex <0 && !(o instanceof ExtremeSeparator)) separatorsToRemoveBefore.add((EntrySeparator)o);
 				//For each displayed rp we initially assume, that it has to be removed. If another entry occurs
@@ -278,6 +289,8 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 		finalData.removeAll(elementsToRemove);
 		finalData.removeAll(separatorsToRemoveBefore);
 		finalData.removeAll(separatorsToRemoveAfter);
+		sortedSeparators.remove(separatorsToRemoveAfter);
+		sortedSeparators.remove(separatorsToRemoveBefore);
 		firstContainedIndex = finalData.indexOf(startSeparator);
 		
 		//Copy data
@@ -286,6 +299,7 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 			displayedData = new Vector<Object>(indexedData);
 			displayedData.removeAll(elementsNotDisplayed);
 			firstIndexDisplayed = firstContainedIndex;
+			displayedSeparators = new Vector<EntrySeparator>(sortedSeparators);
 		}
 	}
 	

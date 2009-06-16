@@ -78,11 +78,13 @@ public class AdditionalInformationFilter implements EntryFilter {
 
 	@Override
 	public String getDescription() {
-		String name = Fsfibu2StringTableMgr.getString("fs.fibu2.Entry.info");
+		String name = Fsfibu2StringTableMgr.getString("fs.fibu2.filter.AdditionalInformationFilter.shortname");
 		switch(typeOfFilter) {
 		case EQUALITY: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.describeequals",name,firstFilter);
 		case REGEX: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.describematches",name,firstFilter);
-		case RANGE: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.describerange",name,firstFilter,secondFilter);
+		case RANGE: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.describerange",name,
+				firstFilter == null? Fsfibu2StringTableMgr.getString("fs.fibu2.filter.minusinfinity") : firstFilter,
+				secondFilter == null? Fsfibu2StringTableMgr.getString("fs.fibu2.filter.plusinfinity"): secondFilter);
 		default: return "";
 		}
 	}

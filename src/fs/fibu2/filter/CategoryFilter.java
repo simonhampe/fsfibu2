@@ -103,8 +103,8 @@ public class CategoryFilter implements EntryFilter {
 	 */
 	public CategoryFilter(String min, String max, int l) {
 		typeOfFilter = Selection.RANGE;
-		minFilter = min == null? "" : min;
-		maxFilter = max == null? "" : max;
+		minFilter =  min;
+		maxFilter =  max;
 		levelToCheck = l;
 	}
 	
@@ -118,7 +118,10 @@ public class CategoryFilter implements EntryFilter {
 		case EQUALITY: return equalityCategory == null? Fsfibu2StringTableMgr.getString("fs.fibu2.filter.CategoryFilter.describeequals",equalityString,levelToCheck) 
 				: Fsfibu2StringTableMgr.getString("fs.fibu2.filter.describeequals",name,equalityCategory.toString());
 		case REGEX: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.CategoryFilter.describematches", regexFilter.pattern(),levelToCheck);
-		case RANGE: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.CategoryFilter.describerange",minFilter,maxFilter,levelToCheck);
+		case RANGE: return Fsfibu2StringTableMgr.getString("fs.fibu2.filter.CategoryFilter.describerange",
+				minFilter == null? Fsfibu2StringTableMgr.getString("fs.fibu2.filter.minusinfinity") : minFilter,
+				maxFilter == null? Fsfibu2StringTableMgr.getString("fs.fibu2.filter.plusinfinity"): maxFilter,
+				levelToCheck);
 		default: return "";
 		}
 	}
