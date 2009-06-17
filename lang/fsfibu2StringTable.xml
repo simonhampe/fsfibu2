@@ -176,6 +176,12 @@
   <polyglotstring id="fs.fibu2.filter.StackFilter.oktooltip" group="fs.fibu2.filter.StackFilter">
     <variant lang="en">Accept changes to filter</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.view.BilancialPanel.radioselected" group="fs.fibu2.view.BilancialPanel">
+    <variant lang="en">Selection:</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.view.BilancialPanel.radioall" group="fs.fibu2.view.BilancialPanel">
+    <variant lang="en">Overall</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.error.EntryVerificationException.report" group="fs.fibu2.error.EntryVerificationException">
     <variant lang="en">Error report</variant>
   </polyglotstring>
