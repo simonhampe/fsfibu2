@@ -1,5 +1,9 @@
 package fs.fibu2.view.render;
 
+import java.awt.GridLayout;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -11,9 +15,11 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
+import fs.fibu2.lang.Fsfibu2StringTableMgr;
+import fs.fibu2.view.model.AccountListModel;
+import fs.fibu2.view.model.CategoryListModel;
 import fs.fibu2.view.model.JournalTableModel;
-import fs.gui.SwitchIconLabel;
-import fs.polyglot.view.TableEditPane;
+import fs.fibu2.view.model.SeparatorModel;
 
 /**
  * The bilancial panel is used in Journal table views to indicate the bilancials of either all the displayed data or
@@ -60,9 +66,14 @@ public class BilancialPanel extends JPanel {
 	private JLabel labelAccountAfter = new JLabel();
 	
 	private JComboBox comboCategory = new JComboBox();
-	private JLabel labelCategory = new JLabel();
+	private JLabel labelCategorySum = new JLabel();
 	
+	private JLabel labelOverallSum = new JLabel();
 	
+	// MISC ***********************************
+	// ****************************************
+	
+	private final static String sgroup = "fs.fibu2.view.BilancialPanel";
 	
 	// CONSTRUCTOR ****************************
 	// ****************************************
@@ -79,7 +90,43 @@ public class BilancialPanel extends JPanel {
 		selectionModel = table.getSelectionModel();
 			selectionModel.addListSelectionListener(selectionListener);
 		
-		//Init GUI
+		//Init GUI ----------------------------
+		
+		//Additional components
+		JLabel labelTitle = new JLabel(Fsfibu2StringTableMgr.getString(sgroup + ".title"));
+		JLabel labelFrom = new JLabel(Fsfibu2StringTableMgr.getString(sgroup + ".from"));
+		JLabel labelTo = new JLabel(Fsfibu2StringTableMgr.getString(sgroup + ".to"));
+		JLabel labelAccount = new JLabel(Fsfibu2StringTableMgr.getString(sgroup + ".account"));
+		JLabel labelBefore = new JLabel(Fsfibu2StringTableMgr.getString(sgroup + ".before"));
+		JLabel labelAfter = new JLabel(Fsfibu2StringTableMgr.getString(sgroup + ".after"));
+		JLabel labelCategory = new JLabel(Fsfibu2StringTableMgr.getString(sgroup + ".category"));
+		JLabel labelCategoryResult = new JLabel(Fsfibu2StringTableMgr.getString(sgroup + ".categoryresult"));
+		JLabel labelOverall = new JLabel(Fsfibu2StringTableMgr.getString(sgroup + ".overall"));
+		
+		//Init member components
+		radioAll.setText(sgroup + ".radioall");
+		radioSelection.setText(sgroup + ".radioselected");
+		
+		comboFrom.setModel(new SeparatorModel(tableModel));
+			comboFrom.setRenderer(new SeparatorRenderer());
+		comboTo.setModel(new SeparatorModel(tableModel));
+			comboTo.setRenderer(new SeparatorRenderer());
+			if(comboTo.getModel().getSize() > 0) comboTo.setSelectedItem(comboTo.getModel().getElementAt(comboTo.getModel().getSize()-1));
+			
+		comboAccount.setModel(new AccountListModel(tableModel.getAssociatedJournal()));
+			comboAccount.setRenderer(new AccountListRenderer());
+		
+		comboCategory.setModel(new CategoryListModel(tableModel.getAssociatedJournal(),false));
+			comboCategory.setRenderer(new CategoryListRenderer(" > "));
+		
+		//Layout ----------------------------
+		
+		GridLayout layout = new GridLayout(1,3);
+		setLayout(layout);
+		
+		//First panel
+		JPanel firstPanel = new JPanel();
+			Box firstBox = new Box(BoxLayout.Y_AXIS);
 		
 	}
 	

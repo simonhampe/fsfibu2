@@ -151,6 +151,13 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 		return new Vector<EntrySeparator>(displayedSeparators);
 	}
 	
+	/**
+	 * @return The associated journal
+	 */
+	public Journal getAssociatedJournal() {
+		return associatedJournal;
+	}
+	
 	// TABLEMODEL ***************************************
 	// **************************************************
 	
@@ -289,8 +296,8 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 		finalData.removeAll(elementsToRemove);
 		finalData.removeAll(separatorsToRemoveBefore);
 		finalData.removeAll(separatorsToRemoveAfter);
-		sortedSeparators.remove(separatorsToRemoveAfter);
-		sortedSeparators.remove(separatorsToRemoveBefore);
+		sortedSeparators.removeAll(separatorsToRemoveAfter);
+		sortedSeparators.removeAll(separatorsToRemoveBefore);
 		firstContainedIndex = finalData.indexOf(startSeparator);
 		
 		//Copy data
