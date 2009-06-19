@@ -1,13 +1,16 @@
 package fs.fibu2.view.render;
 
 import java.awt.GridLayout;
+import java.util.Currency;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
@@ -17,9 +20,11 @@ import javax.swing.event.TableModelListener;
 
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
 import fs.fibu2.view.model.AccountListModel;
+import fs.fibu2.view.model.AccountTableModel;
 import fs.fibu2.view.model.CategoryListModel;
 import fs.fibu2.view.model.JournalTableModel;
 import fs.fibu2.view.model.SeparatorModel;
+import fs.polyglot.view.TableEditPane;
 
 /**
  * The bilancial panel is used in Journal table views to indicate the bilancials of either all the displayed data or
@@ -61,9 +66,7 @@ public class BilancialPanel extends JPanel {
 	private JComboBox comboFrom = new JComboBox();
 	private JComboBox comboTo = new JComboBox();
 	
-	private JComboBox comboAccount = new JComboBox();
-	private JLabel labelAccountBefore = new JLabel();
-	private JLabel labelAccountAfter = new JLabel();
+	private JTable tableAccount = new JTable();
 	
 	private JComboBox comboCategory = new JComboBox();
 	private JLabel labelCategorySum = new JLabel();
@@ -96,9 +99,6 @@ public class BilancialPanel extends JPanel {
 		JLabel labelTitle = new JLabel(Fsfibu2StringTableMgr.getString(sgroup + ".title"));
 		JLabel labelFrom = new JLabel(Fsfibu2StringTableMgr.getString(sgroup + ".from"));
 		JLabel labelTo = new JLabel(Fsfibu2StringTableMgr.getString(sgroup + ".to"));
-		JLabel labelAccount = new JLabel(Fsfibu2StringTableMgr.getString(sgroup + ".account"));
-		JLabel labelBefore = new JLabel(Fsfibu2StringTableMgr.getString(sgroup + ".before"));
-		JLabel labelAfter = new JLabel(Fsfibu2StringTableMgr.getString(sgroup + ".after"));
 		JLabel labelCategory = new JLabel(Fsfibu2StringTableMgr.getString(sgroup + ".category"));
 		JLabel labelCategoryResult = new JLabel(Fsfibu2StringTableMgr.getString(sgroup + ".categoryresult"));
 		JLabel labelOverall = new JLabel(Fsfibu2StringTableMgr.getString(sgroup + ".overall"));
@@ -106,19 +106,19 @@ public class BilancialPanel extends JPanel {
 		//Init member components
 		radioAll.setText(sgroup + ".radioall");
 		radioSelection.setText(sgroup + ".radioselected");
+			ButtonGroup group = new ButtonGroup();
+			group.add(radioAll);
+			group.add(radioSelection);
 		
 		comboFrom.setModel(new SeparatorModel(tableModel));
 			comboFrom.setRenderer(new SeparatorRenderer());
 		comboTo.setModel(new SeparatorModel(tableModel));
 			comboTo.setRenderer(new SeparatorRenderer());
 			if(comboTo.getModel().getSize() > 0) comboTo.setSelectedItem(comboTo.getModel().getElementAt(comboTo.getModel().getSize()-1));
-			
-		comboAccount.setModel(new AccountListModel(tableModel.getAssociatedJournal()));
-			comboAccount.setRenderer(new AccountListRenderer());
 		
 		comboCategory.setModel(new CategoryListModel(tableModel.getAssociatedJournal(),false));
 			comboCategory.setRenderer(new CategoryListRenderer(" > "));
-		
+			
 		//Layout ----------------------------
 		
 		GridLayout layout = new GridLayout(1,3);
@@ -127,7 +127,32 @@ public class BilancialPanel extends JPanel {
 		//First panel
 		JPanel firstPanel = new JPanel();
 			Box firstBox = new Box(BoxLayout.Y_AXIS);
+				Box fromBox = new Box(BoxLayout.X_AXIS);
+					fromBox.add(labelFrom); fromBox.add(comboFrom);
+				Box toBox = new Box(BoxLayout.X_AXIS);
+					toBox.add(labelTo); toBox.add(comboTo);
+			firstBox.add(fromBox);firstBox.add(Box.createVerticalStrut(5)); firstBox.add(toBox);
+		firstPanel.add(firstBox);
+		add(firstPanel);
 		
+		//Second panel
+		JScrollPane secondPanel = new JScrollPane(tableAccount);
+		add(secondPanel);
+		
+		//Third panel
+		JPanel thirdPanel = new JPanel();
+			Box thirdBox = new Box(BoxLayout.Y_AXIS);
+				Box catBox = new Box(BoxLayout.X_AXIS);
+					catBox.add(labelCategory); catBox.add(comboCategory);
+				Box crBox = new Box(BoxLayout.X_AXIS);
+					crBox.add(labelCategoryResult); crBox.add(labelCategorySum);
+				Box ovBox = new Box(BoxLayout.X_AXIS);
+					ovBox.add(labelOverall); ovBox.add(labelOverallSum);
+			thirdBox.add(catBox); thirdBox.add(Box.createVerticalStrut(5)); 
+			thirdBox.add(crBox); thirdBox.add(Box.createVerticalStrut(5)); 
+			thirdBox.add(ovBox);
+		thirdPanel.add(thirdBox);
+		add(thirdPanel);	
 	}
 	
 }

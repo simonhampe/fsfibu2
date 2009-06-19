@@ -26,6 +26,7 @@ import fs.fibu2.filter.StackFilter;
 import fs.fibu2.resource.Fsfibu2DefaultReference;
 import fs.fibu2.view.event.ProgressListener;
 import fs.fibu2.view.model.JournalTableModel;
+import fs.fibu2.view.render.BilancialPanel;
 import fs.fibu2.view.render.JournalTableRenderer;
 import fs.xml.FsfwDefaultReference;
 import fs.xml.XMLToolbox;
@@ -99,7 +100,7 @@ public class JournalTableModelTest {
 			});
 			frame.add(bar, BorderLayout.NORTH);
 			frame.add(filter.getEditor(j), BorderLayout.EAST);
-			frame.add(button,BorderLayout.SOUTH);
+			frame.add(new BilancialPanel(table),BorderLayout.SOUTH);
 			frame.add(pane, BorderLayout.CENTER);
 			
 			frame.setSize(frame.getMaximumSize());
