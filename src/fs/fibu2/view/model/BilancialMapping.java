@@ -79,6 +79,10 @@ public class BilancialMapping {
 		return pairing.last();
 	}
 	
+	public BilancialPairing getOldest() {
+		return pairing.first();
+	}
+	
 	/**
 	 * @return An ordered list of all pairings
 	 */

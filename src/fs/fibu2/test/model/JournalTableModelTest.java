@@ -62,7 +62,7 @@ public class JournalTableModelTest {
 			//Init table model
 			
 			long time1 = System.currentTimeMillis();
-			final JournalTableModel model = new JournalTableModel(j,filter,true,true,false);
+			final JournalTableModel model = new JournalTableModel(j,filter,true,true,true);
 			long time2 = System.currentTimeMillis();
 			System.out.println("Time for model calculation: " + (time2-time1));
 			System.out.println("Model size: " + model.getRowCount());
