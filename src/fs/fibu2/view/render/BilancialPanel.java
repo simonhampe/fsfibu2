@@ -1,5 +1,7 @@
 package fs.fibu2.view.render;
 
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.util.Currency;
@@ -17,6 +19,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
+import javax.swing.border.BevelBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
@@ -28,6 +31,7 @@ import fs.fibu2.view.model.AccountTableModel;
 import fs.fibu2.view.model.CategoryListModel;
 import fs.fibu2.view.model.JournalTableModel;
 import fs.fibu2.view.model.SeparatorModel;
+import fs.gui.GUIToolbox;
 import fs.polyglot.view.TableEditPane;
 
 /**
@@ -110,8 +114,8 @@ public class BilancialPanel extends JPanel {
 		JLabel labelOverall = new JLabel(Fsfibu2StringTableMgr.getString(sgroup + ".overall"));
 		
 		//Init member components
-		radioAll.setText(sgroup + ".radioall");
-		radioSelection.setText(sgroup + ".radioselected");
+		radioAll.setText(Fsfibu2StringTableMgr.getString(sgroup + ".radioall"));
+		radioSelection.setText(Fsfibu2StringTableMgr.getString(sgroup + ".radioselected"));
 			ButtonGroup group = new ButtonGroup();
 			group.add(radioAll);
 			group.add(radioSelection);
@@ -130,7 +134,34 @@ public class BilancialPanel extends JPanel {
 		GridBagLayout layout = new GridBagLayout();
 		setLayout(layout);
 		
+		JPanel titlePanel = new JPanel();
+			titlePanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+			GridBagConstraints gcTitle = GUIToolbox.buildConstraints(0, 0, 3, 1);
+				gcTitle.weightx = 100;
+			layout.setConstraints(titlePanel, gcTitle);
+			FlowLayout titleLayout = new FlowLayout(FlowLayout.LEFT);
+			titlePanel.setLayout(titleLayout);
+			titlePanel.add(labelTitle); titlePanel.add(radioAll); titlePanel.add(radioSelection); titlePanel.add(labelDescription);
+		add(titlePanel);
 		
+		JPanel firstPanel = new JPanel();
+			GridBagConstraints gcFirst = GUIToolbox.buildConstraints(0, 1, 1, 1);
+			gcFirst.weightx = 33;
+			layout.setConstraints(firstPanel, gcFirst);
+		add(firstPanel);
+			
+		JScrollPane secondPanel = new JScrollPane(tableAccount);
+			GridBagConstraints gcSecond = GUIToolbox.buildConstraints(1, 1, 1, 1);
+			gcSecond.weightx = 33;
+			layout.setConstraints(secondPanel, gcSecond);
+		add(secondPanel);
+			
+		JPanel thirdPanel = new JPanel();
+			GridBagConstraints gcThird = GUIToolbox.buildConstraints(2, 1, 1, 1);
+			gcThird.weightx = 33;
+			layout.setConstraints(thirdPanel, gcThird);
+		add(thirdPanel);
+			
 			
 //		GridLayout layout = new GridLayout(1,3);
 //		setLayout(layout);

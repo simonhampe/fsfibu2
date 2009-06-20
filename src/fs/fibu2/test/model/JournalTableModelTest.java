@@ -66,6 +66,7 @@ public class JournalTableModelTest {
 			JFrame frame = new JFrame();
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.setLayout(new BorderLayout());
+
 			final JTable table = new JTable();
 				table.setModel(model);
 				table.setDefaultRenderer(Object.class, new JournalTableRenderer(model,Currency.getInstance("EUR")));
@@ -99,8 +100,8 @@ public class JournalTableModelTest {
 				}
 			});
 			frame.add(bar, BorderLayout.NORTH);
-			frame.add(filter.getEditor(j), BorderLayout.EAST);
 			frame.add(new BilancialPanel(table),BorderLayout.SOUTH);
+			frame.add(filter.getEditor(j), BorderLayout.EAST);
 			frame.add(pane, BorderLayout.CENTER);
 			
 			frame.setSize(frame.getMaximumSize());
