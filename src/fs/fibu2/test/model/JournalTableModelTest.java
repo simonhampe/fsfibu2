@@ -1,6 +1,8 @@
 package fs.fibu2.test.model;
 
 import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -11,6 +13,8 @@ import java.util.Locale;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -22,12 +26,14 @@ import fs.fibu2.data.format.Fsfibu1Converter;
 import fs.fibu2.data.model.Category;
 import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.Journal;
+import fs.fibu2.filter.EntryFilterEditor;
 import fs.fibu2.filter.StackFilter;
 import fs.fibu2.resource.Fsfibu2DefaultReference;
 import fs.fibu2.view.event.ProgressListener;
 import fs.fibu2.view.model.JournalTableModel;
 import fs.fibu2.view.render.BilancialPanel;
 import fs.fibu2.view.render.JournalTableRenderer;
+import fs.gui.GUIToolbox;
 import fs.xml.FsfwDefaultReference;
 import fs.xml.XMLToolbox;
 
@@ -65,7 +71,8 @@ public class JournalTableModelTest {
 			
 			JFrame frame = new JFrame();
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			frame.setLayout(new BorderLayout());
+			GridBagLayout layout = new GridBagLayout();
+			frame.setLayout(layout);
 
 			final JTable table = new JTable();
 				table.setModel(model);
@@ -99,16 +106,26 @@ public class JournalTableModelTest {
 					j.addEntry(new Entry("Bla",34,Currency.getInstance("EUR"),new GregorianCalendar(),Category.getRootCategory(),"cash_box",null,null));
 				}
 			});
-			frame.add(bar, BorderLayout.NORTH);
-			frame.add(new BilancialPanel(table),BorderLayout.SOUTH);
-			frame.add(filter.getEditor(j), BorderLayout.EAST);
-			frame.add(pane, BorderLayout.CENTER);
+			JPanel tablePanel = new JPanel();
+			tablePanel.setLayout(new BorderLayout());
+				tablePanel.add(bar,BorderLayout.NORTH);
+				tablePanel.add(pane,BorderLayout.CENTER);
+				tablePanel.add(new BilancialPanel(table),BorderLayout.SOUTH);
+			
+			GridBagConstraints gcTable = GUIToolbox.buildConstraints(0, 0, 1, 1);
+				gcTable.weightx = 100;
+				gcTable.weighty = 100;
+				layout.setConstraints(tablePanel, gcTable);
+			EntryFilterEditor editor = filter.getEditor(j);
+			GridBagConstraints gcFilter = GUIToolbox.buildConstraints(1, 0, 1, 1);
+				gcFilter.weighty = 100;
+				layout.setConstraints(editor, gcFilter);
+			frame.add(tablePanel);
+			frame.add(editor);
 			
 			frame.setSize(frame.getMaximumSize());
-			time1 = System.currentTimeMillis();
 			frame.setVisible(true);
-			time2 = System.currentTimeMillis();
-			System.out.println("Time for drawing: " + (time2-time1));
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

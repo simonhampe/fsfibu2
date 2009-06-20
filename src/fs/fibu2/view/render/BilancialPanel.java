@@ -1,9 +1,11 @@
 package fs.fibu2.view.render;
 
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.util.Currency;
 import java.util.Iterator;
 
@@ -129,10 +131,14 @@ public class BilancialPanel extends JPanel {
 		comboCategory.setModel(new CategoryListModel(tableModel.getAssociatedJournal(),false));
 			comboCategory.setRenderer(new CategoryListRenderer(" > "));
 			
+		//This is done to get a proper table size in the label:
+		tableAccount.setModel(new AccountTableModel(tableModel,null,null, Currency.getInstance("EUR")));
+			
 		//Layout ----------------------------
 		
 		GridBagLayout layout = new GridBagLayout();
 		setLayout(layout);
+		setBorder(BorderFactory.createEtchedBorder());
 		
 		JPanel titlePanel = new JPanel();
 			titlePanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
@@ -147,18 +153,22 @@ public class BilancialPanel extends JPanel {
 		JPanel firstPanel = new JPanel();
 			GridBagConstraints gcFirst = GUIToolbox.buildConstraints(0, 1, 1, 1);
 			gcFirst.weightx = 33;
+			gcFirst.insets = new Insets(5,0,5,0);
 			layout.setConstraints(firstPanel, gcFirst);
 		add(firstPanel);
 			
 		JScrollPane secondPanel = new JScrollPane(tableAccount);
+			Dimension tableSize = tableAccount.getPreferredSize();
+			secondPanel.setPreferredSize(new Dimension(tableSize.width*2,tableSize.height*2));
 			GridBagConstraints gcSecond = GUIToolbox.buildConstraints(1, 1, 1, 1);
-			gcSecond.weightx = 33;
+				gcSecond.insets = new Insets(5,0,5,0);
 			layout.setConstraints(secondPanel, gcSecond);
 		add(secondPanel);
 			
 		JPanel thirdPanel = new JPanel();
 			GridBagConstraints gcThird = GUIToolbox.buildConstraints(2, 1, 1, 1);
 			gcThird.weightx = 33;
+			gcThird.insets = new Insets(5,0,5,0);
 			layout.setConstraints(thirdPanel, gcThird);
 		add(thirdPanel);
 			
