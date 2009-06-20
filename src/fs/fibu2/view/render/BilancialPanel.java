@@ -1,8 +1,11 @@
 package fs.fibu2.view.render;
 
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.util.Currency;
+import java.util.Iterator;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -13,6 +16,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
@@ -98,7 +102,9 @@ public class BilancialPanel extends JPanel {
 		//Additional components
 		JLabel labelTitle = new JLabel(Fsfibu2StringTableMgr.getString(sgroup + ".title"));
 		JLabel labelFrom = new JLabel(Fsfibu2StringTableMgr.getString(sgroup + ".from"));
+			labelFrom.setHorizontalAlignment(SwingConstants.RIGHT);
 		JLabel labelTo = new JLabel(Fsfibu2StringTableMgr.getString(sgroup + ".to"));
+			labelTo.setHorizontalAlignment(SwingConstants.RIGHT);
 		JLabel labelCategory = new JLabel(Fsfibu2StringTableMgr.getString(sgroup + ".category"));
 		JLabel labelCategoryResult = new JLabel(Fsfibu2StringTableMgr.getString(sgroup + ".categoryresult"));
 		JLabel labelOverall = new JLabel(Fsfibu2StringTableMgr.getString(sgroup + ".overall"));
@@ -121,38 +127,46 @@ public class BilancialPanel extends JPanel {
 			
 		//Layout ----------------------------
 		
-		GridLayout layout = new GridLayout(1,3);
+		GridBagLayout layout = new GridBagLayout();
 		setLayout(layout);
 		
-		//First panel
-		JPanel firstPanel = new JPanel();
-			Box firstBox = new Box(BoxLayout.Y_AXIS);
-				Box fromBox = new Box(BoxLayout.X_AXIS);
-					fromBox.add(labelFrom); fromBox.add(comboFrom);
-				Box toBox = new Box(BoxLayout.X_AXIS);
-					toBox.add(labelTo); toBox.add(comboTo);
-			firstBox.add(fromBox);firstBox.add(Box.createVerticalStrut(5)); firstBox.add(toBox);
-		firstPanel.add(firstBox);
-		add(firstPanel);
 		
-		//Second panel
-		JScrollPane secondPanel = new JScrollPane(tableAccount);
-		add(secondPanel);
-		
-		//Third panel
-		JPanel thirdPanel = new JPanel();
-			Box thirdBox = new Box(BoxLayout.Y_AXIS);
-				Box catBox = new Box(BoxLayout.X_AXIS);
-					catBox.add(labelCategory); catBox.add(comboCategory);
-				Box crBox = new Box(BoxLayout.X_AXIS);
-					crBox.add(labelCategoryResult); crBox.add(labelCategorySum);
-				Box ovBox = new Box(BoxLayout.X_AXIS);
-					ovBox.add(labelOverall); ovBox.add(labelOverallSum);
-			thirdBox.add(catBox); thirdBox.add(Box.createVerticalStrut(5)); 
-			thirdBox.add(crBox); thirdBox.add(Box.createVerticalStrut(5)); 
-			thirdBox.add(ovBox);
-		thirdPanel.add(thirdBox);
-		add(thirdPanel);	
+			
+//		GridLayout layout = new GridLayout(1,3);
+//		setLayout(layout);
+//		
+//		//First panel
+//		JPanel firstPanel = new JPanel();
+//			firstPanel.setBorder(BorderFactory.createEtchedBorder());
+//			Box firstBox = new Box(BoxLayout.Y_AXIS);
+//				Box fromBox = new Box(BoxLayout.X_AXIS);
+//				fromBox.setAlignmentX(LEFT_ALIGNMENT);
+//					fromBox.add(labelFrom); fromBox.add(comboFrom);
+//				Box toBox = new Box(BoxLayout.X_AXIS);
+//				toBox.setAlignmentX(LEFT_ALIGNMENT);
+//					toBox.add(labelTo); toBox.add(comboTo);
+//			firstBox.add(fromBox);firstBox.add(Box.createVerticalStrut(5)); firstBox.add(toBox);
+//			firstPanel.add(firstBox);
+//		add(firstPanel);
+//		
+//		//Second panel
+//		JScrollPane secondPanel = new JScrollPane(tableAccount);
+//		add(secondPanel);
+//		
+//		//Third panel
+//		JPanel thirdPanel = new JPanel();
+//			Box thirdBox = new Box(BoxLayout.Y_AXIS);
+//				Box catBox = new Box(BoxLayout.X_AXIS);
+//					catBox.add(labelCategory); catBox.add(comboCategory);
+//				Box crBox = new Box(BoxLayout.X_AXIS);
+//					crBox.add(labelCategoryResult); crBox.add(labelCategorySum);
+//				Box ovBox = new Box(BoxLayout.X_AXIS);
+//					ovBox.add(labelOverall); ovBox.add(labelOverallSum);
+//			thirdBox.add(catBox); thirdBox.add(Box.createVerticalStrut(5)); 
+//			thirdBox.add(crBox); thirdBox.add(Box.createVerticalStrut(5)); 
+//			thirdBox.add(ovBox);
+//		thirdPanel.add(thirdBox);
+//		add(thirdPanel);	
 	}
 	
 }
