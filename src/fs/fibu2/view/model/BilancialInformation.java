@@ -104,6 +104,15 @@ public final class BilancialInformation {
 		return new BilancialInformation(overallSum + e.getValue(), newcategory,newaccount);
 	}
 	
+	/**
+	 * @return The bilancial information obtained by incrementing with an entry which is identical to e, except that is has value ( - e.getValue())
+	 */
+	public BilancialInformation decrement(Entry e) {
+		if(e == null) return clone();
+		return increment(new Entry(e.getName(),-e.getValue(),
+				e.getCurrency(),e.getDate(),e.getCategory(),e.getAccount().getID(),e.getAccountInformation(),e.getAdditionalInformation()));
+	}
+	
 	public float getOverallSum() {
 		return overallSum;
 	}

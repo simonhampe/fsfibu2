@@ -158,6 +158,13 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 		return associatedJournal;
 	}
 	
+	/**
+	 * @return The index of o in the visible model or -1 if it is not contained
+	 */
+	public int indexOf(Object o) {
+		return displayedData.indexOf(o);
+	}
+	
 	// TABLEMODEL ***************************************
 	// **************************************************
 	

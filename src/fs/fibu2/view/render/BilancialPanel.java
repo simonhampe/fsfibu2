@@ -4,20 +4,15 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.Currency;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.TreeSet;
+import java.util.Vector;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -33,18 +28,18 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
+import fs.fibu2.data.Fsfibu2Constants;
+import fs.fibu2.data.format.DefaultCurrencyFormat;
 import fs.fibu2.data.model.Category;
 import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.EntrySeparator;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
-import fs.fibu2.view.model.AccountListModel;
 import fs.fibu2.view.model.AccountTableModel;
 import fs.fibu2.view.model.CategoryListModel;
 import fs.fibu2.view.model.JournalTableModel;
 import fs.fibu2.view.model.SeparatorModel;
 import fs.fibu2.view.model.TableModelComparator;
 import fs.gui.GUIToolbox;
-import fs.polyglot.view.TableEditPane;
 
 /**
  * The bilancial panel is used in Journal table views to indicate the bilancials of either all the displayed data or
@@ -54,6 +49,10 @@ import fs.polyglot.view.TableEditPane;
  */
 public class BilancialPanel extends JPanel {
 
+	/**
+	 * compiler-generated serial version uid
+	 */
+	private static final long serialVersionUID = -5068136129774162459L;
 	//Associated data
 	private JTable table;
 	private JournalTableModel tableModel;
@@ -78,6 +77,7 @@ public class BilancialPanel extends JPanel {
 			}
 			else radioSelection.setEnabled(true);
 			updateDescription();
+			updateValues();
 		}
 	};
 	
@@ -174,12 +174,15 @@ public class BilancialPanel extends JPanel {
 			if(comboTo.getModel().getSize() > 0) comboTo.setSelectedItem(comboTo.getModel().getElementAt(comboTo.getModel().getSize()-1));
 			comboTo.addItemListener(itemListener);
 		
+		tableAccount.setDefaultRenderer(Float.class, new MoneyCellRenderer(Fsfibu2Constants.defaultCurrency));
+			
 		comboCategory.setModel(new CategoryListModel(tableModel.getAssociatedJournal(),false));
 			comboCategory.setRenderer(new CategoryListRenderer(" > "));
+			comboCategory.addItemListener(itemListener);
 		
 			
 		//This is done to get a proper table size in the label:
-		tableAccount.setModel(new AccountTableModel(tableModel,null,null, Currency.getInstance("EUR")));
+		tableAccount.setModel(new AccountTableModel(tableModel,null,null));
 		labelCategorySum.setText("t");
 		labelOverallSum.setText("t");
 		
@@ -274,32 +277,56 @@ public class BilancialPanel extends JPanel {
 		for (int i = 0; i < selected.length; i++) {
 			selected[i] = table.convertRowIndexToModel(selected[i]);
 		}
+		//If we have a disconnected range which does not only contain separators, we choose a special approach
 		if(radioSelection.isSelected() && !(containsOnlySeparators(selected))) {
 			if(selected[selected.length-1] - selected[0] != selected.length -1) unconnectedRange = true;
+			//For technical reasons we choose the same approach for one single entry
+			if(selected.length == 1 && tableModel.getValueAt(selected[0], 0) instanceof Entry) unconnectedRange = true;
 		}
 		//Easy: Connected range (or only separators)
 		if(!unconnectedRange) {
-			int first = 0;
-			int last = tableModel.getRowCount()-1;
-			//Calculate first and last index
+			Object first = comboFrom.getSelectedItem();
+			Object last = comboTo.getSelectedItem();
+			//Calculate first and last object
 			if(radioSelection.isSelected()) {
-				first = table.getSelectedRows()[0];
-				last = table.getSelectedRows()[table.getSelectedRowCount()-1];
+				first = tableModel.getValueAt(table.getSelectedRows()[0],0);
+				last = tableModel.getValueAt(table.getSelectedRows()[table.getSelectedRowCount()-1],0);
 			}
+			//Choose the last element as last point if only one separator is selected
+			if(first == last && first instanceof EntrySeparator) last = tableModel.getValueAt(tableModel.getRowCount()-1, 0);
+			//In general, if the first point is an entry, we have to choose the element before it
+			if(first instanceof Entry) first = tableModel.getValueAt(tableModel.indexOf(first)-1, 0);
 			//Insert values
-			tableAccount.setModel(new AccountTableModel(tableModel,tableModel.getValueAt(first, 0), tableModel.getValueAt(last, 0),Currency.getInstance("EUR")));
+			((AccountTableModel)tableAccount.getModel()).setRange(first, last);
 			categorySum = 
-				tableModel.getBilancialMapping(last).getOldest().information().getCategoryMappings().get((Category)comboCategory.getSelectedItem()) - 
-				tableModel.getBilancialMapping(first).getOldest().information().getCategoryMappings().get((Category)comboCategory.getSelectedItem());
+				saveValueOf(tableModel.getBilancialMapping(last).getOldest().information().getCategoryMappings().get((Category)comboCategory.getSelectedItem())) -
+				(first == last? 0 : 
+					saveValueOf(tableModel.getBilancialMapping(first).getOldest().information().getCategoryMappings().get((Category)comboCategory.getSelectedItem()))); 
+				
 			overallSum = 
-				tableModel.getBilancialMapping(last).getOldest().information().getOverallSum() - 
-				tableModel.getBilancialMapping(first).getOldest().information().getOverallSum();
+				saveValueOf(tableModel.getBilancialMapping(last).getOldest().information().getOverallSum()) - 
+				(first == last? 0 : 
+					saveValueOf(tableModel.getBilancialMapping(first).getOldest().information().getOverallSum()));
+			
 		}
 		//Difficult: Unconnected 
 		else {
-			//Uh, need a better account model here
+			Vector<Entry> entries = new Vector<Entry>();
+			for (int i = 0; i < selected.length; i++) {
+				Object o = tableModel.getValueAt(selected[i], 0);
+				if(o instanceof Entry) {
+					overallSum += ((Entry)o).getValue();
+					if(((Entry)o).getCategory() == comboCategory.getSelectedItem()) {
+						categorySum += ((Entry)o).getValue();
+					}
+					entries.add((Entry)o);
+				}
+			}
+			((AccountTableModel)tableAccount.getModel()).setEntries(entries);
 		}
 		
+		labelCategorySum.setText(DefaultCurrencyFormat.formatAsHTML(categorySum, Fsfibu2Constants.defaultCurrency));
+		labelOverallSum.setText(DefaultCurrencyFormat.formatAsHTML(overallSum, Fsfibu2Constants.defaultCurrency));
 	}
 	
 	/**
@@ -354,17 +381,28 @@ public class BilancialPanel extends JPanel {
 		updateValues();
 	}
 	
+	// HELP METHODS ********************************
+	// *********************************************
+	
 	/**
 	 * @return true, if and only if the objects in the table model associated to the given indices are all of
 	 * type EntrySeparator
 	 */
-	protected boolean containsOnlySeparators(int[] indices) {
+	private boolean containsOnlySeparators(int[] indices) {
 		for (int i : indices) {
 			if(!(tableModel.getValueAt(i, 0) instanceof EntrySeparator)) {
 				return false;
 			}
 		}
 		return true;
+	}
+	
+	/**
+	 * @return 0, if f == null, the value of f otherwise
+	 */
+	private static float saveValueOf(Float f) {
+		if(f == null) return 0;
+		else return f;
 	}
 	
 }

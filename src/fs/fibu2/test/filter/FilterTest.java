@@ -20,7 +20,6 @@ import fs.fibu2.data.model.Category;
 import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.Journal;
 import fs.fibu2.examples.SlushFund;
-import fs.fibu2.filter.AccountInformationFilter;
 import fs.fibu2.filter.CategoryFilter;
 import fs.fibu2.filter.EntryFilter;
 import fs.fibu2.filter.EntryFilterEditor;

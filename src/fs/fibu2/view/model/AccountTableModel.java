@@ -1,8 +1,6 @@
 package fs.fibu2.view.model;
 
-import java.util.Currency;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.TreeSet;
 import java.util.Vector;
 
@@ -11,8 +9,8 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
 import fs.fibu2.data.format.DefaultAccountComparator;
-import fs.fibu2.data.format.DefaultCurrencyFormat;
 import fs.fibu2.data.model.Account;
+import fs.fibu2.data.model.Entry;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
 
 /**
@@ -28,7 +26,7 @@ public class AccountTableModel implements TableModel {
 	private JournalTableModel associatedModel;
 	private Object fromObject;
 	private Object toObject;
-	private Currency displayCurrency;
+	private Vector<Entry> entries;
 	
 	private TableModelListener modelListener = new TableModelListener() {
 		@Override
@@ -41,21 +39,55 @@ public class AccountTableModel implements TableModel {
 	// *****************************************
 	
 	/**
-	 * Constructs a table model. 
+	 * Constructs a table model which sums up a certain range
 	 * @param model The table model from which the bilancial data is retrieved
 	 * @param from The first entry considered. The account information from the <i>preceding</i> entry is used as 'before' data. If this value is null,
 	 * the model is used from the first entry
 	 * @param to The last entry considered. Its account information is used as 'after' data. If this value is null, the model is used up to the last entry
 	 * @param currency The currency used to display the values
 	 */
-	public AccountTableModel(JournalTableModel model, Object from, Object to, Currency currency)  {
+	public AccountTableModel(JournalTableModel model, Object from, Object to)  {
 		associatedModel = model;
 		if(associatedModel != null) {
 			model.addTableModelListener(modelListener);
 		}
 		fromObject = from;
 		toObject = to;
-		displayCurrency = currency == null? Currency.getInstance(Locale.getDefault()) : currency;
+	}
+	
+	/**
+	 * Constructs a table model which sums up a certain selection of entries
+	 * @param model The table model from which the initial bilancial data is taken
+	 * @param entries The set of entries to sum up. The initial data is the data of the first minus its value.
+	 */
+	public AccountTableModel(JournalTableModel model, Vector<Entry> entries) {
+		associatedModel = model;
+		if(associatedModel != null) {
+			model.addTableModelListener(modelListener);
+		}
+		this.entries = new Vector<Entry>(entries);
+	}
+	
+	// SETTERS *********************************
+	
+	/**
+	 * Configures this model to sum up the values of the given entries 
+	 */
+	public void setEntries(Vector<Entry> entries) {
+		this.entries = new Vector<Entry>(entries);
+		fireTableDataChanged();
+	}
+	
+	/**
+	 * Configures this model to sum up values of all entries from 'from' to 'to' (including both)
+	 * @param from
+	 * @param to
+	 */
+	public void setRange(Object from, Object to) {
+		fromObject = from;
+		toObject = to;
+		entries = null;
+		fireTableDataChanged();
 	}
 	
 	// TABLEMODEL ******************************
@@ -71,7 +103,10 @@ public class AccountTableModel implements TableModel {
 	 */
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {
-		return String.class;
+		switch(columnIndex) {
+		case 0: return String.class;
+		default: return Float.class;
+		}
 	}
 
 	/**
@@ -112,12 +147,26 @@ public class AccountTableModel implements TableModel {
 		Account rowAccount = indexAccounts.get(rowIndex);
 		switch(columnIndex) {
 		case 0: return rowAccount.getName();
-		case 1: return DefaultCurrencyFormat.getFormat(displayCurrency).format(
-				fromObject == null? associatedModel.getBilancialMapping(0).getMostRecent().information().getAccountMappings().get(rowAccount) :
-							  associatedModel.getBilancialMapping(fromObject).getMostRecent().information().getAccountMappings().get(rowAccount));
-		case 2: return DefaultCurrencyFormat.getFormat(displayCurrency).format(
-				toObject == null? associatedModel.getBilancialMapping(associatedModel.getRowCount()-1).getMostRecent().information().getAccountMappings().get(rowAccount) :
-								  associatedModel.getBilancialMapping(toObject).getMostRecent().information().getAccountMappings().get(rowAccount));
+		case 1: if(entries == null)  {
+					BilancialInformation info = fromObject == null? associatedModel.getBilancialMapping(0).getMostRecent().information() :
+												associatedModel.getBilancialMapping(fromObject).getMostRecent().information();
+					if(fromObject == null || !(fromObject instanceof Entry)) return info.getAccountMappings().get(rowAccount);
+					else return info.decrement((Entry)fromObject).getAccountMappings().get(rowAccount);
+				}
+				else {
+					BilancialInformation info = associatedModel.getBilancialMapping(entries.firstElement()).getMostRecent().information();
+					return info.decrement(entries.firstElement()).getAccountMappings().get(rowAccount);
+				}
+		case 2: if(entries == null) {
+					return (toObject == null? associatedModel.getBilancialMapping(associatedModel.getRowCount()-1).getMostRecent().information() :
+										associatedModel.getBilancialMapping(toObject).getMostRecent().information()).getAccountMappings().get(rowAccount);
+				}
+				else {
+					BilancialInformation info = associatedModel.getBilancialMapping(entries.firstElement()).getMostRecent().information()
+															.decrement(entries.firstElement());
+					for(Entry e : entries) info = info.increment(e);
+					return info.getAccountMappings().get(rowAccount);
+				}
 		default: return "";
 		}
 	}

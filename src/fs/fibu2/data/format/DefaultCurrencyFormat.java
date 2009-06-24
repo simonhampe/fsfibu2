@@ -19,4 +19,15 @@ public class DefaultCurrencyFormat {
 		return format;
 	}
 	
+	/**
+	 * Formats values as the format obtained by {@link #getFormat(Currency)}, but additionally puts it
+	 * in a html bracket which renders the text red, if the value is < 0
+	 */
+	public static String formatAsHTML(float value, Currency currency) {
+		NumberFormat nf = getFormat(currency);
+		String result = "<html><font color=\"" + (value >= 0? "000000" : "FF0000")   
+						+ "\">" + nf.format(value) + "</font></html>";
+		return result;
+	}
+	
 }
