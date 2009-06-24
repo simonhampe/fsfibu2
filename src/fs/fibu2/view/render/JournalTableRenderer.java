@@ -165,8 +165,8 @@ public class JournalTableRenderer implements TableCellRenderer, ResourceDependen
 			}
 			break;
 			case 3: if(!((value instanceof ExtremeSeparator) && ((ExtremeSeparator)value).isBeforeAll())) {
-						label.setText(DefaultCurrencyFormat.getFormat(currency).format(associatedModel.getBilancialMapping(row).getMostRecent().
-								information().getOverallSum()));
+						label.setText(DefaultCurrencyFormat.formatAsHTML(associatedModel.getBilancialMapping(row).getMostRecent().
+								information().getOverallSum(),currency));
 					}
 					break;
 			} 
