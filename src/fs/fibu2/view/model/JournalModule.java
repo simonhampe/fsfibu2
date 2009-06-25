@@ -8,7 +8,8 @@ import javax.swing.JPanel;
 /**
  * A journal module is a generic component for editing / displaying an fsfibu2 journal. A journal module might be for
  * example a tabbed pane for filter views of a journal or just a panel with several diagrams. When fsfibu2 is started, for each
- * module registered with the {@link JournalModuleLoader} or corresponding class file in the modules/ folder, one tab is added to the main tabbed view. 
+ * module registered with the {@link JournalModuleLoader} or corresponding class file in the modules/ folder, one tab is added to the main tabbed view.
+ * Each class implementing this interface should have a nullary constructor. 
  * @author Simon Hampe
  *
  */
