@@ -3,11 +3,8 @@ package fs.fibu2.view.model;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import javax.swing.JLabel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
-import fs.fibu2.filter.EntryFilter;
 
 /**
  * This class handles loading of {@link JournalModule} objects by ID. It also supports dynamic loading of JournalModule classes.
@@ -61,7 +58,7 @@ public class JournalModuleLoader {
 	 */
 	public static void loadModule(Class<?> moduleClass) {
 		try {
-			JournalModule f = (EntryFilter) moduleClass.newInstance();
+			JournalModule f = (JournalModule) moduleClass.newInstance();
 			if(!moduleMap.containsKey(f.getID())) {
 				moduleMap.put(f.getID(), f.getClass());
 				fireStateChanged(new ChangeEvent(f.getID()));
@@ -76,7 +73,29 @@ public class JournalModuleLoader {
 	 * @return A list of all ids for which this loader has a mapping
 	 */
 	public static HashSet<String> getFilterIDs() {
-		return new HashSet<String>(filterMap.keySet());
+		return new HashSet<String>(moduleMap.keySet());
+	}
+
+	// LISTENER METHODS ********************************
+	// *************************************************
+	
+	/**
+	 * Adds a listener to this class. Listeners are notified, whenever a filter is added to or removed from the loader. 
+	 * The change event contains the corresponding filter id as source 
+	 */
+	public static void addChangeListener(ChangeListener l) {
+		if(l != null) listenerList.add(l);
+	}
+	
+	/**
+	 * Removes l as a listener from this class
+	 */
+	public static void removeChangeListener(ChangeListener l) {
+		listenerList.remove(l);
+	}
+	
+	protected static void fireStateChanged(ChangeEvent e) {
+		for(ChangeListener l : listenerList) l.stateChanged(e);
 	}
 	
 }
