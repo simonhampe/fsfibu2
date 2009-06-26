@@ -33,7 +33,7 @@ public class EntryComparator implements Comparator<Entry>{
 	 * @return 
 	 * - 0 if and only if o1 == o2 (i.e. even if all fields are equal but the objects are not, this does not return 0) or if all fields are equal
 	 * and {@link #allowNonStrictEquality} is true<br>
-	 * - k > 0, if o1 is smaller than o2 with respect to the criteria specified below, k < 0 if o1 is smaller. If none is smaller than the other,
+	 * - k > 0, if o1 is smaller than o2 with respect to the criteria specified below, k < 0 if o2 is smaller. If none is smaller than the other,
 	 * 1 is returned (or 0, if {@link #allowNonStrictEquality} is true). The reason for this is that it might very well be, that two distinct entries with completely identical fields might be 
 	 * contained in a Journal (imagine adding 'Getränkeeinnahmen' twice the same day with the same value). Since in that case at 
 	 * least the order is irrelevant, we accept this small lack of well-definedness (in that case we would have o1 > o2 AND o2 > o1). <br>
@@ -50,7 +50,7 @@ public class EntryComparator implements Comparator<Entry>{
 	 * the strings themselves are compared: The highest string for each key set
 	 *  is computed and both are compared. If they are equal, their values are compared, afterwards this procedure continues downwards.)<br> 
 	 * - The hash code (ordered by the natural ordering on int. Since this should be the hash code on object it should always be different for
-	 * different objects, but this is not guaranteed)
+	 * different objects, but this is not guaranteed)<br>
 	 *  Remark: null is smaller than any entry != null
 	 */
 	@Override
