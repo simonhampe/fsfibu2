@@ -110,11 +110,11 @@ public class AccountTableModel implements TableModel {
 	}
 
 	/**
-	 * @return 3
+	 * @return 4
 	 */
 	@Override
 	public int getColumnCount() {
-		return 3;
+		return 4;
 	}
 
 	/**
@@ -126,6 +126,7 @@ public class AccountTableModel implements TableModel {
 		case 0: return Fsfibu2StringTableMgr.getString("fs.fibu2.view.AccountTableModel.account");
 		case 1: return Fsfibu2StringTableMgr.getString("fs.fibu2.view.AccountTableModel.before");
 		case 2: return Fsfibu2StringTableMgr.getString("fs.fibu2.view.AccountTableModel.after");
+		case 3: return Fsfibu2StringTableMgr.getString("fs.fibu2.view.AccountTableModel.difference");
 		default: return "";
 		}
 	}
@@ -167,6 +168,7 @@ public class AccountTableModel implements TableModel {
 					for(Entry e : entries) info = info.increment(e);
 					return info.getAccountMappings().get(rowAccount);
 				}
+		case 3: return (Float)getValueAt(rowIndex, 2) - (Float)getValueAt(rowIndex, 1);
 		default: return "";
 		}
 	}

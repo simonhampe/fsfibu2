@@ -227,6 +227,7 @@ public class BilancialPanel extends JPanel {
 			secondPanel.setPreferredSize(new Dimension(tableSize.width*2,tableSize.height*2));
 			GridBagConstraints gcSecond = GUIToolbox.buildConstraints(1, 1, 1, 1);
 				gcSecond.insets = new Insets(5,0,5,0);
+				gcSecond.weightx = 100;
 			layout.setConstraints(secondPanel, gcSecond);
 		add(secondPanel);
 			
