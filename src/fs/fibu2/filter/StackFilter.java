@@ -332,6 +332,7 @@ public class StackFilter implements EntryFilter {
 		// Deletes the ith filter and removes the given component from the editor 
 		public void removeFilter(int index, StackElementEditor component) {
 			editorPanel.remove(component);
+			component.removeChangeListener(elementListener);
 			filterList.remove(index);
 			revalidate();
 			fireStateChanged();
