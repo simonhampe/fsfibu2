@@ -9,6 +9,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -20,6 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingWorker;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -27,6 +29,7 @@ import org.apache.log4j.Logger;
 
 import sun.java2d.loops.GeneralRenderer;
 
+import fs.event.DataRetrievalListener;
 import fs.gui.GUIToolbox;
 import fs.xml.FsfwConfigurator;
 import fs.xml.FsfwDefaultReference;
@@ -81,25 +84,33 @@ public final class FrameworkLoader {
 		}
 		//Loading from given path
 		logger.info("Asking user...");
-		final FrameworkLoaderDialog diag = new FrameworkLoaderDialog();
-		diag.addWindowListener(new WindowAdapter() {
+		FrameworkLoaderDialog diag = new FrameworkLoaderDialog();
+		final Thread currentThread = Thread.currentThread();
+		diag.addRetrievalListener(new DataRetrievalListener() {
 			@Override
-			public void windowClosed(WindowEvent e) {
-				if(diag.result == null) {
-					String msg = "User cancelled process. Cannot load fsframework";
-					logger.error(msg);
-					throw new UnsupportedOperationException(msg);
-				}
-				else {
-					applyData(diag.result);
+			public void dataReady(Object source, Object data) {
+				if(data != null) {
+					//Apply data, then let the main thread continue
+					applyData(data.toString());
 					logger.info("Successfully initialized fsframework");
 					logger.info("Trying to serialize fsframework path");
-					saveFramework(diag.result);
+					saveFramework(data.toString());
+					Thread.currentThread().notifyAll();
 				}
+				//Interrupt the main thread to notify it that no data has been specified
+				else currentThread.interrupt();
 			}
+			
 		});
-		
 		diag.setVisible(true);
+		//Wait for the completion of the dialog
+		try {
+			Thread.currentThread().wait();
+		} catch (InterruptedException e) {
+			String msg = "User cancelled process. Cannot load fsframework";
+			logger.error(msg);
+			throw new UnsupportedOperationException(msg);
+		}
 	}
 	
 	private static void saveFramework(String path) {
@@ -149,6 +160,8 @@ public final class FrameworkLoader {
 	
 	private static class FrameworkLoaderDialog extends JDialog {
 		
+		// COMPONENTS
+		
 		private JLabel messageLabel = new JLabel("<html>No fsframework directory has been found.<br>" +
 				"Please specify the correct directory:</html>");
 		private JTextField pathField = new JTextField("this/is/a/size-calibrating/test/text");
@@ -157,7 +170,7 @@ public final class FrameworkLoader {
 		private JButton cancelButton = new JButton("Cancel");
 		private JLabel diagnosticLabel = new JLabel("Path seems invalid. language/fsfwStringTable.xml not found");
 		
-		public String result = null;
+		// LISTENERS
 		
 		private DocumentListener dl = new DocumentListener() {
 			@Override
@@ -177,10 +190,8 @@ public final class FrameworkLoader {
 		private ActionListener al = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(e.getSource() == okButton) {
-					result = pathField.getText();
-				}
 				dispose();
+				fireDataReady(e.getSource() == okButton? pathField.getText() : null);
 			}
 		};
 		
@@ -190,6 +201,13 @@ public final class FrameworkLoader {
 				browse();
 			}
 		};
+		
+		//MISC
+		
+		private HashSet<DataRetrievalListener> listeners = new HashSet<DataRetrievalListener>();
+		
+		// CONSTRUCTOR *******************************
+		// *******************************************
 		
 		public FrameworkLoaderDialog() {
 			super((JFrame)null,"Locating fsframwork...");
@@ -236,6 +254,9 @@ public final class FrameworkLoader {
 			updateLabel();
 		}
 		
+		// HELPER METHODS ********************************
+		// ***********************************************
+		
 		//Checks the validity of the given path and adjusts the label and the ok button accordingly
 		private void updateLabel() {
 			if(isValidPath(pathField.getText())) {
@@ -255,6 +276,21 @@ public final class FrameworkLoader {
 			if(result == JFileChooser.APPROVE_OPTION) {
 				pathField.setText(chooser.getSelectedFile().getAbsolutePath());
 			}
+		}
+		
+		// LISTENER MECHANISM ******************************
+		// *************************************************
+		
+		public void addRetrievalListener(DataRetrievalListener l) {
+			if(l != null) listeners.add(l);
+		}
+		
+		public void removeRetrievalListener(DataRetrievalListener l) {
+			listeners.remove(l);
+		}
+		
+		private void fireDataReady(String data) {
+			for(DataRetrievalListener l : listeners) l.dataReady(this, data);
 		}
 		
 	}
