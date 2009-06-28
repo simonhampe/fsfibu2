@@ -3,6 +3,10 @@ package fs.fibu2.application;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.Arrays;
 import java.util.prefs.BackingStoreException;
@@ -10,6 +14,7 @@ import java.util.prefs.Preferences;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -24,9 +29,10 @@ import sun.java2d.loops.GeneralRenderer;
 
 import fs.gui.GUIToolbox;
 import fs.xml.FsfwConfigurator;
+import fs.xml.FsfwDefaultReference;
 
 /**
- * This class is responsible for locating and loading fsframework (i.e. initializing {@link FsfwConfigurator}). 
+ * This class is responsible for locating and loading fsframework (i.e. initializing {@link FsfwDefaultReference}). 
  * There are two static methods, one for loading it and one for serializing the location (which is private). Loading takes place 
  * in the following way: <br>
  * - First, the system preferences are probed for initialization data in a node fsfibu2/fsframework/<br>
@@ -45,11 +51,12 @@ public final class FrameworkLoader {
 
 	private static Logger logger = Logger.getLogger(FrameworkLoader.class);
 	
-	public static void test() {
-		(new FrameworkLoaderDialog()).setVisible(true);
-	}
-	
-	public static void loadFramework() {
+	/**
+	 * Tries to load Fsframework
+	 * @throws UnsupportedOperationException - If no framework can be loaded and the user cancels the
+	 * input dialog
+	 */
+	public static void loadFramework() throws UnsupportedOperationException {
 		logger.info("Loading fsframework...");
 		//Loading from system / user prefs
 		boolean system = true;
@@ -60,9 +67,10 @@ public final class FrameworkLoader {
 			try {
 				if(node.nodeExists("fsfibu2/fsframework")) {
 					logger.info("Initialization data found");
-					if(!isValidPath(path(node))) logger.warn("fsframework path seems to be invalid");
+					if(!isValidPath(path(node))) logger.warn("fsframework path " + path(node) + " seems to be invalid");
 					else {
-						applyData(node);
+						applyData(path(node));
+						logger.info("Successfully initialized fsframework");
 						return;
 					}
 				}
@@ -72,6 +80,43 @@ public final class FrameworkLoader {
 			}
 		}
 		//Loading from given path
+		logger.info("Asking user...");
+		final FrameworkLoaderDialog diag = new FrameworkLoaderDialog();
+		diag.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+				if(diag.result == null) {
+					String msg = "User cancelled process. Cannot load fsframework";
+					logger.error(msg);
+					throw new UnsupportedOperationException(msg);
+				}
+				else {
+					applyData(diag.result);
+					logger.info("Successfully initialized fsframework");
+					logger.info("Trying to serialize fsframework path");
+					saveFramework(diag.result);
+				}
+			}
+		});
+		
+		diag.setVisible(true);
+	}
+	
+	private static void saveFramework(String path) {
+		boolean system = true;
+		for(Preferences node : Arrays.asList(Preferences.systemRoot(), Preferences.userRoot())) {
+			try {
+				Preferences saveNode = node.node("fsfibu2/fsframework");
+				saveNode.put("path", path);
+				node.flush();
+				return;
+			}
+			catch(BackingStoreException e) {
+				if(system) logger.warn("Could not save to system preferences. Trying user preferences");
+				else logger.warn("Could not save to user preferences. Fsframework path will not be saved");
+			}
+			system = !system;
+		}
 	}
 	
 	// HELPER METHODS ******************************************
@@ -94,18 +139,9 @@ public final class FrameworkLoader {
 		return node.get("path", null);
 	}
 	
-	/**
-	 * @return The value for the key 'lang' (Default: null)
-	 */
-	private static String lang(Preferences node) {
-		return node.get("lang", null);
-	}
 	
-	private static void applyData(Preferences node) {
-		FsfwConfigurator config = new FsfwConfigurator("irrelevant");
-		config.setDefaultDirectory(path(node));
-		if(lang(node) != null) config.setGlobalLanguageID(lang(node));
-		config.applyConfiguration();
+	private static void applyData(String path) {
+		FsfwDefaultReference.setFsfwDirectory(path);
 	}
 	
 	// DIALOG CLASS *********************************
@@ -119,7 +155,9 @@ public final class FrameworkLoader {
 		private JButton browseButton = new JButton("Browse...");
 		private JButton okButton = new JButton("OK");
 		private JButton cancelButton = new JButton("Cancel");
-		private JLabel diagnosticLabel = new JLabel("Path seems valid. language/fsfwStringTable.xml found");
+		private JLabel diagnosticLabel = new JLabel("Path seems invalid. language/fsfwStringTable.xml not found");
+		
+		public String result = null;
 		
 		private DocumentListener dl = new DocumentListener() {
 			@Override
@@ -136,8 +174,26 @@ public final class FrameworkLoader {
 			}
 		};
 		
+		private ActionListener al = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(e.getSource() == okButton) {
+					result = pathField.getText();
+				}
+				dispose();
+			}
+		};
+		
+		private ActionListener bl = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				browse();
+			}
+		};
+		
 		public FrameworkLoaderDialog() {
 			super((JFrame)null,"Locating fsframwork...");
+			setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 			
 			//Init GUI
 			
@@ -170,12 +226,34 @@ public final class FrameworkLoader {
 			add(pathField); add(browseButton); add(okButton); add(cancelButton);
 			add(diagnosticLabel); add(fillPanel);
 			pack();
+			
+			pathField.getDocument().addDocumentListener(dl);
+			okButton.addActionListener(al);
+			cancelButton.addActionListener(al);
+			browseButton.addActionListener(bl);
+			
+			pathField.setText("");
+			updateLabel();
 		}
 		
 		//Checks the validity of the given path and adjusts the label and the ok button accordingly
 		private void updateLabel() {
 			if(isValidPath(pathField.getText())) {
 				diagnosticLabel.setText("Path seems valid. language/fsfwStringTable.xml found");
+				okButton.setEnabled(true);
+			}
+			else {
+				diagnosticLabel.setText("Path seems invalid. language/fsfwStringTable.xml not found");
+				okButton.setEnabled(false);
+			}
+		}
+		
+		//Opens the browsing dialog
+		private void browse() {
+			JFileChooser chooser = new JFileChooser();
+			int result = chooser.showOpenDialog(this);
+			if(result == JFileChooser.APPROVE_OPTION) {
+				pathField.setText(chooser.getSelectedFile().getAbsolutePath());
 			}
 		}
 		
