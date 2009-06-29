@@ -86,6 +86,7 @@ public final class FrameworkLoader {
 		logger.info("Asking user...");
 		FrameworkLoaderDialog diag = new FrameworkLoaderDialog();
 		final Thread currentThread = Thread.currentThread();
+		final Object helperObject = new Object();
 		diag.addRetrievalListener(new DataRetrievalListener() {
 			@Override
 			public void dataReady(Object source, Object data) {
@@ -95,23 +96,26 @@ public final class FrameworkLoader {
 					logger.info("Successfully initialized fsframework");
 					logger.info("Trying to serialize fsframework path");
 					saveFramework(data.toString());
-					Thread.currentThread().notifyAll();
+					synchronized (helperObject) {
+						helperObject.notify();
+					}
 				}
 				//Interrupt the main thread to notify it that no data has been specified
 				else currentThread.interrupt();
 			}
 			
 		});
-		diag.setVisible(true);
-		//Wait for the completion of the dialog
-//		try {
-//			Thread.currentThread().wait();
-//		} catch (InterruptedException e) {
-//			String msg = "User cancelled process. Cannot load fsframework";
-//			logger.error(msg);
-//			throw new UnsupportedOperationException(msg);
-//		}
-		System.out.println("test");
+		synchronized (helperObject) {
+			diag.setVisible(true);
+			//Wait for the completion of the dialog
+			try {
+				helperObject.wait();
+			} catch (InterruptedException e) {
+				String msg = "User cancelled process. Cannot load fsframework";
+				logger.error(msg);
+				throw new UnsupportedOperationException(msg);
+			}
+		}
 	}
 	
 	private static void saveFramework(String path) {
