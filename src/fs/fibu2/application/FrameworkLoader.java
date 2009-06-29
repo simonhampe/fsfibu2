@@ -5,13 +5,9 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
-import java.util.Arrays;
+import java.io.IOException;
 import java.util.HashSet;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -21,38 +17,40 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.SwingWorker;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import org.apache.log4j.Logger;
-
-import sun.java2d.loops.GeneralRenderer;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.tree.DefaultDocument;
 
 import fs.event.DataRetrievalListener;
 import fs.gui.GUIToolbox;
 import fs.xml.FsfwConfigurator;
 import fs.xml.FsfwDefaultReference;
+import fs.xml.XMLReadConfigurationException;
+import fs.xml.XMLToolbox;
 
 /**
  * This class is responsible for locating and loading fsframework (i.e. initializing {@link FsfwDefaultReference}). 
  * There are two static methods, one for loading it and one for serializing the location (which is private). Loading takes place 
  * in the following way: <br>
- * - First, the system preferences are probed for initialization data in a node fsfibu2/fsframework/<br>
- * - If there is no data, the user preferences are probed for initialization data in the same node <br>
- * - If there is no data as well, a dialog pops up which asks the user for the location of fsframework <br>
+ * - First, the loader looks for a file frameworkConfigurator.xml which contains the configuration data for fsframework <br>
+ * - If the file is not found, a dialog pops up, asking the user to provide the path to fsframework. The path will be saved in the file mentioned above.<br>
  * The given fsframework path is probed for the existence of language/fsfwStringTable.xml. If the file does not exist,
  * an error message is logged and the above algorithm continues as if there were no data (the dialog will be repeated
  * until a valid path is given or it is cancelled. When a valid path is given in the dialog, the resulting data
  * is serialized <br>
- * When serializing, the fsframework initialization data is saved in the node mentioned above first in the System
- * preferences and, if that doesn't work, in the user preferences.
  * @author talio
  *
  */
 public final class FrameworkLoader {
 
 	private static Logger logger = Logger.getLogger(FrameworkLoader.class);
+	
+	private final static String configuratorPath = "frameworkConfigurator.xml";
 	
 	/**
 	 * Tries to load Fsframework
@@ -61,29 +59,31 @@ public final class FrameworkLoader {
 	 */
 	public static void loadFramework() throws UnsupportedOperationException {
 		logger.info("Loading fsframework...");
-		//Loading from system / user prefs
-		boolean system = true;
-		for(Preferences node : Arrays.asList(Preferences.systemRoot(), Preferences.userRoot())) {
-			if(system) logger.info("Probing system preferences...:");
-			else logger.info("Probing user preferences...:");
-			system = !system;
+		
+		//Look for file
+		logger.info("Locating file frameworkConfigurator.xml");
+		File f = new File(configuratorPath);
+		if(f.exists()) {
+			logger.info("Configuration file found. Applying configuration...");
 			try {
-				if(node.nodeExists("fsfibu2/fsframework")) {
-					logger.info("Initialization data found");
-					if(!isValidPath(path(node))) logger.warn("fsframework path " + path(node) + " seems to be invalid");
-					else {
-						applyData(path(node));
-						logger.info("Successfully initialized fsframework");
-						return;
-					}
+				Document d = XMLToolbox.loadXMLFile(f);
+				FsfwConfigurator configurator = new FsfwConfigurator("frameworkConfigurator",d.getRootElement());
+				if(isValidPath(configurator.getDefaultDirectory())){
+					configurator.applyConfiguration();
+					logger.info("Successfully initialized fsframework");
+					return;
 				}
-				else logger.warn("No data found.");
-			} catch (BackingStoreException e) {
-				logger.warn("Could not read backing store...");
+				else {
+					logger.warn("Configuration seems invalid");
+				}
+			}
+			catch(DocumentException de) {
+				logger.warn("Could not open configuration file: " + de.getMessage());
 			}
 		}
+		
 		//Loading from given path
-		logger.info("Asking user...");
+		logger.info("File not found or invalid. Asking user...");
 		FrameworkLoaderDialog diag = new FrameworkLoaderDialog();
 		final Thread currentThread = Thread.currentThread();
 		final Object helperObject = new Object();
@@ -91,11 +91,24 @@ public final class FrameworkLoader {
 			@Override
 			public void dataReady(Object source, Object data) {
 				if(data != null) {
-					//Apply data, then let the main thread continue
-					applyData(data.toString());
+					//Apply data
+					FsfwConfigurator configurator = new FsfwConfigurator("frameworkConfigurator");
+					configurator.setDefaultDirectory(data.toString());
+					configurator.applyConfiguration();
 					logger.info("Successfully initialized fsframework");
 					logger.info("Trying to serialize fsframework path");
-					saveFramework(data.toString());
+					try {
+						Element n = configurator.getConfiguration();
+						DefaultDocument doc = new DefaultDocument();
+						doc.setRootElement(n);
+						XMLToolbox.saveXML(doc, configuratorPath);
+						logger.info("Successfully saved configuration");
+					} catch (XMLReadConfigurationException e) {
+						logger.warn("Could not retrieve configuration data. It will not be saved.");
+					} catch (IOException e) {
+						logger.warn("Could not save configuration data: " + e.getMessage());
+					}
+					//Now wake up main thread
 					synchronized (helperObject) {
 						helperObject.notify();
 					}
@@ -117,24 +130,7 @@ public final class FrameworkLoader {
 			}
 		}
 	}
-	
-	private static void saveFramework(String path) {
-		boolean system = true;
-		for(Preferences node : Arrays.asList(Preferences.systemRoot(), Preferences.userRoot())) {
-			try {
-				Preferences saveNode = node.node("fsfibu2/fsframework");
-				saveNode.put("path", path);
-				node.flush();
-				return;
-			}
-			catch(BackingStoreException e) {
-				if(system) logger.warn("Could not save to system preferences. Trying user preferences");
-				else logger.warn("Could not save to user preferences. Fsframework path will not be saved");
-			}
-			system = !system;
-		}
-	}
-	
+
 	// HELPER METHODS ******************************************
 	// *********************************************************
 	
@@ -148,24 +144,17 @@ public final class FrameworkLoader {
 		else return true;
 	}
 	
-	/**
-	 * @return The value for the key 'path' (Default: null)
-	 */
-	private static String path(Preferences node) {
-		return node.get("path", null);
-	}
-	
-	
-	private static void applyData(String path) {
-		FsfwDefaultReference.setFsfwDirectory(path);
-	}
-	
 	// DIALOG CLASS *********************************
 	// **********************************************
 	
 	private static class FrameworkLoaderDialog extends JDialog {
 		
 		// COMPONENTS
+		
+		/**
+		 * compiler-generated serial version uid
+		 */
+		private static final long serialVersionUID = 5772080354549058506L;
 		
 		private JLabel messageLabel = new JLabel("<html>No fsframework directory has been found.<br>" +
 				"Please specify the correct directory:</html>");
@@ -277,6 +266,7 @@ public final class FrameworkLoader {
 		//Opens the browsing dialog
 		private void browse() {
 			JFileChooser chooser = new JFileChooser();
+			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			int result = chooser.showOpenDialog(this);
 			if(result == JFileChooser.APPROVE_OPTION) {
 				pathField.setText(chooser.getSelectedFile().getAbsolutePath());
