@@ -104,13 +104,14 @@ public final class FrameworkLoader {
 		});
 		diag.setVisible(true);
 		//Wait for the completion of the dialog
-		try {
-			Thread.currentThread().wait();
-		} catch (InterruptedException e) {
-			String msg = "User cancelled process. Cannot load fsframework";
-			logger.error(msg);
-			throw new UnsupportedOperationException(msg);
-		}
+//		try {
+//			Thread.currentThread().wait();
+//		} catch (InterruptedException e) {
+//			String msg = "User cancelled process. Cannot load fsframework";
+//			logger.error(msg);
+//			throw new UnsupportedOperationException(msg);
+//		}
+		System.out.println("test");
 	}
 	
 	private static void saveFramework(String path) {
