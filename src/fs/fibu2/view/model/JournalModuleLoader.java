@@ -2,6 +2,7 @@ package fs.fibu2.view.model;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Vector;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -17,6 +18,8 @@ public class JournalModuleLoader {
 	private static HashMap<String, Class<? extends JournalModule>> moduleMap = new HashMap<String, Class<? extends JournalModule>>();
 	//The set of all listeners
 	private static HashSet<ChangeListener> listenerList = new HashSet<ChangeListener>();
+	//An ordered list of all module IDs which were available from beginning (i.e. were added in the static code below and not dynamically)
+	private static Vector<String> defaultModules = new Vector<String>();
 	
 	//Init all default modules
 	static {
@@ -72,8 +75,12 @@ public class JournalModuleLoader {
 	/**
 	 * @return A list of all ids for which this loader has a mapping
 	 */
-	public static HashSet<String> getFilterIDs() {
+	public static HashSet<String> getModuleIDs() {
 		return new HashSet<String>(moduleMap.keySet());
+	}
+	
+	public static Vector<String> getDefaultModules() {
+		return new Vector<String>(defaultModules);
 	}
 
 	// LISTENER METHODS ********************************

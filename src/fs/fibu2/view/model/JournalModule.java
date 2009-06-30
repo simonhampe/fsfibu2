@@ -5,6 +5,8 @@ import java.util.prefs.Preferences;
 import javax.swing.Icon;
 import javax.swing.JPanel;
 
+import fs.fibu2.data.model.Journal;
+
 /**
  * A journal module is a generic component for editing / displaying an fsfibu2 journal. A journal module might be for
  * example a tabbed pane for filter views of a journal or just a panel with several diagrams. When fsfibu2 is started, for each
@@ -32,10 +34,12 @@ public interface JournalModule {
 	
 	/**
 	 * @param node The {@link Preferences} node in which the configuration of this module is placed. If the configuration is not a
-	 * valid configuration, this method should nevertheless return normally, possibly with a component initialized to standard values.
+	 * valid configuration, this method should nevertheless return normally, possibly with a component initialized to standard values. The preference
+	 * node might in particular be null.
+	 * @param j The journal on which this component should work.
 	 * @return The actual visual component of the module which is displayed in the tab. It should be the same component for all calls of this method
 	 */
-	public JPanel getComponent(Preferences node);
+	public JPanel getComponent(Preferences node, Journal j);
 	
 	/**
 	 * Saves the configuration of the module in the given node
