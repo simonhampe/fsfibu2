@@ -4,14 +4,13 @@
   <description>This table contains the core string table for fsfibu2.</description>
   <languagetable>
     <language>
-      <id>de</id>
-      <description>Deutsch</description>
-    </language>
-    <language>
       <id>en</id>
       <description>English</description>
     </language>
   </languagetable>
+  <polyglotstring id="fs.fibu2.MainFrame.nojournal" group="fs.fibu2.MainFrame">
+    <variant lang="en">(no journal open)</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.plusinfinity" group="fs.fibu2.filter">
     <variant lang="en">infinity</variant>
   </polyglotstring>
@@ -30,6 +29,9 @@
   <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.regex" group="fs.fibu2.filter.StandardFilterComponent">
     <variant lang="en">Regular expression</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.init.prefjournalserror" group="fs.fibu2.init">
+    <variant lang="en">Could not fully retrieve list of files last opened.</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.mintooltip" group="fs.fibu2.filter.StandardFilterComponent">
     <variant lang="en">Empty content means: No lower bound</variant>
   </polyglotstring>
@@ -46,7 +48,6 @@
     <variant lang="en">Date filter</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.init.loadingaccounts" group="fs.fibu2.init">
-    <variant lang="de">Lade Plugin-Konten</variant>
     <variant lang="en">Loading plugin accounts...</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.view.BilancialPanel.overall" group="fs.fibu2.view.BilancialPanel">
@@ -219,6 +220,9 @@
   </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.StackFilter.edittooltip" group="fs.fibu2.filter.StackFilter">
     <variant lang="en">Edit this filter</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.init.prefjournals" group="fs.fibu2.init">
+    <variant lang="en">Loading files last opened...</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.init.modulenotloaded" group="fs.fibu2.init">
     <variant lang="en">Could not load module class %s: %s</variant>

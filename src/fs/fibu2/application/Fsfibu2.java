@@ -35,10 +35,23 @@ public class Fsfibu2 {
 	
 	private static Fsfibu2 global_instance;
 	
+	public final static String version = "2.0 Beta";
+	
 	/**
 	 * Initializes and starts fsfibu2. Command line arguments are ignored.
 	 */
 	public static void main(String[] args) {
+		global_instance = new Fsfibu2();
+		global_instance.init();
+	}
+	
+	//A private constructor to maintain singleton status
+	private Fsfibu2() {}
+	
+	/**
+	 * Initializes and actually starts fsfibu2
+	 */
+	private void init() {
 		//First configure logging
 		File f = new File("loggerConfigurator");
 		if(f.exists()) {
@@ -130,10 +143,10 @@ public class Fsfibu2 {
 		} catch (MalformedURLException e) {
 			//Will not happen
 		}
-	}
-	
-	public Fsfibu2() {
 		
+		//Create MainFrame
+		MainFrame frame = new MainFrame();
+		frame.setVisible(true);
 	}
 
 }

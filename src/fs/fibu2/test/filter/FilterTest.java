@@ -8,6 +8,7 @@ import java.util.Currency;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Vector;
+import java.util.prefs.Preferences;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -69,7 +70,10 @@ public class FilterTest {
 			Vector<EntryFilter> filterlist = new Vector<EntryFilter>();
 				filterlist.add(new NameFilter());
 				filterlist.add(new CategoryFilter(Category.getCategory(Category.getRootCategory(), "Bla")));
-			StackFilter filter = new StackFilter(filterlist,null,null);
+			EntryFilter filter = new StackFilter(filterlist,null,null);
+			Preferences node = Preferences.userRoot().node("fsfibu2/session");
+			filter.insertMyPreferences(node);
+			filter = filter.createMeFromPreferences(node.node("filter"));
 			
 			EntryFilterEditor editor = filter.getEditor(j);
 			JPanel fillPanel = new JPanel();

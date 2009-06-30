@@ -157,6 +157,7 @@ public class StackFilter implements EntryFilter {
 						throw new IllegalArgumentException("Cannot create filter: " + e.getMessage());
 					}
 				}
+				i++;
 			}
 			return new StackFilter(listOfFilters,listOfActive,listOfNegated);
 		}
