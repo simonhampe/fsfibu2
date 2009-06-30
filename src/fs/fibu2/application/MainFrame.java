@@ -84,8 +84,8 @@ public class MainFrame extends JFrame {
 	/**
 	 * Adds the journal
 	 */
-	protected addJournal(Journal j) {
-		
+	protected void addJournal(Journal j) {
+		//TODO: Write
 	}
 	
 }
