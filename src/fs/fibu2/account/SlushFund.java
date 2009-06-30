@@ -1,4 +1,4 @@
-package fs.fibu2.examples;
+package fs.fibu2.account;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -8,7 +8,7 @@ import fs.fibu2.data.error.EntryVerificationException;
 import fs.fibu2.data.model.*;
 
 /**
- * An illegal slush fund for keeping our drug sale income
+ * An illegal slush fund for keeping our drug sale income (a simple example which can be used for demonstrating the account plugin mechanism)
 f * @author Simon Hampe
  *
  */

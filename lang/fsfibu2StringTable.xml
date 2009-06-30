@@ -4,6 +4,10 @@
   <description>This table contains the core string table for fsfibu2.</description>
   <languagetable>
     <language>
+      <id>de</id>
+      <description>Deutsch</description>
+    </language>
+    <language>
       <id>en</id>
       <description>English</description>
     </language>
@@ -40,6 +44,10 @@
   </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.DateFilter.name" group="fs.fibu2.filter.DateFilter">
     <variant lang="en">Date filter</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.init.loadingaccounts" group="fs.fibu2.init">
+    <variant lang="de">Lade Plugin-Konten</variant>
+    <variant lang="en">Loading plugin accounts...</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.view.BilancialPanel.overall" group="fs.fibu2.view.BilancialPanel">
     <variant lang="en">Overall:</variant>
@@ -83,6 +91,9 @@
   <polyglotstring id="fs.fibu2.undo.JournalReplaceEdit.presentation" group="fs.fibu2.undo.JournalReplaceEdit">
     <variant lang="en">Replaces an entry in journal %s by another.</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.init.loadingfilters" group="fs.fibu2.init">
+    <variant lang="en">Loading plugin filters...</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.AccountInformationFilter.numericalerror" group="fs.fibu2.filter.AccountInformationFilter">
     <variant lang="en">Min and/or Max are not valid numerical values. This filter would be useless.</variant>
   </polyglotstring>
@@ -121,6 +132,9 @@
   </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.range" group="fs.fibu2.filter.StandardFilterComponent">
     <variant lang="en">Range</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.init.filternotloaded" group="fs.fibu2.init">
+    <variant lang="en">Could not load filter class %s: %s</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.CategoryFilter.describeequals" group="fs.fibu2.filter.CategoryFilter">
     <variant lang="en">Category = '%s' on level %d</variant>
@@ -206,6 +220,12 @@
   <polyglotstring id="fs.fibu2.filter.StackFilter.edittooltip" group="fs.fibu2.filter.StackFilter">
     <variant lang="en">Edit this filter</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.init.modulenotloaded" group="fs.fibu2.init">
+    <variant lang="en">Could not load module class %s: %s</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.init.accountnotloaded" group="fs.fibu2.init">
+    <variant lang="en">Could not load account class %s: %s</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.CategoryFilter.describerange" group="fs.fibu2.filter.CategoryFilter">
     <variant lang="en">Category in between %s and %s on level %d</variant>
   </polyglotstring>
@@ -217,6 +237,9 @@
   </polyglotstring>
   <polyglotstring id="fs.fibu2.undo.JournalInfoEdit.setto" group="fs.fibu2.undo.JournalInfoEdit">
     <variant lang="en">Sets %s of journal %s to '%s'</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.init.classnotfound" group="fs.fibu2.init">
+    <variant lang="en">Cannot load class from file %s</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.AccountInformationFilter.name" group="fs.fibu2.filter.AccountInformationFilter">
     <variant lang="en">Account information filter</variant>
@@ -265,6 +288,9 @@
   </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.StackFilter.activetooltip" group="fs.fibu2.filter.StackFilter">
     <variant lang="en">(De)activate this filter</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.init.loadingmodules" group="fs.fibu2.init">
+    <variant lang="en">Loading plugin modules...</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.CashBox.description" group="fs.fibu2.CashBox">
     <variant lang="en">A generic cash box where your cash is stored</variant>

@@ -14,12 +14,12 @@ import javax.swing.JPanel;
 
 import org.apache.log4j.BasicConfigurator;
 
+import fs.fibu2.account.SlushFund;
 import fs.fibu2.data.format.Fsfibu1Converter;
 import fs.fibu2.data.model.AccountLoader;
 import fs.fibu2.data.model.Category;
 import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.Journal;
-import fs.fibu2.examples.SlushFund;
 import fs.fibu2.filter.CategoryFilter;
 import fs.fibu2.filter.EntryFilter;
 import fs.fibu2.filter.EntryFilterEditor;

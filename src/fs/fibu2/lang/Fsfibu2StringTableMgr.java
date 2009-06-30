@@ -82,7 +82,7 @@ public final class Fsfibu2StringTableMgr implements ResourceDependent{
 			}
 		}
 		//Init loader
-		fsfibu2Loader = new PolyglotStringLoader(fsfibu2Table,PolyglotStringTable.getGlobalLanguageID(),"");		
+		fsfibu2Loader = new PolyglotStringLoader(fsfibu2Table,"en","");		
 	}
 	
 	/**
