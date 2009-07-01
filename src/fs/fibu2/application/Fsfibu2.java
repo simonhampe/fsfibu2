@@ -146,7 +146,7 @@ public class Fsfibu2 {
 		
 		//Create MainFrame
 		MainFrame frame = new MainFrame();
-		frame.setVisible(true);
+		//frame.setVisible(true);
 	}
 
 }
