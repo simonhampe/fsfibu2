@@ -1,10 +1,14 @@
 package fs.fibu2.application;
 
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.Vector;
 import java.util.prefs.Preferences;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -17,17 +21,15 @@ import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.tree.DefaultDocument;
 
-import sun.applet.AppletPanel;
-
-import com.sun.security.auth.UserPrincipal;
-
-import fs.event.DocumentChangeFlag;
+import fs.fibu2.data.event.JournalAdapter;
 import fs.fibu2.data.event.JournalChangeFlag;
 import fs.fibu2.data.model.Journal;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
 import fs.gui.EditCloseTabComponent;
 import fs.xml.FsfwDefaultReference;
-import fs.xml.XMLReadConfigurationException;
+import fs.xml.ResourceDependent;
+import fs.xml.ResourceReference;
+import fs.xml.XMLDirectoryTree;
 import fs.xml.XMLToolbox;
 
 /**
@@ -38,7 +40,7 @@ import fs.xml.XMLToolbox;
  * @author Simon Hampe
  * 
  */
-public class MainFrame extends JFrame {
+public class MainFrame extends JFrame implements ResourceDependent {
 
 	// DATA ******************************************
 	// ***********************************************
@@ -66,7 +68,45 @@ public class MainFrame extends JFrame {
 		private JButton helpButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".button.help"));
 		private JButton exitButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".button.exit"));
 		
+	// LISTENERS ************************************
+	// **********************************************
+		
+	//Button listeners	
+		
+	private ActionListener newListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			addJournal(null, null);
+		}
+	};
+	
+	private ActionListener openListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			openJournal();
+		};	
+	};
 
+	//Adjusts the tab title according to the name of the journal
+	private JournalAdapter tabTitleListener = new JournalAdapter() {
+		@Override
+		public void nameChanged(Journal source, String oldValue, String newValue) {
+			//First determine the vector concerned
+			int index = -1;
+			for(JournalVector v : journalsOpen) {
+				if(v.journal == source) {
+					index = journalsOpen.indexOf(v); break;
+				}
+			}
+			if(index == -1) return;
+			if(newValue == null || newValue.trim().equals("")) {
+				((EditCloseTabComponent)tabPane.getTabComponentAt(index)).getTextLabel().setText(Fsfibu2StringTableMgr.getString("fs.fibu2.MainFrame.unnamed"));
+			}
+			else tabPane.setTitleAt(index, newValue);
+			repaint();
+		}
+	};
+	
 	// CONSTRUCTOR **********************************
 	// **********************************************
 
@@ -94,16 +134,44 @@ public class MainFrame extends JFrame {
 				}
 				i++;
 			}
-
+			String selected = openNode.get("selected", null);
+			if(selected != null) {
+				try{
+					Integer selectedIndex = Integer.parseInt(selected);
+					if(0 <= selectedIndex && selectedIndex < tabPane.getTabCount()) tabPane.setSelectedIndex(selectedIndex);
+				}
+				catch(NumberFormatException ne) {
+					//Ignore
+				}
+			}
 		} catch (Exception e) {
 			logger.warn(Fsfibu2StringTableMgr.getString(
 					"fs.fibu2.init.prefjournalserror", e.getMessage()));
 		}
-
-		updateTitle();
+		updateTitleAndButtons();
 		
+		//Add buttons
+		for(JButton b : Arrays.asList(newButton, openButton, saveButton, saveAsButton,exportButton, helpButton, exitButton)) {
+			toolBar.add(b);
+		}
+		String path = "graphics/MainFrame/";
+		newButton.setIcon(new ImageIcon(path + "new.png"));
+			newButton.addActionListener(newListener);
+		openButton.setIcon(new ImageIcon(path + "open.png"));
+		saveButton.setIcon(new ImageIcon(path + "save.png"));
+		saveAsButton.setIcon(new ImageIcon(path + "save.png"));
+		exportButton.setIcon(new ImageIcon(path + "export.png"));
+		helpButton.setIcon(new ImageIcon(path + "help.png"));
+		exitButton.setIcon(new ImageIcon(path + "exit.png"));
+		toolBar.setFloatable(false);
 		
-		add(toolBar);
+		//Layout
+		setLayout(new BorderLayout());
+		
+		add(toolBar,BorderLayout.NORTH);
+		
+		//Add journals
+		add(tabPane, BorderLayout.CENTER);
 	}
 
 	// CONTROL METHODS ****************************
@@ -112,17 +180,25 @@ public class MainFrame extends JFrame {
 	/**
 	 * Sets the frame title according to the currently open journal and its changed/saved-status
 	 */
-	private void updateTitle() {
+	private void updateTitleAndButtons() {
 		StringBuilder b = new StringBuilder();
 		b.append("fsfibu 2 - ");
-		if (tabPane.getTabCount() == 0)
+		if (tabPane.getTabCount() == 0) {
 			b.append(Fsfibu2StringTableMgr
 					.getString("fs.fibu2.MainFrame.nojournal"));
+			saveButton.setEnabled(false);
+			saveAsButton.setEnabled(false);
+			exportButton.setEnabled(false);
+		}
 		else {
 			JournalVector vector = journalsOpen.get(tabPane.getSelectedIndex());
-			b.append(vector.journal.getName());
+			if(vector.journal.getName().trim().equals("")) b.append(Fsfibu2StringTableMgr.getString("fs.fibu2.MainFrame.unnamed"));
+			else b.append(vector.journal.getName());
 			if (vector.flag.hasBeenChanged())
 				b.append("*");
+			saveButton.setEnabled(true);
+			saveAsButton.setEnabled(true);
+			exportButton.setEnabled(false);
 		}
 		setTitle(b.toString());
 	}
@@ -152,6 +228,14 @@ public class MainFrame extends JFrame {
 		vector.journal.addJournalListener(flag);
 		vector.flag = flag;
 		addVector(vector);
+		updateTitleAndButtons();
+	}
+	
+	/**
+	 * Opens a file choosing dialog and tries to open the selected file.
+	 */
+	private void openJournal() {
+		
 	}
 	
 	/**
@@ -168,6 +252,7 @@ public class MainFrame extends JFrame {
 			try {
 				doc.setRootElement(vector.journal.getConfiguration());
 				XMLToolbox.saveXML(doc, vector.file.getAbsolutePath());
+				updateTitleAndButtons();
 				return true;
 			} catch (Exception e) {
 				String msg = Fsfibu2StringTableMgr.getString("fs.fibu2.MainFrame.cannotsave");
@@ -197,6 +282,7 @@ public class MainFrame extends JFrame {
 				doc.setRootElement(vector.journal.getConfiguration());
 				XMLToolbox.saveXML(doc, f.getAbsolutePath());
 				vector.file = f;
+				updateTitleAndButtons();
 				return true;
 			} catch (Exception e) {
 				String msg = Fsfibu2StringTableMgr.getString("fs.fibu2.MainFrame.cannotsave");
@@ -228,6 +314,7 @@ public class MainFrame extends JFrame {
 		int index = tabPane.getSelectedIndex();
 		tabPane.remove(index);
 		journalsOpen.remove(index);
+		updateTitleAndButtons();
 	}
 	
 	/**
@@ -240,9 +327,33 @@ public class MainFrame extends JFrame {
 			EditCloseTabComponent component = new EditCloseTabComponent(vector.journal.getName(),tabPane,false,true,FsfwDefaultReference.getDefaultReference());
 			component.activateCloseButton(false);
 			tabPane.setTabComponentAt(index, component);
+		vector.journal.addJournalListener(tabTitleListener);
+			tabTitleListener.nameChanged(vector.journal, "", vector.journal.getName());
 			//TODO: Add listener to close button
 	}
 
+	// RESOURCEDEPENDENT ***********************************
+	// *****************************************************
+	
+	@Override
+	public void assignReference(ResourceReference r) {
+		//Ignored
+	}
+
+	@Override
+	public Document getExpectedResourceStructure() {
+		XMLDirectoryTree tree = new XMLDirectoryTree();
+			String path = "graphics/MainFrame/";
+			tree.addPath(path + ".new.png");
+			tree.addPath(path + "open.png");
+			tree.addPath(path + "save.png");
+			tree.addPath(path + "export.png");
+			tree.addPath(path + "help.png");
+			tree.addPath(path + "exit.png");
+		return tree;
+	}
+
+	
 	// LOCAL QUADRUPLE CLASS **********************
 	// ********************************************
 

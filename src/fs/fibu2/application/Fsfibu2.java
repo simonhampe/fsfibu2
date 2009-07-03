@@ -153,7 +153,8 @@ public class Fsfibu2 {
 		
 		//Create MainFrame
 		MainFrame frame = new MainFrame();
-		//frame.setVisible(true);
+		frame.setSize(frame.getMaximumSize());
+		frame.setVisible(true);
 	}
 
 }
