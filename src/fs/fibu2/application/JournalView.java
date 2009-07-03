@@ -42,7 +42,7 @@ public class JournalView extends JTabbedPane {
 		int index = 0;
 		for(JournalModule module : modules) {
 			//Init component
-			add(module.getComponent(prefNode.node(module.getID()),j));
+			add(module.getComponent(prefNode == null? null : prefNode.node(module.getID()),j));
 			if(module.getTabViewIcon() != null) setIconAt(index, module.getTabViewIcon());
 			setTitleAt(index, module.getTabViewName());
 			setToolTipTextAt(index, module.getTabViewTooltip());
