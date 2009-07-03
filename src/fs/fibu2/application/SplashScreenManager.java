@@ -1,5 +1,10 @@
 package fs.fibu2.application;
 
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.SplashScreen;
 
 import org.apache.log4j.Appender;
@@ -45,7 +50,31 @@ public final class SplashScreenManager {
 	 * @param data
 	 */
 	public static void setText(String data) {
-		//TODO: Write
+		SplashScreen splash = SplashScreen.getSplashScreen();
+		if(splash != null) {
+			//Clear splash image
+			Graphics2D g = splash.createGraphics();
+			Dimension size = splash.getSize();
+			g.setComposite(AlphaComposite.Clear);
+			g.fillRect(0, 0, size.width, size.height);
+			//Draw new text
+			g.setPaintMode();
+			g.setColor(Color.BLACK);
+			g.setFont(g.getFont().deriveFont(Font.BOLD));
+			//If the string is too long, replace text by '...'
+			if(g.getFontMetrics().getStringBounds(data, g).getWidth() > 589) {
+				while(g.getFontMetrics().getStringBounds(data, g).getWidth() > 589) {
+					data = data.substring(0, data.length()-1);
+				}
+				data = data.substring(0, data.length()-3);
+				data = data.concat("...");
+			}
+			//Display it
+			g.drawString(data, 10, 265);
+			splash.update();
+		}
+
+		
 	}
 	
 }
