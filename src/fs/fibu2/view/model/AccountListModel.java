@@ -1,6 +1,7 @@
 package fs.fibu2.view.model;
 
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.TreeSet;
 import java.util.Vector;
 
@@ -102,6 +103,13 @@ public class AccountListModel extends AbstractListModel implements
 	@Override
 	public void setSelectedItem(Object anItem) {
 		model.setSelectedItem(anItem);
+	}
+	
+	/**
+	 * @return A list of all items in this model
+	 */
+	public HashSet<Account> getListOfItems() {
+		return new HashSet<Account>(listOfAccounts);
 	}
 
 	// LISTENER METHDOS *******************************

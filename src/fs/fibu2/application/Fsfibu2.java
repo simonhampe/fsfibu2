@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Locale;
 import java.util.prefs.Preferences;
 
 import javax.swing.JOptionPane;
@@ -43,6 +44,7 @@ public class Fsfibu2 {
 	 * Initializes and starts fsfibu2. Command line arguments are ignored.
 	 */
 	public static void main(String[] args) {
+		Locale.setDefault(Locale.GERMAN);
 		global_instance = new Fsfibu2();
 		global_instance.init();
 	}

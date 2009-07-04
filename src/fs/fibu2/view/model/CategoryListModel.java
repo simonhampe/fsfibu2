@@ -1,5 +1,6 @@
 package fs.fibu2.view.model;
 
+import java.util.HashSet;
 import java.util.TreeSet;
 import java.util.Vector;
 
@@ -69,6 +70,13 @@ public class CategoryListModel extends AbstractListModel implements JournalListe
 	@Override
 	public int getSize() {
 		return listOfCategories.size();
+	}
+	
+	/**
+	 * @return A list of all items in this model
+	 */
+	public HashSet<Category> getListOfItems() {
+		return new HashSet<Category>(listOfCategories);
 	}
 
 	// LISTENER INTERFACE **********************************

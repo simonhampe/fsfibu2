@@ -30,4 +30,14 @@ public class DefaultCurrencyFormat {
 		return result;
 	}
 	
+	/**
+	 * @return the same format as {@link #getFormat(Currency)}, but without the currency symbol
+	 */
+	public static NumberFormat getFormat() {
+		NumberFormat format = NumberFormat.getInstance();
+			format.setMinimumFractionDigits(2);
+			format.setMaximumFractionDigits(2);
+		return format;
+	}
+	
 }

@@ -15,7 +15,8 @@ import fs.fibu2.data.model.Entry;
 public class Fsfibu2DateFormats {
 
 	/**
-	 * The date format for the date field of {@link Entry}.
+	 * The date format for the date field of {@link Entry}. This is used for (de)serializing and displaying.
+	 * Use {@link #entryDateInputFormat} for parsing user input
 	 */
 	public final static String entryDateFormat = "dd.MM.yyyy";
 	
@@ -28,6 +29,11 @@ public class Fsfibu2DateFormats {
 	 * The date format for fsibu1 entry dates
 	 */
 	public final static String fsfibu1EntryFormat = "yyyy-MM-dd";
+	
+	/**
+	 * The date format used for reading dates typed by the user
+	 */
+	public final static String entryDateInputFormat = "dd.MM.yy";
 	
 	public static SimpleDateFormat getEntryDateFormat() {
 		return new SimpleDateFormat(entryDateFormat);
@@ -56,6 +62,16 @@ public class Fsfibu2DateFormats {
 	public static GregorianCalendar parseFsfibu1EntryFormat(String source) throws ParseException {
 		GregorianCalendar c = new GregorianCalendar();
 		c.setTime(getFsfibu1EntryFormat().parse(source));
+		return c;
+	}
+	
+	public static SimpleDateFormat getDateInputFormat() {
+		return new SimpleDateFormat(entryDateInputFormat);
+	}
+	
+	public static GregorianCalendar parseDateInputFormat(String source) throws ParseException {
+		GregorianCalendar c = new GregorianCalendar();
+		c.setTime(getDateInputFormat().parse(source));
 		return c;
 	}
 	

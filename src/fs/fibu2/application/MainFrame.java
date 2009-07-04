@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Vector;
 import java.util.prefs.BackingStoreException;
@@ -25,11 +24,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
 import org.dom4j.tree.DefaultDocument;
-import org.xml.sax.SAXException;
 
-import fs.fibu2.data.event.JournalAdapter;
 import fs.fibu2.data.event.JournalChangeFlag;
 import fs.fibu2.data.format.Fsfibu1Converter;
 import fs.fibu2.data.model.Journal;

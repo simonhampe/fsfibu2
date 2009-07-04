@@ -144,7 +144,7 @@ public class DateFilter implements EntryFilter {
 		
 		public DateFilterEditor() {
 			comp = new StandardFilterComponent(Fsfibu2StringTableMgr.getString("fs.fibu2.Entry.date") + ": ",
-					new GivenFormatValidator(Fsfibu2DateFormats.getEntryDateFormat()),
+					new GivenFormatValidator(Fsfibu2DateFormats.getDateInputFormat()),
 					new EntryDateComparator(),
 					typeOfFilter == Selection.REGEX? regexFilter.pattern() : (typeOfFilter == Selection.EQUALITY ? Fsfibu2DateFormats.getEntryDateFormat().format(equalityDate.getTime()): ""),
 					typeOfFilter == Selection.RANGE? (minFilter == null? "" : Fsfibu2DateFormats.getEntryDateFormat().format(minFilter.getTime())) : "",
@@ -169,10 +169,10 @@ public class DateFilter implements EntryFilter {
 				GregorianCalendar max = new GregorianCalendar();
 				try {
 					switch(selection) {
-					case EQUALITY: eq.setTime(Fsfibu2DateFormats.getEntryDateFormat().parse(comp.getSingleEntry())); break;
-					case RANGE: if(comp.getMinEntry() != null) min.setTime(Fsfibu2DateFormats.getEntryDateFormat().parse(comp.getMinEntry()));
+					case EQUALITY: eq.setTime(Fsfibu2DateFormats.getDateInputFormat().parse(comp.getSingleEntry())); break;
+					case RANGE: if(comp.getMinEntry() != null) min.setTime(Fsfibu2DateFormats.getDateInputFormat().parse(comp.getMinEntry()));
 								else min = null;
-								if(comp.getMaxEntry() != null) max.setTime(Fsfibu2DateFormats.getEntryDateFormat().parse(comp.getMaxEntry()));
+								if(comp.getMaxEntry() != null) max.setTime(Fsfibu2DateFormats.getDateInputFormat().parse(comp.getMaxEntry()));
 								else max = null;
 					}
 					return new DateFilter(selection, eq,min,max,comp.getSingleEntry());
