@@ -2,30 +2,40 @@ package fs.fibu2.view.render;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Currency;
 import java.util.HashMap;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
-import org.dom4j.tree.DefaultEntity;
+import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
 
 import fs.event.DataRetrievalListener;
 import fs.fibu2.data.error.EntryVerificationException;
@@ -43,11 +53,11 @@ import fs.gui.FrameworkDialog;
 import fs.gui.GUIToolbox;
 import fs.gui.SwitchIconLabel;
 import fs.validate.LabelIndicValidator;
+import fs.validate.SingleButtonValidator;
 import fs.validate.ValidationResult;
 import fs.validate.ValidationValidator;
 import fs.validate.ValidationResult.Result;
 import fs.xml.PolyglotStringTable;
-import fs.xml.ResourceDependent;
 
 /**
  * This class implements a dialog for editing / creating fsfibu2 journal {@link Entry}s. It notifies {@link DataRetrievalListener} with the resulting
@@ -204,8 +214,7 @@ public class EntryDialog extends FrameworkDialog {
 		
 		@Override
 		public void validationPerformed(ValidationResult result) {
-			// TODO Auto-generated method stub
-			
+			//Do nothing
 		}
 		
 	};
@@ -224,16 +233,102 @@ public class EntryDialog extends FrameworkDialog {
 		public Result validate(JPanel component) {
 			Result r = Result.CORRECT;
 			String tooltip = null;
-			//If the basic values are incorrect, we dont validate
-			if(basicSummary.validate().getOverallResult() != Result.INCORRECT) {
-				//tooltip = Fsfibu2StringTableMgr.getString(sgroup + ".wrongaccinf");
-				
+			//Reset labels
+			for(String id : labelMap.keySet()) {
+				labelMap.get(id).setIconVisible(false);
+				labelMap.get(id).setToolTipText(null);
+			}	
+			//If the basic values are incorrect, we don't validate
+			Entry e = createEntry();
+			if(e != null) {
+				try {
+					e.getAccount().verifyEntry(e);
+				} catch (EntryVerificationException e1) {
+					tooltip = Fsfibu2StringTableMgr.getString(sgroup + ".wrongaccinf");
+					r = Result.WARNING;
+					for(String faultID : e1.getListOfFaultyFields()) {
+						labelMap.get(faultID).setIconVisible(true);
+						labelMap.get(faultID).setToolTipText(e1.getFaultDescriptions().get(faultID));
+						if(e1.getListOfCriticality().get(faultID)) r = Result.INCORRECT;
+					}
+				}
 			}
-			setToolTipText(component, tooltip);
+			setToolTipText(component,tooltip);
 			return r;
 		}
 	};
+	
+	private SingleButtonValidator okValidator = new SingleButtonValidator(okButton) {
+		{
+			addValidator(nameValidator); addValidator(dateValidator);
+			addValidator(valueValidator); addValidator(categoryValidator);
+			addValidator(accInfValidator);
+		}
+	};
+	
+	private DocumentListener previewListener = new DocumentListener() {
+		@Override
+		public void changedUpdate(DocumentEvent e) {
+			updatePreviews();
+		}
+		@Override
+		public void insertUpdate(DocumentEvent e) {
+			updatePreviews();
+		}
+		@Override
+		public void removeUpdate(DocumentEvent e) {
+			updatePreviews();
+		}
+	};
+	
+	//Updates the account information panel
+	private ItemListener accountListener = new ItemListener() {
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			replaceAccountInformationPanel((Account)comboAccount.getSelectedItem(),null );
+			okValidator.validate();
+		}
+	};
 
+	//Adjusts the info area status
+	private ChangeListener checkAdditionalListener = new ChangeListener() {
+		@Override
+		public void stateChanged(ChangeEvent e) {
+			areaInfo.setEnabled(checkAdditional.isSelected());
+		}
+	};
+	
+	//Closes the dialog and notifies data listeners
+	private ActionListener closeButtonListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			exit(e.getSource() == okButton);
+		}
+	};
+	
+	//Closes the dialog and notifies listeners
+	private WindowListener closeListener = new WindowAdapter() {
+		@Override
+		public void windowClosing(WindowEvent e) {
+			exit(false);
+		}
+	};
+	
+	//Selects 'new subcategory', when text changes in the text field
+	private DocumentListener newCategoryListener = new DocumentListener() {
+		@Override
+		public void changedUpdate(DocumentEvent e) {
+			radioNew.setSelected(true);
+		}
+		@Override
+		public void insertUpdate(DocumentEvent e) {
+			radioNew.setSelected(true);
+		}
+		@Override
+		public void removeUpdate(DocumentEvent e) {
+			radioNew.setSelected(true);
+		}
+	};
 	
 	// DATA ********************************
 	// *************************************
@@ -253,6 +348,7 @@ public class EntryDialog extends FrameworkDialog {
 	public EntryDialog(JFrame owner, Journal j, Entry e) {
 		super(owner,Fsfibu2DefaultReference.getDefaultReference(),Fsfibu2StringTableMgr.getLoader(),PolyglotStringTable.getGlobalLanguageID());
 		setTitle(Fsfibu2StringTableMgr.getString(e == null? sgroup + ".titlecreate" : sgroup + ".titleedit"));
+		setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 		
 		//Init components
 		for(SwitchIconLabel l : Arrays.asList(labelName, labelDate, labelValue, labelCategory,labelAccount, labelAccInf)) {
@@ -268,8 +364,10 @@ public class EntryDialog extends FrameworkDialog {
 			radioExisting.setSelected(true);
 		checkAdditional.setSelected(e == null? false : (e.getAdditionalInformation().trim().equals("")? false : true));
 		areaInfo.setEnabled(checkAdditional.isSelected());
+		areaInfo.setLineWrap(true);
 		areaInfo.setBorder(BorderFactory.createEtchedBorder());
 		panelAccInf.setBorder(BorderFactory.createEtchedBorder());
+		JScrollPane areaPane = new JScrollPane(areaInfo);
 		
 		//Layout
 		
@@ -334,7 +432,7 @@ public class EntryDialog extends FrameworkDialog {
 		gbl.setConstraints(labelAccInf, gcLabelAccInf);
 		gbl.setConstraints(panelAccInf, gcPanelAcc);
 		gbl.setConstraints(checkAdditional, gcCheckAdd);
-		gbl.setConstraints(areaInfo, gcAreaAdd);
+		gbl.setConstraints(areaPane, gcAreaAdd);
 		gbl.setConstraints(okButton, gcOk);
 		gbl.setConstraints(cancelButton, gcCancel);
 	
@@ -344,12 +442,30 @@ public class EntryDialog extends FrameworkDialog {
 		add(radioNew); add(fieldNewCategory); add(radioCreate);add(createButton); add(comboAccount);
 		add(panelAccInf);
 		add(checkAdditional);
-		add(areaInfo);
+		add(areaPane);
 		add(okButton); add(cancelButton);
 		if(e == null) replaceAccountInformationPanel((Account)comboAccount.getSelectedItem(), null);
 		else insertValues(e);
+		updatePreviews();
 		pack();
 		setResizable(false);
+		
+		//Register validators and listeners
+		fieldDate.getDocument().addDocumentListener(previewListener);
+		fieldValue.getDocument().addDocumentListener(previewListener);
+		comboAccount.addItemListener(accountListener);
+		checkAdditional.addChangeListener(checkAdditionalListener);
+		okButton.addActionListener(closeButtonListener);
+		cancelButton.addActionListener(closeButtonListener);
+		fieldNewCategory.getDocument().addDocumentListener(newCategoryListener);
+		addWindowListener(closeListener);
+		
+		nameValidator.addComponent(fieldName, labelName);
+		dateValidator.addComponent(fieldDate, labelDate);
+		valueValidator.addComponent(fieldValue, labelValue);
+		categoryValidator.addComponent(fieldNewCategory, labelCategory);
+		accInfValidator.addComponent(panelAccInf, labelAccInf);
+		okValidator.validate();
 	}
 
 	// HELPER METHODS ****************************************
@@ -381,11 +497,43 @@ public class EntryDialog extends FrameworkDialog {
 	}
 	
 	/**
-	 * Returns a panel containg all necessary entry possibilites for the selected account
+	 * Returns a panel containg all necessary entry possibilites for the selected account. 
+	 * Does not revalidate. If there is already a value in the account map for a given id, the content is copied.
+	 * If there is no value, but e != null, the value from e is copied
 	 */
 	private void replaceAccountInformationPanel(Account a, Entry e) {
 		panelAccInf.removeAll();
-		
+		//Remove listener
+		for(String k : accountMap.keySet()) accountMap.get(k).getDocument().removeDocumentListener(accInfValidator);
+		//Create new components
+		HashMap<String, JTextField> newAccountMap = new HashMap<String, JTextField>();
+		HashMap<String,SwitchIconLabel> newLabelMap = new HashMap<String, SwitchIconLabel>();
+		GridBagLayout gbl = new GridBagLayout();
+		panelAccInf.setLayout(gbl);
+		int row = 0;
+		for(String id : a.getFieldIDs()) {
+			SwitchIconLabel label = new SwitchIconLabel(a.getFieldNames().get(id) + ": ");
+				label.setHorizontalTextPosition(SwingConstants.LEFT);
+			label.setIconReference(warn);
+			String eInfo = e != null? (e.getAccountInformation().containsKey(id)? e.getAccountInformation().get(id) : "") : "";
+			JTextField field = new JTextField(accountMap.containsKey(id)? accountMap.get(id).getText() : eInfo);
+			newAccountMap.put(id, field); newLabelMap.put(id, label);
+			JPanel fillPanel = new JPanel();
+			GridBagConstraints gclabel = GUIToolbox.buildConstraints(0, row, 1, 1); gclabel.insets = new Insets(5,5,5,5);
+			GridBagConstraints gcfield = GUIToolbox.buildConstraints(1, row, 1, 1); gcfield.weightx = 50; gcfield.insets = new Insets(5,0,5,0);
+			GridBagConstraints gcfill = GUIToolbox.buildConstraints(2, row, 1, 1); gcfill.weightx = 50; gcfill.insets = new Insets(5,0,5,5);
+			gbl.setConstraints(label, gclabel);
+			gbl.setConstraints(field, gcfield);
+			gbl.setConstraints(fillPanel, gcfill);
+			panelAccInf.add(label); panelAccInf.add(field); panelAccInf.add(fillPanel);
+			row++;
+			//Add listener
+			field.getDocument().addDocumentListener(accInfValidator);
+		}
+		accountMap = newAccountMap;
+		labelMap = newLabelMap;
+		pack();
+		repaint();
 	}
 	
 	/**
@@ -405,13 +553,13 @@ public class EntryDialog extends FrameworkDialog {
 			String s = DefaultCurrencyFormat.getFormat(Currency.getInstance("EUR")).format(DefaultCurrencyFormat.getFormat().parse(fieldValue.getText()));
 			labelPreviewValue.setText("= '" + s + "'");
 		} catch (ParseException e) {
-			labelPreviewValue.setText(sgroup + ".previnvalid");
+			labelPreviewValue.setText(Fsfibu2StringTableMgr.getString(sgroup + ".previnvalid"));
 		}
 		try {
 			String t = Fsfibu2DateFormats.getEntryDateFormat().format(Fsfibu2DateFormats.getDateInputFormat().parse(fieldDate.getText()));
 			labelPreviewDate.setText("= '" + t + "'");
 		} catch (ParseException e) {
-			labelPreviewDate.setText(sgroup + ".previnvalid");
+			labelPreviewDate.setText(Fsfibu2StringTableMgr.getString(sgroup + ".previnvalid"));
 		}
 	}
 	
@@ -435,6 +583,18 @@ public class EntryDialog extends FrameworkDialog {
 		} catch (Exception e) {
 			//Will not happen, since we've already validated
 			return null;
+		}
+	}
+	
+	/**
+	 * Closes the dialog and notifies all {@link DataRetrievalListener}. If returnvalue == true and the validation does not
+	 * return INCORRECT, the created entry is passed to the listeners, otherwise null.
+	 */
+	private void exit(boolean returnvalue) {
+		Entry e = returnvalue? createEntry() : null;
+		dispose();
+		for(DataRetrievalListener l : listeners) {
+			l.dataReady(this, e);
 		}
 	}
 	

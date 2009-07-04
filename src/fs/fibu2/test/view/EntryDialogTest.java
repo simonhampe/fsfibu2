@@ -8,6 +8,7 @@ import javax.swing.JDialog;
 
 import org.apache.log4j.BasicConfigurator;
 
+import fs.event.DataRetrievalListener;
 import fs.fibu2.data.format.Fsfibu1Converter;
 import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.Journal;
@@ -35,7 +36,13 @@ public class EntryDialogTest {
 			final Journal j = Fsfibu1Converter.convertFsfibu1Journal(XMLToolbox.loadXMLFile(new File(basedir + "/fsfibu/KassenbuchAb2008.xml")));
 			Entry e = new Vector<Entry>(j.getEntries()).get(0);
 			EntryDialog diag = new EntryDialog(null,j,e);
-			diag.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			diag.addDataRetrievalListener(new DataRetrievalListener() {
+				@Override
+				public void dataReady(Object source, Object data) {
+					if(data == null) System.out.println("null");
+					else System.out.println(((Entry)data).toString());
+				}
+			});
 			diag.setVisible(true);
 		}
 		catch(Exception e) {
