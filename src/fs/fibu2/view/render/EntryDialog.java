@@ -357,7 +357,7 @@ public class EntryDialog extends FrameworkDialog {
 		}
 		comboCategory.setModel(new CategoryListModel(j,true));
 		comboCategory.setRenderer(new CategoryListRenderer(" > "));
-		comboAccount.setModel(new AccountListModel(j));
+		comboAccount.setModel(new AccountListModel(null));
 		comboAccount.setRenderer(new AccountListRenderer());
 		ButtonGroup group = new ButtonGroup();
 			group.add(radioExisting); group.add(radioNew); group.add(radioCreate);

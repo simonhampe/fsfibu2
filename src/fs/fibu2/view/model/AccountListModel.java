@@ -11,14 +11,17 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.SwingWorker;
 
 import fs.fibu2.data.event.JournalListener;
+import fs.fibu2.data.model.AbstractAccount;
 import fs.fibu2.data.model.Account;
+import fs.fibu2.data.model.AccountLoader;
 import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.Journal;
 import fs.fibu2.data.model.ReadingPoint;
 
 /**
  * Implements a list model for a sorted list of all accounts used in a journal. It listens to journal changes and sorts
- * accounts alphabetically according to their name
+ * accounts alphabetically according to their name. If the associated journal is null, it displays all accounts known to {@link AccountLoader}
+ * (except {@link AbstractAccount})
  * @author Simon Hampe
  *
  */
@@ -51,8 +54,8 @@ public class AccountListModel extends AbstractListModel implements
 	 * Creates a list model for the journal j. If j == null, an empty dummy journal is created
 	 */
 	public AccountListModel(Journal j) {
-		associatedJournal = j == null? new Journal() : j;
-		associatedJournal.addJournalListener(this);
+		associatedJournal = j;
+		if(j != null) associatedJournal.addJournalListener(this);
 		listOfAccounts = updateList();
 		model = new DefaultComboBoxModel(listOfAccounts);
 	}
@@ -62,7 +65,13 @@ public class AccountListModel extends AbstractListModel implements
 	 */
 	protected Vector<Account> updateList() {
 		TreeSet<Account> accounts = new TreeSet<Account>(comparator);
-		accounts.addAll(associatedJournal.getListOfAccounts());
+		if(associatedJournal != null) accounts.addAll(associatedJournal.getListOfAccounts());
+		else {
+			String aaID = new AbstractAccount().getID();
+			for(String id : AccountLoader.getListOfIDs()) {
+				if(!id.equals(aaID)) accounts.add(AccountLoader.getAccount(id));
+			}
+		}
 		return new Vector<Account>(accounts);
 	}
 	
