@@ -11,41 +11,41 @@
   <polyglotstring id="fs.fibu2.MainFrame.nojournal" group="fs.fibu2.MainFrame">
     <variant lang="en">(no journal open)</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.CashBox.name" group="fs.fibu2.CashBox">
-    <variant lang="en">Cash box</variant>
+  <polyglotstring id="fs.fibu2.filter.plusinfinity" group="fs.fibu2.filter">
+    <variant lang="en">infinity</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.StackFilter.add" group="fs.fibu2.filter.StackFilter">
     <variant lang="en">Add</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.filter.plusinfinity" group="fs.fibu2.filter">
-    <variant lang="en">infinity</variant>
-  </polyglotstring>
-  <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.regex" group="fs.fibu2.filter.StandardFilterComponent">
-    <variant lang="en">Regular expression</variant>
-  </polyglotstring>
-  <polyglotstring id="fs.fibu2.filter.NameFilter.name" group="fs.fibu2.filter.NameFilter">
-    <variant lang="en">Name filter</variant>
+  <polyglotstring id="fs.fibu2.CashBox.name" group="fs.fibu2.CashBox">
+    <variant lang="en">Cash box</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.view.CategoryListRenderer.root" group="fs.fibu2.view.CategoryListRenderer">
     <variant lang="en">(Root category)</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.filter.NameFilter.name" group="fs.fibu2.filter.NameFilter">
+    <variant lang="en">Name filter</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.regex" group="fs.fibu2.filter.StandardFilterComponent">
+    <variant lang="en">Regular expression</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.init.prefjournalserror" group="fs.fibu2.init">
     <variant lang="en">Encountered an error while retrieving list of files last opened: %s</variant>
-  </polyglotstring>
-  <polyglotstring id="fs.fibu2.model.JournalTableModel.columnIndic" group="fs.fibu2.model.JournalTableModel">
-    <variant lang="en">Indic</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.mintooltip" group="fs.fibu2.filter.StandardFilterComponent">
     <variant lang="en">Empty content means: No lower bound</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.model.JournalTableModel.columnIndic" group="fs.fibu2.model.JournalTableModel">
+    <variant lang="en">Indic</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.model.JournalTableModel.end" group="fs.fibu2.model.JournalTableModel">
     <variant lang="en">List end</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.filter.DateFilter.name" group="fs.fibu2.filter.DateFilter">
-    <variant lang="en">Date filter</variant>
-  </polyglotstring>
   <polyglotstring id="fs.fibu2.Entry.info" group="fs.fibu2.Entry">
     <variant lang="en">Additional Information</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.filter.DateFilter.name" group="fs.fibu2.filter.DateFilter">
+    <variant lang="en">Date filter</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.init.loadingaccounts" group="fs.fibu2.init">
     <variant lang="en">Loading plugin accounts...</variant>
@@ -80,17 +80,20 @@
   <polyglotstring id="fs.fibu2.model.JournalTableModel.start" group="fs.fibu2.model.JournalTableModel">
     <variant lang="en">List start</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.invalidformat" group="fs.fibu2.filter.StandardFilterComponent">
-    <variant lang="en">Invalid format: %s</variant>
-  </polyglotstring>
   <polyglotstring id="fs.fibu2.MainFrame.confirmsavetitle" group="fs.fibu2.MainFrame">
     <variant lang="en">Confirm dialog</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.invalidformat" group="fs.fibu2.filter.StandardFilterComponent">
+    <variant lang="en">Invalid format: %s</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.model.JournalTableModel.columnAddInfo" group="fs.fibu2.model.JournalTableModel">
     <variant lang="en">Remarks</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.CategoryFilter.describematches" group="fs.fibu2.filter.CategoryFilter">
     <variant lang="en">Category matches %s on level %d</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.MainFrame.savingprefs" group="fs.fibu2.MainFrame">
+    <variant lang="en">Saving preferences...</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.BankAccount.statement" group="fs.fibu2.BankAccount">
     <variant lang="en">Statement sheet</variant>
@@ -115,6 +118,9 @@
   </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.describematches" group="fs.fibu2.filter">
     <variant lang="en">%s matches '%s'</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.MainFrame.confirmloadtitle" group="fs.fibu2.MainFrame">
+    <variant lang="en">Confirm dialog</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.view.AccountTableModel.after" group="fs.fibu2.view.AccountTableModel">
     <variant lang="en">Afterwards</variant>
@@ -149,6 +155,9 @@
   <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.range" group="fs.fibu2.filter.StandardFilterComponent">
     <variant lang="en">Range</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.MainFrame.cannotclear" group="fs.fibu2.MainFrame">
+    <variant lang="en">Cannot clear user preferences about files last open</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.init.filternotloaded" group="fs.fibu2.init">
     <variant lang="en">Could not load filter class %s: %s</variant>
   </polyglotstring>
@@ -176,8 +185,14 @@
   <polyglotstring id="fs.fibu2.view.BilancialPanel.to" group="fs.fibu2.view.BilancialPanel">
     <variant lang="en">To:</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.MainFrame.lognoknownformat" group="fs.fibu2.MainFrame">
+    <variant lang="en">The document contains no known format. Asking user for confirmation...</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.CategoryFilter.level" group="fs.fibu2.filter.CategoryFilter">
     <variant lang="en">Level</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.MainFrame.exitsave" group="fs.fibu2.MainFrame">
+    <variant lang="en">&lt;html&gt;There are unsaved changes in your documents.&lt;br&gt;Do you wish to save them?&lt;/html&gt;</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.Entry.account" group="fs.fibu2.Entry">
     <variant lang="en">Account</variant>
@@ -290,6 +305,9 @@
   <polyglotstring id="fs.fibu2.AbstractAccount.faultyinvoice" group="fs.fibu2.AbstractAccount">
     <variant lang="en">This entry has a negative value, but no invoice id is given.</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.MainFrame.noknownformat" group="fs.fibu2.MainFrame">
+    <variant lang="en">&lt;html&gt;The document does not seem to contain a known format.&lt;br&gt;Do you still want to load it?&lt;br&gt;This might delete any other content in this document.&lt;/html&gt;</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.view.BilancialPanel.from" group="fs.fibu2.view.BilancialPanel">
     <variant lang="en">From:</variant>
   </polyglotstring>
@@ -302,20 +320,20 @@
   <polyglotstring id="fs.fibu2.view.AccountTableModel.difference" group="fs.fibu2.view.AccountTableModel">
     <variant lang="en">Difference</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.MainFrame.unnamed" group="fs.fibu2.MainFrame">
-    <variant lang="en">(Unnamed)</variant>
+  <polyglotstring id="fs.fibu2.view.BilancialPanel.selectionseparator" group="fs.fibu2.view.BilancialPanel">
+    <variant lang="en">From '%s' to '%s'</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.undo.remove" group="fs.fibu2.undo">
     <variant lang="en">Removes</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.view.BilancialPanel.selectionseparator" group="fs.fibu2.view.BilancialPanel">
-    <variant lang="en">From '%s' to '%s'</variant>
-  </polyglotstring>
-  <polyglotstring id="fs.fibu2.undo.JournalStartEdit.presentation" group="fs.fibu2.undo.JournalStartEdit">
-    <variant lang="en">Changes the start value of account %s in journal %s.</variant>
+  <polyglotstring id="fs.fibu2.MainFrame.unnamed" group="fs.fibu2.MainFrame">
+    <variant lang="en">(Unnamed)</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.view.BilancialPanel.account" group="fs.fibu2.view.BilancialPanel">
     <variant lang="en">Account:</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.undo.JournalStartEdit.presentation" group="fs.fibu2.undo.JournalStartEdit">
+    <variant lang="en">Changes the start value of account %s in journal %s.</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.minusinfinity" group="fs.fibu2.filter">
     <variant lang="en">- infinity</variant>
@@ -326,14 +344,14 @@
   <polyglotstring id="fs.fibu2.filter.StackFilter.activetooltip" group="fs.fibu2.filter.StackFilter">
     <variant lang="en">(De)activate this filter</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.init.loadingmodules" group="fs.fibu2.init">
-    <variant lang="en">Loading plugin modules...</variant>
+  <polyglotstring id="fs.fibu2.CashBox.description" group="fs.fibu2.CashBox">
+    <variant lang="en">A generic cash box where your cash is stored</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.max" group="fs.fibu2.filter.StandardFilterComponent">
     <variant lang="en">Max</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.CashBox.description" group="fs.fibu2.CashBox">
-    <variant lang="en">A generic cash box where your cash is stored</variant>
+  <polyglotstring id="fs.fibu2.init.loadingmodules" group="fs.fibu2.init">
+    <variant lang="en">Loading plugin modules...</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.model.JournalTableModel.columnName" group="fs.fibu2.model.JournalTableModel">
     <variant lang="en">Name</variant>
@@ -341,11 +359,11 @@
   <polyglotstring id="fs.fibu2.global.xmldescription" group="fs.fibu2.global">
     <variant lang="en">XML files</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.model.BilancialInformation.report" group="fs.fibu2.model.BilancialInformation">
-    <variant lang="en">Bilancial</variant>
-  </polyglotstring>
   <polyglotstring id="fs.fibu2.view.BilancialPanel.before" group="fs.fibu2.view.BilancialPanel">
     <variant lang="en">Before:</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.model.BilancialInformation.report" group="fs.fibu2.model.BilancialInformation">
+    <variant lang="en">Bilancial</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.StackFilter.canceltooltip" group="fs.fibu2.filter.StackFilter">
     <variant lang="en">Cancel changes to filter</variant>
@@ -353,20 +371,23 @@
   <polyglotstring id="fs.fibu2.model.JournalTableModel.columnCategory" group="fs.fibu2.model.JournalTableModel">
     <variant lang="en">Category</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.Entry.category" group="fs.fibu2.Entry">
-    <variant lang="en">Category</variant>
-  </polyglotstring>
   <polyglotstring id="fs.fibu2.AbstractAccount.invoicename" group="fs.fibu2.AbstractAccount">
     <variant lang="en">Invoice number</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.Entry.category" group="fs.fibu2.Entry">
+    <variant lang="en">Category</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.AccountInformationFilter.numericrange" group="fs.fibu2.filter.AccountInformationFilter">
     <variant lang="en">Interpret range values as numeric</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.BankAccount.nostatement" group="fs.fibu2.BankAccount">
+    <variant lang="en">No statement sheet number has been specified.</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.global.description" group="fs.fibu2.global">
     <variant lang="en">Description</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.BankAccount.nostatement" group="fs.fibu2.BankAccount">
-    <variant lang="en">No statement sheet number has been specified.</variant>
+  <polyglotstring id="fs.fibu2.MainFrame.loadingnew" group="fs.fibu2.MainFrame">
+    <variant lang="en">Created a new journal...</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.Entry.date" group="fs.fibu2.Entry">
     <variant lang="en">Date</variant>
@@ -377,11 +398,11 @@
   <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.maxtooltip" group="fs.fibu2.filter.StandardFilterComponent">
     <variant lang="en">Empty content means: No upper bound</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.view.BilancialPanel.selectionrange" group="fs.fibu2.view.BilancialPanel">
-    <variant lang="en">Bilancial of selected range</variant>
-  </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.min" group="fs.fibu2.filter.StandardFilterComponent">
     <variant lang="en">Min</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.view.BilancialPanel.selectionrange" group="fs.fibu2.view.BilancialPanel">
+    <variant lang="en">Bilancial of selected range</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.BankAccount.faultystatement" group="fs.fibu2.BankAccount">
     <variant lang="en">The statement number should be an integer value. If you don't know the number yet it is recommended you leave that field empty.</variant>
@@ -389,11 +410,14 @@
   <polyglotstring id="fs.fibu2.model.JournalTableModel.columnAccount" group="fs.fibu2.model.JournalTableModel">
     <variant lang="en">Account</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.view.BilancialPanel.selectionempty" group="fs.fibu2.view.BilancialPanel">
-    <variant lang="en">Empty</variant>
+  <polyglotstring id="fs.fibu2.MainFrame.fibu1format" group="fs.fibu2.MainFrame">
+    <variant lang="en">&lt;html&gt;The document seems to contain an fsfibu1 journal.&lt;br&gt;Do you wish to convert it?&lt;/html&gt;</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.minmaxorder" group="fs.fibu2.filter.StandardFilterComponent">
     <variant lang="en">'%s' &gt; '%s'. This filter is useless.</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.view.BilancialPanel.selectionempty" group="fs.fibu2.view.BilancialPanel">
+    <variant lang="en">Empty</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.undo.add" group="fs.fibu2.undo">
     <variant lang="en">Adds</variant>
@@ -404,8 +428,14 @@
   <polyglotstring id="fs.fibu2.Entry.value" group="fs.fibu2.Entry">
     <variant lang="en">Value</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.MainFrame.logfibu1format" group="fs.fibu2.MainFrame">
+    <variant lang="en">The document does not seem to be an fsfibu2 journal. Trying fsfibu1 format...</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.MainFrame.button.exit" group="fs.fibu2.MainFrame.button">
     <variant lang="en">Exit</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.MainFrame.saving" group="fs.fibu2.MainFrame">
+    <variant lang="en">Saving unsaved files...</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.AccountInformationFilter.field" group="fs.fibu2.filter.AccountInformationFilter">
     <variant lang="en">Field</variant>
@@ -413,14 +443,14 @@
   <polyglotstring id="fs.fibu2.BankAccount.statementdescription" group="fs.fibu2.BankAccount">
     <variant lang="en">The number of the bank account statement sheet</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.JournalView.moduleerror" group="fs.fibu2.JournalView">
-    <variant lang="en">Cannot load module %s: %s</variant>
+  <polyglotstring id="fs.fibu2.undo.JournalStartEdit.remove" group="fs.fibu2.undo.JournalStartEdit">
+    <variant lang="en">Removes the start value for account %s in journal %s.</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.invalidregex" group="fs.fibu2.filter.StandardFilterComponent">
     <variant lang="en">This string is not a valid regular expression</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.undo.JournalStartEdit.remove" group="fs.fibu2.undo.JournalStartEdit">
-    <variant lang="en">Removes the start value for account %s in journal %s.</variant>
+  <polyglotstring id="fs.fibu2.JournalView.moduleerror" group="fs.fibu2.JournalView">
+    <variant lang="en">Cannot load module %s: %s</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.StackFilter.name" group="fs.fibu2.filter.StackFilter">
     <variant lang="en">Stack filter</variant>

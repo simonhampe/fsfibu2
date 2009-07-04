@@ -3,9 +3,13 @@ package fs.fibu2.application;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Vector;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.swing.ImageIcon;
@@ -15,14 +19,19 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
+import org.dom4j.DocumentException;
 import org.dom4j.tree.DefaultDocument;
+import org.xml.sax.SAXException;
 
 import fs.fibu2.data.event.JournalAdapter;
 import fs.fibu2.data.event.JournalChangeFlag;
+import fs.fibu2.data.format.Fsfibu1Converter;
 import fs.fibu2.data.model.Journal;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
 import fs.gui.EditCloseTabComponent;
@@ -86,26 +95,65 @@ public class MainFrame extends JFrame implements ResourceDependent {
 			openJournal();
 		};	
 	};
-
-	//Adjusts the tab title according to the name of the journal
-	private JournalAdapter tabTitleListener = new JournalAdapter() {
+	
+	private ActionListener saveListener = new ActionListener() {
 		@Override
-		public void nameChanged(Journal source, String oldValue, String newValue) {
-			//First determine the vector concerned
-			int index = -1;
-			for(JournalVector v : journalsOpen) {
-				if(v.journal == source) {
-					index = journalsOpen.indexOf(v); break;
-				}
-			}
-			if(index == -1) return;
-			if(newValue == null || newValue.trim().equals("")) {
-				((EditCloseTabComponent)tabPane.getTabComponentAt(index)).getTextLabel().setText(Fsfibu2StringTableMgr.getString("fs.fibu2.MainFrame.unnamed"));
-			}
-			else tabPane.setTitleAt(index, newValue);
-			repaint();
+		public void actionPerformed(ActionEvent e) {
+			saveJournal();
 		}
 	};
+	
+	private ActionListener saveAsListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			saveJournalAs();
+		}
+	};
+	
+	//TODO: Write export and help functionality
+	
+	private ActionListener exitListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			exit();
+		}
+	};
+
+	//Adjusts the tab title according to the name of the journal and its changing status
+	private ChangeListener journalListener = new ChangeListener() {
+		@Override
+		public void stateChanged(ChangeEvent e) {
+			updateTitleAndButtons();
+		}
+	};
+	
+	//Adjusts the window title and the status of the undo/redo buttons according to the selected tab 
+	private ChangeListener tabSelectionListener = new ChangeListener() {
+		@Override
+		public void stateChanged(ChangeEvent e) {
+			updateTitleAndButtons();
+		}
+	};
+	
+	//Listens to each tab close button
+	private ActionListener closeTabListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			//Obtain tab concerned and select it
+			int index = -1;
+				for(int i = 0; i < tabPane.getTabCount(); i++) {
+					if(e.getSource() == ((EditCloseTabComponent)tabPane.getTabComponentAt(i)).getCloseButton()) {
+						index = i;
+						break;
+					}
+				}
+			if(index == -1) return;
+			//Close tab
+			tabPane.setSelectedIndex(index);
+			removeJournal();
+		}
+	};
+	
 	
 	// CONSTRUCTOR **********************************
 	// **********************************************
@@ -125,7 +173,7 @@ public class MainFrame extends JFrame implements ResourceDependent {
 					.getString("fs.fibu2.init.prefjournals"));
 			Preferences openNode = Preferences.userRoot().node(
 					"fsfibu2/session/openjournals");
-			int i = 1;
+			int i = 0;
 			while (openNode.nodeExists(Integer.toString(i))) {
 				Preferences journalNode = openNode.node(Integer.toString(i));
 				String path = journalNode.get("path", null);
@@ -158,12 +206,23 @@ public class MainFrame extends JFrame implements ResourceDependent {
 		newButton.setIcon(new ImageIcon(path + "new.png"));
 			newButton.addActionListener(newListener);
 		openButton.setIcon(new ImageIcon(path + "open.png"));
+			openButton.addActionListener(openListener);
 		saveButton.setIcon(new ImageIcon(path + "save.png"));
+			saveButton.addActionListener(saveListener);
 		saveAsButton.setIcon(new ImageIcon(path + "save.png"));
+			saveAsButton.addActionListener(saveAsListener);
 		exportButton.setIcon(new ImageIcon(path + "export.png"));
 		helpButton.setIcon(new ImageIcon(path + "help.png"));
 		exitButton.setIcon(new ImageIcon(path + "exit.png"));
+			exitButton.addActionListener(exitListener);
+			addWindowListener(new WindowAdapter() {
+				@Override
+				public void windowClosing(WindowEvent e) {
+					exit();
+				}
+			});
 		toolBar.setFloatable(false);
+		tabPane.addChangeListener(tabSelectionListener);
 		
 		//Layout
 		setLayout(new BorderLayout());
@@ -178,7 +237,8 @@ public class MainFrame extends JFrame implements ResourceDependent {
 	// ********************************************
 
 	/**
-	 * Sets the frame title according to the currently open journal and its changed/saved-status
+	 * Sets the frame title according to the currently open journal and its changed/saved-status and updates the status of
+	 * the save,saveas,export,undo,redo buttons and the titles of the tabs.
 	 */
 	private void updateTitleAndButtons() {
 		StringBuilder b = new StringBuilder();
@@ -199,6 +259,12 @@ public class MainFrame extends JFrame implements ResourceDependent {
 			saveButton.setEnabled(true);
 			saveAsButton.setEnabled(true);
 			exportButton.setEnabled(false);
+			for(int i = 0 ; i < journalsOpen.size(); i++) {
+				String name = journalsOpen.get(i).journal.getName();
+				if(name == null || name.trim().equals("")) name = Fsfibu2StringTableMgr.getString("fs.fibu2.MainFrame.unnamed");
+				if(journalsOpen.get(i).flag.hasBeenChanged()) name = name + "*";
+				if(tabPane.getTabComponentAt(i) != null)((EditCloseTabComponent)tabPane.getTabComponentAt(i)).getTextLabel().setText(name);
+			}
 		}
 		setTitle(b.toString());
 	}
@@ -206,17 +272,46 @@ public class MainFrame extends JFrame implements ResourceDependent {
 	/**
 	 * Adds a journal. If f == null, a new Journal is created, otherwise the journal is loaded from the file.
 	 * The method logs an error, if the file cannot be opened. The preference node is passed to the JournalView to
-	 * configure it. 
+	 * configure it. The method checks if the root node of the loaded document is named 'journal'. If this is not the case,
+	 * it checks, if the journal conforms to the fsfibu1 specification and in that case offers to import it. If the xml document does neither
+	 * conform to the fsfibu2 nor the fsfibu1 format, the user is asked, if he still wants to load this document.
 	 */
 	private void addJournal(File f, Preferences prefNode) {
 		JournalVector vector = new JournalVector();
+		boolean converted = false; //Indicates that the document was loaded from an fsfibu1 journal
 		if(f == null) {
+			logger.info(Fsfibu2StringTableMgr.getString("fs.fibu2.MainFrame.loadingnew"));
 			vector.journal = new Journal();
 		}
 		else {
 			try {
+				vector.file = f;
 				Document d = XMLToolbox.loadXMLFile(f);
-				vector.journal = new Journal(d.getRootElement());
+				//Now check if it actually can be an fsfibu2 document
+				if(!d.getRootElement().getName().equals("journal")) {
+					try {
+						logger.info(Fsfibu2StringTableMgr.getString("fs.fibu2.MainFrame.logfibu1format"));
+						Journal j = Fsfibu1Converter.convertFsfibu1Journal(d);
+						converted = true;
+						int ans2 = JOptionPane.showConfirmDialog(this, Fsfibu2StringTableMgr.getString("fs.fibu2.MainFrame.fibu1format"), 
+								Fsfibu2StringTableMgr.getString("fs.fibu2.MainFrame.confirmloadtitle"), 
+								JOptionPane.YES_NO_OPTION);
+						if(ans2 == JOptionPane.NO_OPTION) return;
+						else {
+							vector.journal = j;
+							vector.file = null;
+						}
+					} catch (Exception e) {
+						logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.MainFrame.lognoknownformat"));
+						int ans3 = JOptionPane.showConfirmDialog(this, Fsfibu2StringTableMgr.getString("fs.fibu2.MainFrame.noknownformat"),
+								Fsfibu2StringTableMgr.getString("fs.fibu2.MainFrame.confirmloadtitle"),
+								JOptionPane.YES_NO_OPTION);
+						if(ans3 == JOptionPane.NO_OPTION) return;
+						else vector.journal = new Journal(d.getRootElement());
+					}
+				}
+				//If this is the case just add it
+				else vector.journal = new Journal(d.getRootElement());
 			}
 			catch(Exception e) {
 				logger.error(Fsfibu2StringTableMgr.getString("fs.fibu2.MainFrame.journalfileerror", f.getName(),e.getMessage()));
@@ -227,15 +322,20 @@ public class MainFrame extends JFrame implements ResourceDependent {
 		JournalChangeFlag flag = new JournalChangeFlag();
 		vector.journal.addJournalListener(flag);
 		vector.flag = flag;
+		//Any converted journal is considered changed and unsaved
+		if(converted) vector.flag.setChangeFlag(true);
 		addVector(vector);
-		updateTitleAndButtons();
 	}
 	
 	/**
-	 * Opens a file choosing dialog and tries to open the selected file.
+	 * Opens a file choosing dialog and tries to open the selected file. 
 	 */
 	private void openJournal() {
-		
+		JFileChooser chooser = new JFileChooser(".");
+		int ans = chooser.showOpenDialog(this);
+		if(ans == JFileChooser.APPROVE_OPTION) {
+			addJournal(chooser.getSelectedFile(), null);
+		}
 	}
 	
 	/**
@@ -252,6 +352,7 @@ public class MainFrame extends JFrame implements ResourceDependent {
 			try {
 				doc.setRootElement(vector.journal.getConfiguration());
 				XMLToolbox.saveXML(doc, vector.file.getAbsolutePath());
+				vector.flag.setChangeFlag(false);
 				updateTitleAndButtons();
 				return true;
 			} catch (Exception e) {
@@ -282,6 +383,7 @@ public class MainFrame extends JFrame implements ResourceDependent {
 				doc.setRootElement(vector.journal.getConfiguration());
 				XMLToolbox.saveXML(doc, f.getAbsolutePath());
 				vector.file = f;
+				vector.flag.setChangeFlag(false);
 				updateTitleAndButtons();
 				return true;
 			} catch (Exception e) {
@@ -312,8 +414,8 @@ public class MainFrame extends JFrame implements ResourceDependent {
 			}
 		}
 		int index = tabPane.getSelectedIndex();
-		tabPane.remove(index);
 		journalsOpen.remove(index);
+		tabPane.remove(index);
 		updateTitleAndButtons();
 	}
 	
@@ -322,16 +424,74 @@ public class MainFrame extends JFrame implements ResourceDependent {
 	 */
 	private void addVector(JournalVector vector) {
 		journalsOpen.add(vector);
+		tabPane.removeChangeListener(tabSelectionListener); //We don't want to notify here, since the new tab does not have the right tab component yet
 		tabPane.add(vector.view);
 			int index = tabPane.indexOfComponent(vector.view);
 			EditCloseTabComponent component = new EditCloseTabComponent(vector.journal.getName(),tabPane,false,true,FsfwDefaultReference.getDefaultReference());
 			component.activateCloseButton(false);
+			component.getCloseButton().addActionListener(closeTabListener);
 			tabPane.setTabComponentAt(index, component);
-		vector.journal.addJournalListener(tabTitleListener);
-			tabTitleListener.nameChanged(vector.journal, "", vector.journal.getName());
-			//TODO: Add listener to close button
+		tabPane.addChangeListener(tabSelectionListener);
+		vector.flag.addChangeListener(journalListener);
+			updateTitleAndButtons();
 	}
 
+	/**
+	 * Exits the application and saves all preferences. If there are any unsaved documents, prompts the user to save them
+	 */
+	private void exit() {
+		int selectedIndex = tabPane.getSelectedIndex();
+		//First check, if there are any unsaved documents
+		boolean unsaved = false;
+		for(JournalVector v : journalsOpen) {
+			if(v.flag.hasBeenChanged()){
+				unsaved = true;break;
+			}
+		}
+		//If this is the case, prompt the user to save them
+		if(unsaved) {
+			int ans = JOptionPane.showConfirmDialog(this,Fsfibu2StringTableMgr.getString("fs.fibu2.MainFrame.exitsave"), 
+											Fsfibu2StringTableMgr.getString("fs.fibu2.MainFrame.confirmsavetitle"), JOptionPane.YES_NO_CANCEL_OPTION);
+			switch(ans) {
+			case JOptionPane.CANCEL_OPTION: return;
+			case JOptionPane.YES_OPTION: 
+				//Save each document
+				logger.info(Fsfibu2StringTableMgr.getString("fs.fibu2.MainFrame.saving"));
+				for(int i = 0; i < journalsOpen.size(); i++) {
+					tabPane.setSelectedIndex(i);
+					if(!journalsOpen.get(i).flag.hasBeenChanged()) continue;
+					boolean success = saveJournal();
+					//Abort, if any journal wasn't saved successfully
+					if(!success) return;
+				}
+			}
+		}
+		//Now save preferences
+		logger.info(Fsfibu2StringTableMgr.getString("fs.fibu2.MainFrame.savingprefs"));
+		Preferences openNode = Preferences.userRoot().node("fsfibu2/session/openjournals");
+		if(selectedIndex >= 0) openNode.put("selected", Integer.toString(selectedIndex));
+		//First we clear all preferences
+		int clear = 0;
+		try {
+			while(openNode.nodeExists(Integer.toString(clear))) {
+				openNode.node(Integer.toString(clear)).removeNode();
+				clear++;
+			}
+		} catch (BackingStoreException e) {
+			logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.MainFrame.cannotclear"));
+		}
+		int j = 0;
+		for(JournalVector v : journalsOpen) {
+			if(v.file != null) {
+				Preferences journalNode = openNode.node(Integer.toString(j));
+				journalNode.put("path", v.file.getAbsolutePath());
+				v.view.insertPreferences(journalNode.node("prefs"));
+				j++;
+			}
+		}
+		System.exit(0);
+	}
+	
 	// RESOURCEDEPENDENT ***********************************
 	// *****************************************************
 	

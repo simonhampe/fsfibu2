@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<journal>
+  <name>bla</name>
+  <description>blabla</description>
+  <startvalues/>
+  <readingpoint>
+    <name>rp</name>
+    <readingday>04.07.2009</readingday>
+  </readingpoint>
+  <entry>
+    <name>Name</name>
+    <value>13.0</value>
+    <currency>EUR</currency>
+    <date>04.07.2009</date>
+    <category/>
+    <account>bank_account</account>
+    <accountinformation>
+      <invoice>F 7</invoice>
+    </accountinformation>
+    <additionalinformation>jaja</additionalinformation>
+  </entry>
+</journal>

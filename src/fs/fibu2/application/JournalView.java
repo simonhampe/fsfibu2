@@ -30,6 +30,9 @@ public class JournalView extends JTabbedPane {
 	//The class logger
 	private Logger logger = Logger.getLogger(this.getClass());
 	
+	//A list of open modules
+	private Vector<JournalModule> modules = new Vector<JournalModule>();
+	
 	/**
 	 * Constructs a journal view
 	 * @param j The associated journal. If null, a dummy journal is created
@@ -38,7 +41,7 @@ public class JournalView extends JTabbedPane {
 	 */
 	public JournalView(Journal j, Preferences prefNode) {
 		associatedJournal = j == null? new Journal() : associatedJournal;
-		Vector<JournalModule> modules = makeOrderedList();
+		modules = makeOrderedList();
 		int index = 0;
 		for(JournalModule module : modules) {
 			//Init component
@@ -49,6 +52,16 @@ public class JournalView extends JTabbedPane {
 			index++;
 		}
 		//setSelectedIndex(0);
+	}
+	
+	/**
+	 * Inserts the preferences of each module into this node
+	 */
+	public void insertPreferences(Preferences node) {
+		for(JournalModule module : modules) {
+			Preferences mnode = node.node(module.getID());
+			module.insertPreferences(mnode);
+		}
 	}
 	
 	/**
