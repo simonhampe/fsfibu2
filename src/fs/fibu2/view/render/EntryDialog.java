@@ -35,8 +35,6 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
-
 import fs.event.DataRetrievalListener;
 import fs.fibu2.data.error.EntryVerificationException;
 import fs.fibu2.data.format.DefaultCurrencyFormat;
@@ -66,6 +64,11 @@ import fs.xml.PolyglotStringTable;
  *
  */
 public class EntryDialog extends FrameworkDialog {
+
+	/**
+	 * compiler-generated serial version uid
+	 */
+	private static final long serialVersionUID = 7827900416736936551L;
 
 	private final static String sgroup = "fs.fibu2.view.EntryDialog";
 	
@@ -105,6 +108,8 @@ public class EntryDialog extends FrameworkDialog {
 	//A list of jtextfields/switchiconlabels for each information field of a given account
 	private HashMap<String, JTextField> accountMap = new HashMap<String, JTextField>();
 	private HashMap<String, SwitchIconLabel> labelMap = new HashMap<String, SwitchIconLabel>();
+	
+	private CategoryEditor editor;
 	
 	// VALIDATORS ******************************
 	// *****************************************
@@ -330,6 +335,40 @@ public class EntryDialog extends FrameworkDialog {
 		}
 	};
 	
+	//Makes the category editor visible
+	private ActionListener createCategoryListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			editor.setVisible(true);
+		}
+	};
+	
+	//Listens to the editor
+	private DataRetrievalListener editorListener = new DataRetrievalListener() {
+		@Override
+		public void dataReady(Object source, Object data) {
+			//If cancelled and there is no category object yet, change selection, if necessary
+			if(data == null) {
+				if(createdCategory == null && radioCreate.isSelected()) radioExisting.setSelected(true);
+			}
+			else {
+				radioCreate.setSelected(true);
+				setCreatedCategory((Category)data);
+			}
+			editor.setVisible(false);
+		}		
+	};
+	
+	//Forces the user to insert a category, if none has been created yet
+	private ChangeListener createRadioListener = new ChangeListener() {
+		@Override
+		public void stateChanged(ChangeEvent e) {
+			if(radioCreate.isSelected() && createdCategory == null) {
+				editor.setVisible(true);
+			}
+		}
+	};
+	
 	// DATA ********************************
 	// *************************************
 	
@@ -367,6 +406,8 @@ public class EntryDialog extends FrameworkDialog {
 		areaInfo.setLineWrap(true);
 		areaInfo.setBorder(BorderFactory.createEtchedBorder());
 		panelAccInf.setBorder(BorderFactory.createEtchedBorder());
+		editor = new CategoryEditor(this,j);
+		editor.setModalityType(ModalityType.DOCUMENT_MODAL);
 		JScrollPane areaPane = new JScrollPane(areaInfo);
 		
 		//Layout
@@ -458,6 +499,9 @@ public class EntryDialog extends FrameworkDialog {
 		okButton.addActionListener(closeButtonListener);
 		cancelButton.addActionListener(closeButtonListener);
 		fieldNewCategory.getDocument().addDocumentListener(newCategoryListener);
+		radioCreate.addChangeListener(createRadioListener);
+		createButton.addActionListener(createCategoryListener);
+		editor.addDataRetrievalListener(editorListener);
 		addWindowListener(closeListener);
 		
 		nameValidator.addComponent(fieldName, labelName);

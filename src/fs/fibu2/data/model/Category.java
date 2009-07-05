@@ -120,6 +120,7 @@ public final class Category implements XMLConfigurable, Comparable<Category>{
 			
 			//Else remove all categories from the list of possible ones that do not contain the string at the right position
 			HashSet<Category> containsthisat = containthis.get(i+1);
+			if(containsthisat == null) containsthisat = new HashSet<Category>();
 			for(Category c : nthOrderParents.get(i-1)) {
 				if(!containsthisat.contains(c)) ithParents.remove(c);
 			}
