@@ -165,6 +165,36 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 		return displayedData.indexOf(o);
 	}
 	
+	/**
+	 * @return Whether the year separators are displayed in this model
+	 */
+	public boolean areYearSeparatorsVisible() {
+		return displayYearSeparators;
+	}
+	
+	/**
+	 * @return Whether the reading points of the associated journal are displayed in this model
+	 */
+	public boolean areReadingPointsVisible() {
+		return displayReadingPoints;
+	}
+	
+	/**
+	 * Sets the visbility of the year separators and recalculates
+	 */
+	public void setYearSeparatorsVisible(boolean visible) {
+		displayYearSeparators = visible;
+		doRecalculation();
+	}
+	
+	/**
+	 * Sets the visibility of the reading points and recalculates
+	 */
+	public void setReadingPointsVisible(boolean visible) {
+		displayReadingPoints = visible;
+		doRecalculation();
+	}
+	
 	// TABLEMODEL ***************************************
 	// **************************************************
 	

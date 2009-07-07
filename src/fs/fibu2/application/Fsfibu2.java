@@ -40,13 +40,17 @@ public class Fsfibu2 {
 	
 	public final static String version = "2.0 Beta";
 	
+	private static MainFrame frame;
+	
 	/**
 	 * Initializes and starts fsfibu2. Command line arguments are ignored.
 	 */
 	public static void main(String[] args) {
 		Locale.setDefault(Locale.GERMAN);
-		global_instance = new Fsfibu2();
-		global_instance.init();
+		if(global_instance == null) {
+			global_instance = new Fsfibu2();
+			global_instance.init();
+		}
 	}
 	
 	//A private constructor to maintain singleton status
@@ -154,9 +158,17 @@ public class Fsfibu2 {
 		}
 		
 		//Create MainFrame
-		MainFrame frame = new MainFrame();
+		frame = new MainFrame();
 		frame.setSize(frame.getMaximumSize());
 		frame.setVisible(true);
+	}
+	
+	/**
+	 * @return The fsfibu2 application main frame. This will be null as long as application initialization is not finished, so you should not call
+	 * this method in code which concerns graphical initialization
+	 */
+	public static MainFrame getFrame() {
+		return frame;
 	}
 
 }

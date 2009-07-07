@@ -9,7 +9,8 @@ import fs.fibu2.data.model.Journal;
 import fs.fibu2.view.model.JournalModule;
 
 /**
- * This module contains a
+ * This module contains a journal table with an editing toolbar and combo boxes for basic year and category filters. By default, the current
+ * year is automatically selected.
  * @author Simon Hampe
  *
  */

@@ -54,8 +54,6 @@ public class MainFrame extends JFrame implements ResourceDependent {
 
 	// List of open journals
 	private Vector<JournalVector> journalsOpen = new Vector<JournalVector>();
-
-	//TODO: Add 'last files' mechanism
 	
 	private final static String sgroup = "fs.fibu2.MainFrame";
 	

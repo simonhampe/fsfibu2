@@ -59,7 +59,8 @@ import fs.xml.PolyglotStringTable;
 
 /**
  * This class implements a dialog for editing / creating fsfibu2 journal {@link Entry}s. It notifies {@link DataRetrievalListener} with the resulting
- * Entry, if OK is clicked and null, if Cancel is clicked.
+ * Entry, if OK is clicked and null, if Cancel is clicked. If you want to use EntryDialogs in a non-modal way, it is recommended to use {@link EntryDialogFactory}
+ * to create them when an Entry is supposed to be edited.
  * @author Simon Hampe
  *
  */
@@ -375,6 +376,9 @@ public class EntryDialog extends FrameworkDialog {
 	//A copy of the newly created category (if one is created)
 	private Category createdCategory;
 	
+	//The original entry
+	private Entry originalEntry;
+	
 	// CONSTRUCTOR *************************
 	// *************************************
 	
@@ -388,6 +392,7 @@ public class EntryDialog extends FrameworkDialog {
 		super(owner,Fsfibu2DefaultReference.getDefaultReference(),Fsfibu2StringTableMgr.getLoader(),PolyglotStringTable.getGlobalLanguageID());
 		setTitle(Fsfibu2StringTableMgr.getString(e == null? sgroup + ".titlecreate" : sgroup + ".titleedit"));
 		setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+		if(e != null) originalEntry = e;
 		
 		//Init components
 		for(SwitchIconLabel l : Arrays.asList(labelName, labelDate, labelValue, labelCategory,labelAccount, labelAccInf)) {
@@ -510,6 +515,16 @@ public class EntryDialog extends FrameworkDialog {
 		categoryValidator.addComponent(fieldNewCategory, labelCategory);
 		accInfValidator.addComponent(panelAccInf, labelAccInf);
 		okValidator.validate();
+	}
+	
+	// GETTER METHODS ***************************************
+	// ******************************************************
+	
+	/**
+	 * @return The original entry (or null, if this is a creation dialog)
+	 */
+	public Entry getOriginalEntry() {
+		return originalEntry;
 	}
 
 	// HELPER METHODS ****************************************
