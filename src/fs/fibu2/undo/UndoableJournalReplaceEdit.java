@@ -94,7 +94,21 @@ public class UndoableJournalReplaceEdit extends AbstractUndoableEdit {
 		}
 	}
 	
-	
+	/**
+	 * @return true
+	 */
+	@Override
+	public boolean canRedo() {
+		return true;
+	}
+
+	/**
+	 * @return true
+	 */
+	@Override
+	public boolean canUndo() {
+		return true;
+	}
 	
 	
 }

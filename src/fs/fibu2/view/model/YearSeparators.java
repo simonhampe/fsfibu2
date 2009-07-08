@@ -143,8 +143,9 @@ public class YearSeparators extends JournalAdapter {
 				usedYears.remove(entryYear);
 				//If there are now 1 or less years, we don't need any separators
 				if(size <= 2) {
-					for(ReadingPoint oldrp : necessaryYears) {
-						necessaryYears.remove(oldrp);
+					Vector<ReadingPoint> removedYears = new Vector<ReadingPoint>(necessaryYears);
+					necessaryYears.removeAllElements();
+					for(ReadingPoint oldrp : removedYears) {
 						fireSeparatorRemoved(oldrp);
 					}
 					return;

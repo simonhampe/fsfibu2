@@ -38,7 +38,9 @@ public class JournalTableBarTest {
 			JFrame frame = new JFrame();
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.setLayout(new BorderLayout());
-			frame.add(new JournalTableBar(t), BorderLayout.NORTH);
+			JournalTableBar bar = new JournalTableBar(t);
+			bar.setFloatable(false);
+			frame.add(bar, BorderLayout.NORTH);
 			frame.add(new JScrollPane(t), BorderLayout.CENTER);
 			frame.setSize(frame.getMaximumSize());
 			frame.setVisible(true);

@@ -98,8 +98,19 @@ public class UndoableJournalPointEdit extends AbstractUndoableEdit {
 		else journal.addReadingPoint(point);
 	}
 	
-	
-	
-	
-	
+	/**
+	 * @return true
+	 */
+	@Override
+	public boolean canRedo() {
+		return true;
+	}
+
+	/**
+	 * @return true
+	 */
+	@Override
+	public boolean canUndo() {
+		return true;
+	}	
 }

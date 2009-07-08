@@ -103,8 +103,20 @@ public class UndoableJournalInfoEdit extends AbstractUndoableEdit {
 		else journal.setDescription(oldValue);
 	}
 	
-	
-	
-	 
-	
+	/**
+	 * @return true
+	 */
+	@Override
+	public boolean canRedo() {
+		return true;
+	}
+
+	/**
+	 * @return true
+	 */
+	@Override
+	public boolean canUndo() {
+		return true;
+	}
+
 }

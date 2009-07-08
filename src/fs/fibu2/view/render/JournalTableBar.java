@@ -1,5 +1,6 @@
 package fs.fibu2.view.render;
 
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashSet;
@@ -164,6 +165,7 @@ public class JournalTableBar extends JToolBar implements ResourceDependent {
 		super(SwingConstants.HORIZONTAL);
 		table = t == null? new JournalTable(new JournalTableModel(new Journal(),null,false,false,false)) : t;
 		associatedJournal = table.getJournalTableModel().getAssociatedJournal();
+		setLayout(new FlowLayout());
 		
 		//Init buttons
 		String path = "graphics/JournalTableBar";
@@ -201,8 +203,7 @@ public class JournalTableBar extends JToolBar implements ResourceDependent {
 		add(new JToolBar.Separator());
 		add(editSeparatorsButton);
 		add(showYearSeparatorButton);
-		add(showReadingPointsButton);
-		
+		add(showReadingPointsButton);	
 	}
 	
 	// RESOURCEDEPENDENT METHODS ***********************

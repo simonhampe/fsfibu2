@@ -111,4 +111,20 @@ public class UndoableJournalEntryEdit extends AbstractUndoableEdit {
 		else journal.addAllEntries(entries);
 	}
 
+	/**
+	 * @return true
+	 */
+	@Override
+	public boolean canRedo() {
+		return true;
+	}
+
+	/**
+	 * @return true
+	 */
+	@Override
+	public boolean canUndo() {
+		return true;
+	}
+
 }

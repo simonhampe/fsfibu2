@@ -112,7 +112,21 @@ public class UndoableJournalStartEdit extends AbstractUndoableEdit {
 		else journal.removeStartValue(account);
 	}
 	
-	
+	/**
+	 * @return true
+	 */
+	@Override
+	public boolean canRedo() {
+		return true;
+	}
+
+	/**
+	 * @return true
+	 */
+	@Override
+	public boolean canUndo() {
+		return true;
+	}
 	
 	
 }

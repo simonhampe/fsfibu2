@@ -48,6 +48,8 @@ public class OverviewModule extends JPanel implements JournalModule, ResourceDep
 	// LISTENERS *************************
 	// ***********************************
 	
+	
+	
 	// CONSTRUCTOR ***********************
 	// ***********************************
 	
