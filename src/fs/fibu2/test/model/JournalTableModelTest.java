@@ -31,6 +31,7 @@ import fs.fibu2.resource.Fsfibu2DefaultReference;
 import fs.fibu2.view.event.ProgressListener;
 import fs.fibu2.view.model.JournalTableModel;
 import fs.fibu2.view.render.BilancialPanel;
+import fs.fibu2.view.render.JournalTable;
 import fs.fibu2.view.render.JournalTableRenderer;
 import fs.gui.GUIToolbox;
 import fs.xml.FsfwDefaultReference;
@@ -73,12 +74,7 @@ public class JournalTableModelTest {
 			GridBagLayout layout = new GridBagLayout();
 			frame.setLayout(layout);
 
-			final JTable table = new JTable();
-				table.setModel(model);
-				table.setDefaultRenderer(Object.class, new JournalTableRenderer(model,Currency.getInstance("EUR")));
-				//System.out.println(((JLabel)(new DefaultTableCellRenderer()).getTableCellRendererComponent(table, null, false, false, 0, 0)).getBorder().getClass().getCanonicalName());
-				//table.setIntercellSpacing(new Dimension(0,0));
-				table.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
+			final JournalTable table = new JournalTable(model);
 			JScrollPane pane = new JScrollPane(table);
 			
 			//Init progress bar

@@ -40,7 +40,7 @@ public class JournalTableRenderer implements TableCellRenderer, ResourceDependen
 	private JournalTableModel associatedModel;
 	
 	//A currency symbol for separators
-	private Currency currency = Currency.getInstance("EUR");
+	private Currency currency = Currency.getInstance(Locale.getDefault());
 	
 	//Color values ********************************************
 	

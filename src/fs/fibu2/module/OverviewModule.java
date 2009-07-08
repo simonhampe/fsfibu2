@@ -1,6 +1,9 @@
 package fs.fibu2.module;
 
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.HashMap;
 import java.util.prefs.Preferences;
 
@@ -21,10 +24,12 @@ import fs.fibu2.view.model.CategoryListModel;
 import fs.fibu2.view.model.JournalModule;
 import fs.fibu2.view.model.JournalTableModel;
 import fs.fibu2.view.model.YearListModel;
+import fs.fibu2.view.render.BilancialPanel;
 import fs.fibu2.view.render.CategoryListRenderer;
 import fs.fibu2.view.render.JournalTable;
 import fs.fibu2.view.render.JournalTableBar;
 import fs.fibu2.view.render.YearListRenderer;
+import fs.gui.GUIToolbox;
 import fs.xml.ResourceDependent;
 import fs.xml.ResourceReference;
 import fs.xml.XMLDirectoryTree;
@@ -56,6 +61,7 @@ public class OverviewModule extends JPanel implements JournalModule, ResourceDep
 	private JToolBar comboBar = new JToolBar();
 	private JComboBox yearBox = new JComboBox();
 	private JComboBox categoryBox = new JComboBox();
+	private BilancialPanel bilancialPanel;
 	
 	// LISTENERS *************************
 	// ***********************************
@@ -75,24 +81,43 @@ public class OverviewModule extends JPanel implements JournalModule, ResourceDep
 	 */
 	protected OverviewModule(Preferences node, Journal j) {
 		super();
-		setLayout(new BorderLayout());
+		GridBagLayout gbl = new GridBagLayout();
+		setLayout(gbl);
 		
 		table = new JournalTable(new JournalTableModel(j,null,true,true));
 		bar = new JournalTableBar(table);
+			bar.setFloatable(false);
+			bar.setAlignmentX(LEFT_ALIGNMENT);
 		categoryBox.setModel(new CategoryListModel(j,true));
 		categoryBox.setRenderer(new CategoryListRenderer(" > "));
 		yearBox.setModel(new YearListModel(j));
 		yearBox.setRenderer(new YearListRenderer());
+		bilancialPanel = new BilancialPanel(table);
 		
+		comboBar.setFloatable(false);
+		comboBar.setLayout(new FlowLayout(FlowLayout.LEFT));
 		comboBar.add(new JLabel(Fsfibu2StringTableMgr.getString(sgroup + ".yearlabel")));
 		comboBar.add(yearBox);
 		comboBar.add(new JToolBar.Separator());
 		comboBar.add(new JLabel(Fsfibu2StringTableMgr.getString(sgroup + ".categorylabel")));
 		comboBar.add(categoryBox);
 		
-		add(bar,BorderLayout.NORTH);
-		add(comboBar,BorderLayout.NORTH);
-		add(new JScrollPane(table), BorderLayout.CENTER);
+		JScrollPane pane = new JScrollPane(table);
+		
+		GridBagConstraints gcBar = GUIToolbox.buildConstraints(0, 0, 1, 1); gcBar.weightx = 100;
+		GridBagConstraints gcCombo = GUIToolbox.buildConstraints(0, 1, 1, 1); gcCombo.weightx = 100;
+		GridBagConstraints gcPane = GUIToolbox.buildConstraints(0, 2, 1, 1); gcPane.weightx = gcPane.weighty = 100;
+		GridBagConstraints gcBilancial = GUIToolbox.buildConstraints(0, 3, 1, 1); gcBilancial.weightx = 100;
+		
+		gbl.setConstraints(bar, gcBar);
+		gbl.setConstraints(comboBar, gcCombo);
+		gbl.setConstraints(pane, gcPane);
+		gbl.setConstraints(bilancialPanel, gcBilancial);
+		
+		add(bar); 
+		add(comboBar);
+		add(pane);
+		add(bilancialPanel);
 	}
 	
 	// MODULE ****************************

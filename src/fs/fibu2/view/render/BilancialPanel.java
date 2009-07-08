@@ -54,7 +54,7 @@ public class BilancialPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = -5068136129774162459L;
 	//Associated data
-	private JTable table;
+	private JournalTable table;
 	private JournalTableModel tableModel;
 	private ListSelectionModel selectionModel;
 	
@@ -136,13 +136,13 @@ public class BilancialPanel extends JPanel {
 	 * @param table The table from which the panel gets the {@link ListSelectionModel} and the {@link JournalTableModel}.
 	 * @throws ClassCastException - if the table model is not of type {@link JournalTableModel}.
 	 */
-	public BilancialPanel(JTable table) throws ClassCastException {
+	public BilancialPanel(JournalTable table) throws ClassCastException {
 		//Copy data and listen
-		tableModel = (JournalTableModel) table.getModel();
+		tableModel = table.getJournalTableModel();
 			tableModel.addTableModelListener(tableListener);
 		selectionModel = table.getSelectionModel();
 			selectionModel.addListSelectionListener(selectionListener);
-		this.table = table == null? new JTable() : table;
+		this.table = table;
 		
 		//Init GUI ----------------------------
 		
@@ -208,7 +208,7 @@ public class BilancialPanel extends JPanel {
 			firstPanel.setBorder(BorderFactory.createTitledBorder(Fsfibu2StringTableMgr.getString("fs.fibu2.view.BilancialPanel.range")));
 			GridBagConstraints gcFirst = GUIToolbox.buildConstraints(0, 1, 1, 1);
 			gcFirst.insets = new Insets(5,0,5,0);
-			gcFirst.weightx = 20;
+			gcFirst.weightx = 30;
 			layout.setConstraints(firstPanel, gcFirst);
 			GridBagLayout firstLayout = new GridBagLayout();
 			firstPanel.setLayout(firstLayout);
@@ -227,14 +227,14 @@ public class BilancialPanel extends JPanel {
 			secondPanel.setPreferredSize(new Dimension(tableSize.width*2,tableSize.height*2));
 			GridBagConstraints gcSecond = GUIToolbox.buildConstraints(1, 1, 1, 1);
 				gcSecond.insets = new Insets(5,0,5,0);
-				gcSecond.weightx = 100;
+				gcSecond.weightx = 40;
 			layout.setConstraints(secondPanel, gcSecond);
 		add(secondPanel);
 			
 		JPanel thirdPanel = new JPanel();
 			thirdPanel.setBorder(BorderFactory.createTitledBorder(Fsfibu2StringTableMgr.getString(sgroup + ".overalltitle")));
 			GridBagConstraints gcThird = GUIToolbox.buildConstraints(2, 1, 1, 1);
-			gcThird.weightx = 33;
+			gcThird.weightx = 30;
 			gcThird.insets = new Insets(5,0,5,0);
 			layout.setConstraints(thirdPanel, gcThird);
 			GridBagLayout thirdLayout = new GridBagLayout();
@@ -268,9 +268,29 @@ public class BilancialPanel extends JPanel {
 	// **************************************************
 	
 	/**
+	 * Takes care that only range values are selected, which actually exist in the table model
+	 */
+	protected void updateRange() {
+		if(!tableModel.getDisplayedSeparators().contains(comboFrom.getSelectedItem())) {
+			comboFrom.removeItemListener(itemListener);
+			comboFrom.setSelectedIndex(0);
+			comboFrom.addItemListener(itemListener);
+			comboFrom.setEnabled(radioAll.isSelected());
+		}
+		if(!tableModel.getDisplayedSeparators().contains(comboTo.getSelectedItem())) {
+			comboTo.removeItemListener(itemListener);
+			comboTo.setSelectedIndex(comboTo.getItemCount()-1);
+			comboTo.addItemListener(itemListener);
+			comboTo.setEnabled(true);
+		}
+		
+	}
+	
+	/**
 	 * Reloads all values and inserts them accordingly
 	 */
 	protected void updateValues() {
+		updateRange();
 		boolean unconnectedRange = false; //Whether we are in selection mode with an unconnected selection
 		int[] selected = table.getSelectedRows();
 		float categorySum = 0;

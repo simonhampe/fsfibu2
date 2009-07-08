@@ -165,7 +165,7 @@ public class JournalTableBar extends JToolBar implements ResourceDependent {
 		super(SwingConstants.HORIZONTAL);
 		table = t == null? new JournalTable(new JournalTableModel(new Journal(),null,false,false)) : t;
 		associatedJournal = table.getJournalTableModel().getAssociatedJournal();
-		setLayout(new FlowLayout());
+		setLayout(new FlowLayout(FlowLayout.LEFT));
 		
 		//Init buttons
 		String path = "graphics/JournalTableBar";

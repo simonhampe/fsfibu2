@@ -46,7 +46,7 @@ public class Fsfibu2 {
 	 * Initializes and starts fsfibu2. Command line arguments are ignored.
 	 */
 	public static void main(String[] args) {
-		Locale.setDefault(Locale.GERMAN);
+		Locale.setDefault(Locale.GERMANY);
 		if(global_instance == null) {
 			global_instance = new Fsfibu2();
 			global_instance.init();
@@ -159,8 +159,6 @@ public class Fsfibu2 {
 		
 		//Create MainFrame
 		frame = new MainFrame();
-		frame.setSize(frame.getMaximumSize());
-		frame.setVisible(true);
 	}
 	
 	/**

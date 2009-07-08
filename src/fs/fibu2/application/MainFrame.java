@@ -160,6 +160,7 @@ public class MainFrame extends JFrame implements ResourceDependent {
 	public MainFrame() {
 		super();
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		setSize(getMaximumSize());
 
 		// Create file list from preferences
 		try {
@@ -225,6 +226,8 @@ public class MainFrame extends JFrame implements ResourceDependent {
 		
 		//Add journals
 		add(tabPane, BorderLayout.CENTER);
+		
+		setVisible(true);
 	}
 
 	// CONTROL METHODS ****************************
@@ -482,6 +485,12 @@ public class MainFrame extends JFrame implements ResourceDependent {
 				v.view.insertPreferences(journalNode.node("prefs"));
 				j++;
 			}
+		}
+		try {
+			Preferences.userRoot().flush();
+		} catch (BackingStoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		System.exit(0);
 	}

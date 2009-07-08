@@ -35,17 +35,7 @@ public class PreferencesTest {
 	 * @throws BackingStoreException 
 	 */
 	public static void main(String[] args) throws BackingStoreException {
-		SimpleDateFormat format = new SimpleDateFormat("dd.MM.yy");
-		try {
-			Date d = format.parse("13.7.89");
-			System.out.println(Fsfibu2DateFormats.getEntryDateFormat().format(d));
-			d = Fsfibu2DateFormats.getEntryDateFormat().parse("13.7.09");
-			System.out.print(Fsfibu2DateFormats.getEntryDateFormat().format(d));
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+		Preferences.userRoot().flush();
 	}
 
 }
