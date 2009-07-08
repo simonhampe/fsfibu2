@@ -4,8 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashSet;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
@@ -21,6 +21,7 @@ import fs.fibu2.lang.Fsfibu2StringTableMgr;
 import fs.fibu2.view.model.JournalTableModel;
 import fs.xml.ResourceDependent;
 import fs.xml.ResourceReference;
+import fs.xml.XMLDirectoryTree;
 
 /**
  * This class implements a toolbar with basic operations for a {@link JournalTable}, such as entry editing and view preferences.
@@ -32,20 +33,25 @@ public class JournalTableBar extends JToolBar implements ResourceDependent {
 	// DATA *****************************************
 	// **********************************************
 	
+	/**
+	 * compiler-generated serial version uid 
+	 */
+	private static final long serialVersionUID = -6594355845943200915L;
+	
 	private JournalTable table;
 	private Journal associatedJournal;
 	
-	private final static String sgroup = "fs.fibu2.view.	JournalTableBar";
+	private final static String sgroup = "fs.fibu2.view.JournalTableBar";
 	
 	// COMPONENTS ***********************************
 	// **********************************************
 	
-	private JButton newButton = new JButton();
-	private JButton editButton = new JButton();
-	private JButton deleteButton = new JButton();
-	private JButton editSeparatorsButton = new JButton();
-	private JToggleButton showYearSeparatorButton = new JToggleButton();
-	private JToggleButton showReadingPointsButton = new JToggleButton();
+	private JButton newButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".newentry"));
+	private JButton editButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".editentry"));
+	private JButton deleteButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".deleteentry"));
+	private JButton editSeparatorsButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".editseparator"));
+	private JToggleButton showYearSeparatorButton = new JToggleButton(Fsfibu2StringTableMgr.getString(sgroup  + ".displayyear"));
+	private JToggleButton showReadingPointsButton = new JToggleButton(Fsfibu2StringTableMgr.getString(sgroup + ".displayreading"));
 	
 	// LISTENERS *************************************
 	// ***********************************************
@@ -106,7 +112,7 @@ public class JournalTableBar extends JToolBar implements ResourceDependent {
 			int ans = JOptionPane.showConfirmDialog(Fsfibu2.getFrame(), 
 					entriesToDelete.size() > 1? Fsfibu2StringTableMgr.getString(sgroup + ".confirmdelete") : 
 												Fsfibu2StringTableMgr.getString(sgroup + ".confirmdeletesingular"), 
-					Fsfibu2StringTableMgr.getString(sgroup + ".confirmdelettitle"), JOptionPane.YES_NO_OPTION);
+					Fsfibu2StringTableMgr.getString(sgroup + ".confirmdeletetitle"), JOptionPane.YES_NO_OPTION);
 			if(ans == JOptionPane.YES_OPTION) {
 				associatedJournal.removeAllEntriesUndoable(entriesToDelete);
 			}
@@ -134,16 +140,33 @@ public class JournalTableBar extends JToolBar implements ResourceDependent {
 	
 	public JournalTableBar(JournalTable t) {
 		super(SwingConstants.HORIZONTAL);
-		table = t == null? new JournalTable(new JournalTableModel(new Journal(),null,false,false,false)) : table;
+		table = t == null? new JournalTable(new JournalTableModel(new Journal(),null,false,false,false)) : t;
 		associatedJournal = table.getJournalTableModel().getAssociatedJournal();
 		
 		//Init buttons
+		String path = "graphics/JournalTableBar";
 		newButton.addActionListener(newListener);
+			newButton.setIcon(new ImageIcon(path + "/new.png"));
+			newButton.setToolTipText(Fsfibu2StringTableMgr.getString(sgroup + ".newtooltip"));
 		editButton.addActionListener(editListener);
+			editButton.setIcon(new ImageIcon(path + "/edit.png"));
+			editButton.setToolTipText(Fsfibu2StringTableMgr.getString(sgroup + ".edittooltip"));
 		deleteButton.addActionListener(deleteListener);
+			deleteButton.setIcon(new ImageIcon(path + "/delete.png"));
+			deleteButton.setToolTipText(Fsfibu2StringTableMgr.getString(sgroup + ".deletetooltip"));
 		
+			editSeparatorsButton.setIcon(new ImageIcon(path + "/editsep.png"));
+			editSeparatorsButton.setToolTipText(Fsfibu2StringTableMgr.getString(sgroup + ".editseptooltip"));
+		
+		showYearSeparatorButton.setSelected(table.getJournalTableModel().areYearSeparatorsVisible());
 		showYearSeparatorButton.addActionListener(showYearSeparatorListener);
+			showYearSeparatorButton.setIcon(new ImageIcon(path + "/year.png"));
+			showYearSeparatorButton.setToolTipText(Fsfibu2StringTableMgr.getString(sgroup + ".yeartooltip"));
+			
+		showReadingPointsButton.setSelected(table.getJournalTableModel().areReadingPointsVisible());
 		showReadingPointsButton.addActionListener(showReadingPointsListener);
+			showReadingPointsButton.setIcon(new ImageIcon(path + "/reading.png"));
+			showReadingPointsButton.setToolTipText(Fsfibu2StringTableMgr.getString(sgroup + ".readingtooltip"));
 		
 		
 		//Add buttons
@@ -151,6 +174,7 @@ public class JournalTableBar extends JToolBar implements ResourceDependent {
 		add(editButton);
 		add(deleteButton);
 		add(new JToolBar.Separator());
+		add(editSeparatorsButton);
 		add(showYearSeparatorButton);
 		add(showReadingPointsButton);
 		
@@ -161,14 +185,20 @@ public class JournalTableBar extends JToolBar implements ResourceDependent {
 	
 	@Override
 	public void assignReference(ResourceReference r) {
-		// TODO Auto-generated method stub
-
+		//Ignore
 	}
 
 	@Override
 	public Document getExpectedResourceStructure() {
-		// TODO Auto-generated method stub
-		return null;
+		XMLDirectoryTree tree = new XMLDirectoryTree();
+		String path = "graphics/JournalTableBar/";
+		tree.addPath(path + "new.png");
+		tree.addPath(path + "edit.png");
+		tree.addPath(path + "delete.png");
+		tree.addPath(path + "editsep.png");
+		tree.addPath(path + "year.png");
+		tree.addPath(path + "reading.png");
+		return tree;
 	}
 
 }
