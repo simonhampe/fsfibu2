@@ -8,7 +8,6 @@ import fs.fibu2.data.format.EntryDateComparator;
 import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.EntrySeparator;
 import fs.fibu2.data.model.ExtremeSeparator;
-import fs.fibu2.data.model.LinkedSeparator;
 import fs.fibu2.data.model.ReadingPoint;
 
 /**
@@ -44,10 +43,6 @@ public class TableModelComparator implements Comparator<Object> {
 			else return ((ExtremeSeparator)o2).isBeforeAll()? 1 : 0;
 		}
 		
-		if(o1 instanceof LinkedSeparator && o2 instanceof LinkedSeparator) {
-			return entryComparator.compare(((LinkedSeparator)o1).getLinkedEntry(),((LinkedSeparator)o2).getLinkedEntry());
-		}
-		
 		//Now try heterogeneous pairings
 		for(Object p1 : Arrays.asList(o1,o2)) {
 			Object p2 = (p1 == o1) ? o2 : o1;
@@ -59,9 +54,6 @@ public class TableModelComparator implements Comparator<Object> {
 			
 			if(p1 instanceof ExtremeSeparator) return factor * (((ExtremeSeparator)p1).isBeforeAll()? -1 : 1);
 			
-			if(p1 instanceof ReadingPoint && p2 instanceof LinkedSeparator) {
-				return factor * (((ReadingPoint)p1).isLessOrEqualThanMe(((LinkedSeparator)p2).getLinkedEntry()) ? 1 : -1);
-			}
 		}
 		
 		//If we arrive here, this is not a valid call

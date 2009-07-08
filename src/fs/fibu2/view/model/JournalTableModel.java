@@ -17,7 +17,6 @@ import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.EntrySeparator;
 import fs.fibu2.data.model.ExtremeSeparator;
 import fs.fibu2.data.model.Journal;
-import fs.fibu2.data.model.LinkedSeparator;
 import fs.fibu2.data.model.ReadingPoint;
 import fs.fibu2.filter.EntryFilter;
 import fs.fibu2.filter.StackFilter;
@@ -40,7 +39,6 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 	//Reading Point lists
 	private ExtremeSeparator startSeparator = new ExtremeSeparator(Fsfibu2StringTableMgr.getString(sgroup + ".start"),true);
 	private ExtremeSeparator endSeparator = new ExtremeSeparator(Fsfibu2StringTableMgr.getString(sgroup + ".end"),false);
-	private HashSet<LinkedSeparator> linkedSeparators = new HashSet<LinkedSeparator>();
 	
 	//A sorted list of all displayed entries and separators + all entries not displayed which come before the first entry displayed
 	//Despite the order induced by the comparator the starting separator will be moved to firstIndexDisplayed when creating the list
@@ -76,7 +74,6 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 	
 	//Visibility flags
 	private boolean displayYearSeparators = true;
-	private boolean displayLinkedSeparators = true;
 	private boolean displayReadingPoints = true;
 	
 	// CONSTRUCTOR **************************************
@@ -87,12 +84,11 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 	 * the given filter.
 	 */
 	public JournalTableModel(Journal associatedJournal, EntryFilter filter, boolean displayYearSeparators, 
-									boolean displayLinkedSeparators, boolean displayReadingPoints) {
+									boolean displayReadingPoints) {
 		//Copy data
 		this.associatedJournal = associatedJournal == null? new Journal() : associatedJournal;
 		this.filter = filter;
 		this.displayYearSeparators = displayYearSeparators;
-		this.displayLinkedSeparators = displayLinkedSeparators;
 		this.displayReadingPoints = displayReadingPoints;
 		
 		//Register listeners
@@ -283,7 +279,6 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 		TreeSet<EntrySeparator> sortedSeparators = new TreeSet<EntrySeparator>(new TableModelComparator());
 		//Load all entries and add separators
 		sortedSet.addAll(associatedJournal.getEntries());
-		if(displayLinkedSeparators) sortedSet.addAll(linkedSeparators);
 		if(displayReadingPoints) sortedSet.addAll(associatedJournal.getReadingPoints());
 		if(displayYearSeparators) sortedSet.addAll(YearSeparators.getInstance(associatedJournal).getNecessarySeparators());
 		sortedSet.add(endSeparator);

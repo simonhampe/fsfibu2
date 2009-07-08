@@ -99,6 +99,13 @@ public class YearSeparators extends JournalAdapter {
 		return new Vector<ReadingPoint>(necessaryYears);
 	}
 	
+	/**
+	 * @return A list of years for which there is an entry in the journal
+	 */
+	public Vector<Integer> getUsedYears() {
+		return new Vector<Integer>(usedYears);
+	}
+	
 	// LISTENERS METHODS ***********************
 	// *****************************************
 	

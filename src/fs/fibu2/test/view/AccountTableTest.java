@@ -36,7 +36,7 @@ public class AccountTableTest {
 		try {
 			j = Fsfibu1Converter.convertFsfibu1Journal(XMLToolbox.loadXMLFile(new File(basedir + "/fsfibu/KassenbuchAb2008.xml")));
 		
-			JournalTableModel model = new JournalTableModel(j,null,true,true,false);
+			JournalTableModel model = new JournalTableModel(j,null,true,false);
 			
 			JFrame frame = new JFrame();
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

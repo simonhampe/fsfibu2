@@ -40,7 +40,7 @@ public class JournalTableRenderer implements TableCellRenderer, ResourceDependen
 	private JournalTableModel associatedModel;
 	
 	//A currency symbol for separators
-	private Currency currency = Currency.getInstance(Locale.getDefault());
+	private Currency currency = Currency.getInstance("EUR");
 	
 	//Color values ********************************************
 	
@@ -69,7 +69,7 @@ public class JournalTableRenderer implements TableCellRenderer, ResourceDependen
 	 * @param The currency from which the symbol for reading point formatting is retrieved
 	 */
 	public JournalTableRenderer(JournalTableModel model, Currency currency) {
-		associatedModel = model == null? new JournalTableModel(new Journal(),null,true,true,true) : model;
+		associatedModel = model == null? new JournalTableModel(new Journal(),null,true,true) : model;
 		this.currency = currency == null? this.currency: currency;
 	}
 	

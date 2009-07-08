@@ -34,7 +34,7 @@ public class JournalTableBarTest {
 		
 		try {
 			final Journal j = Fsfibu1Converter.convertFsfibu1Journal(XMLToolbox.loadXMLFile(new File(basedir + "/fsfibu/KassenbuchAb2008.xml")));
-			JournalTable t = new JournalTable(new JournalTableModel(j,null,true,true,true));
+			JournalTable t = new JournalTable(new JournalTableModel(j,null,true,true));
 			JFrame frame = new JFrame();
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.setLayout(new BorderLayout());
