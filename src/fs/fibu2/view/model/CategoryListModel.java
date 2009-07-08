@@ -37,10 +37,10 @@ public class CategoryListModel extends AbstractListModel implements JournalListe
 	private Vector<Category> listOfCategories;
 	private boolean containsRootCategory;
 	
+	private Category selectedItem;
+	
 	//Not null, if a recalculation is currently running
 	private Recalculator currentRecalculator = null;
-	
-	private DefaultComboBoxModel model = new DefaultComboBoxModel();
 	
 	// CONSTRUCTORS *******************
 	// ********************************
@@ -56,7 +56,6 @@ public class CategoryListModel extends AbstractListModel implements JournalListe
 		listOfCategories = new Vector<Category>(new TreeSet<Category>(this.associatedJournal.getListOfCategories()));
 		if(containsRootCategory) listOfCategories.add(0, Category.getRootCategory());
 		this.containsRootCategory = containsRootCategory;
-		model = new DefaultComboBoxModel(listOfCategories);
 	}
 	
 	// LISTMODE INTERFACE *************
@@ -148,12 +147,14 @@ public class CategoryListModel extends AbstractListModel implements JournalListe
 	
 	@Override
 	public Object getSelectedItem() {
-		return model.getSelectedItem();
+		return selectedItem;
 	}
 
 	@Override
 	public void setSelectedItem(Object anItem) {
-		model.setSelectedItem(anItem);
+		if(listOfCategories.contains(anItem)) {
+			selectedItem = (Category)anItem;
+		}
 	}
 	
 	// SWING WORKER CLASS FOR RECALCULATION *******************************
@@ -176,8 +177,7 @@ public class CategoryListModel extends AbstractListModel implements JournalListe
 				listOfCategories = get();
 				if(containsRootCategory) listOfCategories.add(0, Category.getRootCategory());
 				//Preserve selection if possible
-				model = new DefaultComboBoxModel(listOfCategories);
-				if(listOfCategories.contains(c)) model.setSelectedItem(c);
+				if(listOfCategories.contains(c)) setSelectedItem(c);
 				currentRecalculator = null;
 				fireContentsChanged();
 			} catch (Exception e) {

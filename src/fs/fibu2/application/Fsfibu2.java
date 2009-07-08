@@ -7,6 +7,7 @@ import java.net.URLClassLoader;
 import java.util.Locale;
 import java.util.prefs.Preferences;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import org.apache.log4j.BasicConfigurator;
@@ -159,6 +160,8 @@ public class Fsfibu2 {
 		
 		//Create MainFrame
 		frame = new MainFrame();
+		JFrame.setDefaultLookAndFeelDecorated(false);
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 	}
 	
 	/**

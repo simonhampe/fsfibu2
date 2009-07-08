@@ -1,16 +1,26 @@
 package fs.fibu2.view.render;
 
-import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.Arrays;
 import java.util.HashSet;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
+import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -22,13 +32,17 @@ import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.Journal;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
 import fs.fibu2.resource.Fsfibu2DefaultReference;
+import fs.fibu2.view.event.ProgressListener;
 import fs.fibu2.view.model.JournalTableModel;
+import fs.gui.GUIToolbox;
 import fs.xml.ResourceDependent;
 import fs.xml.ResourceReference;
 import fs.xml.XMLDirectoryTree;
 
 /**
- * This class implements a toolbar with basic operations for a {@link JournalTable}, such as entry editing and view preferences.
+ * This class implements a toolbar with basic operations for a {@link JournalTable}, such as entry editing and view preferences, as well
+ * as a little component indicating when the table is recalculated. It automatically adds a mouse listener to the table which opens up an editor
+ * on double click
  * @author Simon Hampe
  *
  */
@@ -56,6 +70,8 @@ public class JournalTableBar extends JToolBar implements ResourceDependent {
 	private JButton editSeparatorsButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".editseparator"));
 	private JToggleButton showYearSeparatorButton = new JToggleButton(Fsfibu2StringTableMgr.getString(sgroup  + ".displayyear"));
 	private JToggleButton showReadingPointsButton = new JToggleButton(Fsfibu2StringTableMgr.getString(sgroup + ".displayreading"));
+	private JProgressBar progressBar = new JProgressBar();
+	private JLabel progressLabel = new JLabel();
 	
 	// LISTENERS *************************************
 	// ***********************************************
@@ -158,6 +174,35 @@ public class JournalTableBar extends JToolBar implements ResourceDependent {
 		}
 	};
 	
+	private ProgressListener<Object, Object> progressListener = new ProgressListener<Object, Object>() {
+		@Override
+		public void progressed(SwingWorker<Object, Object> source) {
+			//Ignore
+		}
+		@Override
+		public void taskBegins(SwingWorker<Object, Object> source) {
+			progressBar.setVisible(true);
+			progressLabel.setVisible(true);
+			progressBar.setIndeterminate(true);
+		}
+		@Override
+		public void taskFinished(SwingWorker<Object, Object> source) {
+			progressBar.setVisible(false);
+			progressLabel.setVisible(false);
+			progressBar.setIndeterminate(false);
+		}
+	};
+	
+	//Opens an editor for selected and double-clicked entries
+	private MouseListener mouseListener = new MouseAdapter() {
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			if(e.getClickCount() > 1) {
+				editButton.doClick();
+			}
+		}
+	};
+	
 	// CONSTRUCTOR *************************************
 	// *************************************************
 	
@@ -165,7 +210,8 @@ public class JournalTableBar extends JToolBar implements ResourceDependent {
 		super(SwingConstants.HORIZONTAL);
 		table = t == null? new JournalTable(new JournalTableModel(new Journal(),null,false,false)) : t;
 		associatedJournal = table.getJournalTableModel().getAssociatedJournal();
-		setLayout(new FlowLayout(FlowLayout.LEFT));
+		table.getJournalTableModel().addProgressListener(progressListener);
+		table.addMouseListener(mouseListener);
 		
 		//Init buttons
 		String path = "graphics/JournalTableBar";
@@ -193,17 +239,66 @@ public class JournalTableBar extends JToolBar implements ResourceDependent {
 			showReadingPointsButton.setIcon(new ImageIcon(ref.getFullResourcePath(this,path + "/reading.png")));
 			showReadingPointsButton.setToolTipText(Fsfibu2StringTableMgr.getString(sgroup + ".readingtooltip"));
 		
+		progressBar.setVisible(false);
+		progressLabel.setText(Fsfibu2StringTableMgr.getString(sgroup + ".progress"));
+		progressLabel.setVisible(false);
+			
+			
 		table.getSelectionModel().addListSelectionListener(selectionListener);
 		selectionListener.valueChanged(new ListSelectionEvent(this,0,0,false));
 		
 		//Add buttons
-		add(newButton);
-		add(editButton);
-		add(deleteButton);
-		add(new JToolBar.Separator());
+		GridBagLayout gbl = new GridBagLayout();
+		setLayout(gbl);
+		
+		int col = 0;
+		for(JButton b : Arrays.asList(newButton,editButton,deleteButton)) {
+			GridBagConstraints gc = GUIToolbox.buildConstraints(col, 0, 1, 1);
+			gc.insets = new Insets(5,5,5,5);
+			gbl.setConstraints(b, gc);
+			add(b);
+			col++;
+		}
+		
+		Separator separator = new JToolBar.Separator();
+		GridBagConstraints gcSeparator = GUIToolbox.buildConstraints(col, 0, 1,1); 
+			gcSeparator.insets = new Insets(5,5,5,5);
+			gbl.setConstraints(separator, gcSeparator);
+		add(separator);
+		col++;
+		
+		GridBagConstraints gcEdit = GUIToolbox.buildConstraints(col, 0, 1, 1);
+			gcEdit.insets = new Insets(5,5,5,5);
+			gbl.setConstraints(editSeparatorsButton, gcEdit);
 		add(editSeparatorsButton);
-		add(showYearSeparatorButton);
-		add(showReadingPointsButton);	
+		col++;
+		
+		for(JToggleButton b : Arrays.asList(showYearSeparatorButton,showReadingPointsButton)) {
+			GridBagConstraints gc = GUIToolbox.buildConstraints(col, 0, 1, 1);
+			gc.insets = new Insets(5,5,5,5);
+			gbl.setConstraints(b, gc);
+			add(b);
+			col++;
+		}
+		
+		JPanel fillPanel = new JPanel();
+		GridBagConstraints gcFill = GUIToolbox.buildConstraints(col, 0, 1,1);
+			gcFill.weightx = 100;
+			gbl.setConstraints(fillPanel, gcFill);
+		add(fillPanel);
+		col++;
+		
+		GridBagConstraints gcLabel = GUIToolbox.buildConstraints(col, 0, 1, 1);
+			gcLabel.insets = new Insets(5,5,5,5);
+			gbl.setConstraints(progressLabel, gcLabel);
+		add(progressLabel);
+		col++;
+		
+		GridBagConstraints gcProgress = GUIToolbox.buildConstraints(col, 0, 1, 1);
+			gcProgress.insets = new Insets(5,5,5,5);
+			gbl.setConstraints(progressBar, gcProgress);
+		add(progressBar);
+			
 	}
 	
 	// RESOURCEDEPENDENT METHODS ***********************

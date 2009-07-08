@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import javax.swing.undo.CompoundEdit;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEdit;
 
@@ -392,6 +393,23 @@ public class Journal implements XMLConfigurable, ReadingPointListener {
 		edit.redo();
 		manager.addEdit(edit);
 	}	
+	
+	/**
+	 * Does this in one edit
+	 * @see Journal#setDescription(String)
+	 * @see Journal#setName(String)
+	 */
+	public synchronized void setNameAndDescriptionUndoable(String newname, String newdescription) {
+		CompoundEdit cedit = new CompoundEdit();
+			UndoableJournalInfoEdit nameedit = new UndoableJournalInfoEdit(this,getName(),newname,true);
+				nameedit.redo();
+			UndoableJournalInfoEdit descedit = new UndoableJournalInfoEdit(this,getDescription(),newdescription,false);
+				descedit.redo();
+		cedit.addEdit(nameedit); cedit.addEdit(descedit);
+		cedit.end();
+		manager.addEdit(cedit);
+		
+	}
 	
 	// XMLCONFIGURABLE *******************************
 	// ***********************************************

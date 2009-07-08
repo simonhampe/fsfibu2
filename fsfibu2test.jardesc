@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jardesc>
+    <jar path="fsfibu2/fsfibu2test.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/fsfibu2/fsfibu2test.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="true" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <manifest generateManifest="false" manifestLocation="/fsfibu2/testmanifest.mf" manifestVersion="1.0" reuseManifest="true" saveManifest="true" usesManifest="true">
+        <sealing sealJar="false">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
+        <file path="/fsfibu2/kassenbuch.xml"/>
+        <folder path="/fsfibu2/modules"/>
+        <folder path="/fsfibu2/filters"/>
+        <file path="/fsfibu2/fsfibu2test.jardesc"/>
+        <file path="/fsfibu2/hs_err_pid762.log"/>
+        <folder path="/fsfibu2/graphics"/>
+        <file path="/fsfibu2/hs_err_pid31390.log"/>
+        <file path="/fsfibu2/.project"/>
+        <folder path="/fsfibu2/examples"/>
+        <folder path="/fsfibu2/lang"/>
+        <file path="/fsfibu2/hs_err_pid4991.log"/>
+        <folder path="/fsfibu2/schema"/>
+        <file path="/fsfibu2/frameworkConfigurator.xml"/>
+        <file path="/fsfibu2/testmanifest.mf"/>
+        <file path="/fsfibu2/test.xml"/>
+        <javaElement handleIdentifier="=fsfibu2/src"/>
+        <file path="/fsfibu2/.classpath"/>
+        <folder path="/fsfibu2/accounts"/>
+    </selectedElements>
+    <fatjar builder="org.eclipse.jdt.ui.plain_jar_builder" launchConfig=""/>
+</jardesc>

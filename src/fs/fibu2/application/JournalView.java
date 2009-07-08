@@ -61,7 +61,7 @@ public class JournalView extends JTabbedPane {
 	public void insertPreferences(Preferences node) {
 		for(JournalModule module : modules) {
 			Preferences mnode = node.node(module.getID());
-			module.insertPreferences(mnode);
+			module.insertPreferences(mnode, associatedJournal);
 		}
 	}
 	

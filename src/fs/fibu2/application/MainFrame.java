@@ -160,7 +160,6 @@ public class MainFrame extends JFrame implements ResourceDependent {
 	public MainFrame() {
 		super();
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-		setSize(getMaximumSize());
 
 		// Create file list from preferences
 		try {

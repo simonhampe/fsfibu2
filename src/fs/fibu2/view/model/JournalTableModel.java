@@ -191,6 +191,16 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 		doRecalculation();
 	}
 	
+	/**
+	 * Sets the filter. If it is a stack filter, it will listen to it
+	 */
+	public void setFilter(EntryFilter newFilter) {
+		if(filter != null && filter instanceof StackFilter) ((StackFilter)filter).removeChangeListener(this);
+		filter = newFilter;
+		if(filter != null && filter instanceof StackFilter) ((StackFilter)filter).addChangeListener(this);
+		doRecalculation();
+	}
+	
 	// TABLEMODEL ***************************************
 	// **************************************************
 	
@@ -536,8 +546,10 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 
 		@Override
 		protected void done() {
-			fireTaskFinished(this);
-			fireTableChanged(new TableModelEvent(JournalTableModel.this));
+			if(!isCancelled()) {
+				fireTaskFinished(this);
+				fireTableChanged(new TableModelEvent(JournalTableModel.this));
+			}
 		}	
 		
 		

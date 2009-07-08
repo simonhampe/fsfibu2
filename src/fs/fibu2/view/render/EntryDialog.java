@@ -410,6 +410,7 @@ public class EntryDialog extends FrameworkDialog {
 		areaInfo.setEnabled(checkAdditional.isSelected());
 		areaInfo.setLineWrap(true);
 		areaInfo.setBorder(BorderFactory.createEtchedBorder());
+		areaInfo.setWrapStyleWord(true);
 		panelAccInf.setBorder(BorderFactory.createEtchedBorder());
 		editor = new CategoryEditor(this,j);
 		editor.setModalityType(ModalityType.DOCUMENT_MODAL);

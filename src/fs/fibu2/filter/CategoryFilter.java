@@ -108,6 +108,16 @@ public class CategoryFilter implements EntryFilter {
 		levelToCheck = l;
 	}
 	
+	// GETTERS *************************
+	// *********************************
+	
+	/**
+	 * @return The category for equality check, or null, if this is an advanced filter
+	 */
+	public Category getEqualityCategory() {
+		return equalityCategory;
+	}
+	
 	// FILTER METHODS ******************
 	// *********************************
 	

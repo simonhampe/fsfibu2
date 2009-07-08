@@ -43,9 +43,10 @@ public interface JournalModule {
 	public JPanel getComponent(Preferences node, Journal j);
 	
 	/**
-	 * Saves the configuration of the module in the given node
+	 * Saves the configuration of the module for the given journal in the given node
+	 * @param j TODO
 	 */
-	public void insertPreferences(Preferences node);
+	public void insertPreferences(Preferences node, Journal j);
 	
 	/**
 	 * @return The (unique) ID of this module. The convention is 'ff2module_(descriptivestring)'

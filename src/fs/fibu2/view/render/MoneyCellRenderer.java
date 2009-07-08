@@ -36,6 +36,7 @@ public class MoneyCellRenderer extends DefaultTableCellRenderer {
 				row, column);
 		if(value instanceof Float) {
 			label.setText(DefaultCurrencyFormat.formatAsHTML((Float)value, currency));
+			label.setHorizontalAlignment(RIGHT);
 		}
 		return label;
 	}
