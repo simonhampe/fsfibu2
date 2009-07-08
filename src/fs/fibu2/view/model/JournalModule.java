@@ -37,7 +37,8 @@ public interface JournalModule {
 	 * valid configuration, this method should nevertheless return normally, possibly with a component initialized to standard values. The preference
 	 * node might in particular be null.
 	 * @param j The journal on which this component should work.
-	 * @return The actual visual component of the module which is displayed in the tab. It should be the same component for all calls of this method
+	 * @return The actual visual component of the module which is displayed in the tab. It should be the same component for all calls of this method with
+	 * the same journal
 	 */
 	public JPanel getComponent(Preferences node, Journal j);
 	
@@ -47,7 +48,7 @@ public interface JournalModule {
 	public void insertPreferences(Preferences node);
 	
 	/**
-	 * @return The (unique) ID of this module
+	 * @return The (unique) ID of this module. The convention is 'ff2module_(descriptivestring)'
 	 */
 	public String getID();
 	

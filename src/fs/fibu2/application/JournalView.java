@@ -51,7 +51,8 @@ public class JournalView extends JTabbedPane {
 			setToolTipTextAt(index, module.getTabViewTooltip());
 			index++;
 		}
-		//setSelectedIndex(0);
+		setSelectedIndex(0);
+		setTabPlacement(JTabbedPane.LEFT);
 	}
 	
 	/**

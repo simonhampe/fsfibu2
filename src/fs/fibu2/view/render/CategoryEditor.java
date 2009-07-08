@@ -2,7 +2,6 @@ package fs.fibu2.view.render;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridBagLayoutInfo;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,7 +11,6 @@ import java.awt.event.WindowListener;
 import java.util.Arrays;
 import java.util.Vector;
 
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -35,8 +33,6 @@ import fs.gui.GUIToolbox;
 import fs.gui.SwitchIconLabel;
 import fs.validate.LabelIndicValidator;
 import fs.validate.SingleButtonValidator;
-import fs.validate.ValidationResult;
-import fs.validate.ValidationValidator;
 import fs.validate.ValidationResult.Result;
 import fs.xml.PolyglotStringTable;
 
@@ -47,6 +43,11 @@ import fs.xml.PolyglotStringTable;
  */
 public class CategoryEditor extends FrameworkDialog {
 	
+	/**
+	 * compiler-generated serial version uid
+	 */
+	private static final long serialVersionUID = 8153720307396007569L;
+
 	private final static String sgroup = "fs.fibu2.view.CategoryEditor";
 	
 	// COMPONENTS ***************************
@@ -60,7 +61,7 @@ public class CategoryEditor extends FrameworkDialog {
 	private JButton okButton = new JButton(Fsfibu2StringTableMgr.getString("fs.fibu2.global.ok"));
 	private JButton cancelButton = new JButton(Fsfibu2StringTableMgr.getString("fs.fibu2.global.cancel"));
 	
-	private ImageIcon warn = new ImageIcon("graphics/share/warn.png");
+	private ImageIcon warn = new ImageIcon(Fsfibu2DefaultReference.getDefaultReference().getFullResourcePath(this,"graphics/share/warn.png"));
 	
 	// DATA *********************************
 	// **************************************

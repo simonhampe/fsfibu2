@@ -7,6 +7,8 @@ import java.util.Vector;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import fs.fibu2.module.OverviewModule;
+
 /**
  * This class handles loading of {@link JournalModule} objects by ID. It also supports dynamic loading of JournalModule classes.
  * @author Simon Hampe
@@ -23,7 +25,7 @@ public class JournalModuleLoader {
 	
 	//Init all default modules
 	static {
-		
+		setModule("ff2module_overview", OverviewModule.class);
 	}
 	
 	/**
@@ -47,7 +49,7 @@ public class JournalModuleLoader {
 	 * Sets the module class for the given id. If there already is a class for this id, it is overwritten. If module == null, the corresponding class
 	 * is removed. If id == null, this call is ignored
 	 */
-	public static void setFilter(String id, Class<? extends JournalModule> module) {
+	public static void setModule(String id, Class<? extends JournalModule> module) {
 		if(id == null) return;
 		if(module == null) moduleMap.remove(id);
 		else moduleMap.put(id, module);

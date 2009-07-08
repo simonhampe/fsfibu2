@@ -10,6 +10,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import org.dom4j.Document;
 
@@ -18,6 +20,7 @@ import fs.fibu2.application.Fsfibu2;
 import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.Journal;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
+import fs.fibu2.resource.Fsfibu2DefaultReference;
 import fs.fibu2.view.model.JournalTableModel;
 import fs.xml.ResourceDependent;
 import fs.xml.ResourceReference;
@@ -135,6 +138,25 @@ public class JournalTableBar extends JToolBar implements ResourceDependent {
 		}
 	};
 	
+	//Disables/enables buttons according to current table selection
+	private ListSelectionListener selectionListener = new ListSelectionListener() {
+		@Override
+		public void valueChanged(ListSelectionEvent e) {
+			int[] selection = table.getSelectedRows();
+			if(selection.length == 0) {
+				editButton.setEnabled(false);
+				deleteButton.setEnabled(false);
+			}
+			else {
+				boolean containsEntries = false;
+				for(int row : selection) 
+					if(table.getJournalTableModel().getValueAt(row, 0) instanceof Entry) { containsEntries = true;break;}
+				editButton.setEnabled(containsEntries);
+				deleteButton.setEnabled(containsEntries);
+			}
+		}
+	};
+	
 	// CONSTRUCTOR *************************************
 	// *************************************************
 	
@@ -145,29 +167,32 @@ public class JournalTableBar extends JToolBar implements ResourceDependent {
 		
 		//Init buttons
 		String path = "graphics/JournalTableBar";
+		Fsfibu2DefaultReference ref = Fsfibu2DefaultReference.getDefaultReference();
 		newButton.addActionListener(newListener);
-			newButton.setIcon(new ImageIcon(path + "/new.png"));
+			newButton.setIcon(new ImageIcon(ref.getFullResourcePath(this, path + "/new.png")));
 			newButton.setToolTipText(Fsfibu2StringTableMgr.getString(sgroup + ".newtooltip"));
 		editButton.addActionListener(editListener);
-			editButton.setIcon(new ImageIcon(path + "/edit.png"));
+			editButton.setIcon(new ImageIcon(ref.getFullResourcePath(this, path + "/edit.png")));
 			editButton.setToolTipText(Fsfibu2StringTableMgr.getString(sgroup + ".edittooltip"));
 		deleteButton.addActionListener(deleteListener);
-			deleteButton.setIcon(new ImageIcon(path + "/delete.png"));
+			deleteButton.setIcon(new ImageIcon(ref.getFullResourcePath(this, path + "/delete.png")));
 			deleteButton.setToolTipText(Fsfibu2StringTableMgr.getString(sgroup + ".deletetooltip"));
 		
-			editSeparatorsButton.setIcon(new ImageIcon(path + "/editsep.png"));
+			editSeparatorsButton.setIcon(new ImageIcon(ref.getFullResourcePath(this,path + "/editsep.png")));
 			editSeparatorsButton.setToolTipText(Fsfibu2StringTableMgr.getString(sgroup + ".editseptooltip"));
 		
 		showYearSeparatorButton.setSelected(table.getJournalTableModel().areYearSeparatorsVisible());
 		showYearSeparatorButton.addActionListener(showYearSeparatorListener);
-			showYearSeparatorButton.setIcon(new ImageIcon(path + "/year.png"));
+			showYearSeparatorButton.setIcon(new ImageIcon(ref.getFullResourcePath(this,path + "/year.png")));
 			showYearSeparatorButton.setToolTipText(Fsfibu2StringTableMgr.getString(sgroup + ".yeartooltip"));
 			
 		showReadingPointsButton.setSelected(table.getJournalTableModel().areReadingPointsVisible());
 		showReadingPointsButton.addActionListener(showReadingPointsListener);
-			showReadingPointsButton.setIcon(new ImageIcon(path + "/reading.png"));
+			showReadingPointsButton.setIcon(new ImageIcon(ref.getFullResourcePath(this,path + "/reading.png")));
 			showReadingPointsButton.setToolTipText(Fsfibu2StringTableMgr.getString(sgroup + ".readingtooltip"));
 		
+		table.getSelectionModel().addListSelectionListener(selectionListener);
+		selectionListener.valueChanged(new ListSelectionEvent(this,0,0,false));
 		
 		//Add buttons
 		add(newButton);

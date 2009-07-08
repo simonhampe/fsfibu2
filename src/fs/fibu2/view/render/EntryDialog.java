@@ -104,7 +104,7 @@ public class EntryDialog extends FrameworkDialog {
 	private JButton okButton = new JButton(Fsfibu2StringTableMgr.getString("fs.fibu2.global.ok"));
 	private JButton cancelButton = new JButton(Fsfibu2StringTableMgr.getString("fs.fibu2.global.cancel"));
 	
-	private ImageIcon warn = new ImageIcon("graphics/share/warn.png");
+	private ImageIcon warn = new ImageIcon(Fsfibu2DefaultReference.getDefaultReference().getFullResourcePath(this,"graphics/share/warn.png"));
 	
 	//A list of jtextfields/switchiconlabels for each information field of a given account
 	private HashMap<String, JTextField> accountMap = new HashMap<String, JTextField>();
