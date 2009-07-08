@@ -144,9 +144,11 @@ public class OverviewModule extends JPanel implements JournalModule, ResourceDep
 		
 		table = new JournalTable(new JournalTableModel(j,null,true,true));
 		categoryBox.setModel(new CategoryListModel(j,true));
+		categoryBox.setSelectedIndex(0);
 		categoryBox.setRenderer(new CategoryListRenderer(" > "));
 		yearBox.setModel(new YearListModel(j));
 		yearBox.setRenderer(new YearListRenderer());
+		yearBox.setSelectedItem(null);
 
 		//Now extract preferences
 //		if(node != null) {
