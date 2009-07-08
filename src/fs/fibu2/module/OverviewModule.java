@@ -92,7 +92,7 @@ public class OverviewModule extends JPanel implements JournalModule, ResourceDep
 		
 		add(bar,BorderLayout.NORTH);
 		add(comboBar,BorderLayout.NORTH);
-		//add(new JScrollPane(table), BorderLayout.CENTER);
+		add(new JScrollPane(table), BorderLayout.CENTER);
 	}
 	
 	// MODULE ****************************
