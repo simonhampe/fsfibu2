@@ -36,8 +36,7 @@ public class CategoryTest {
 		System.out.println(c2);
 		System.out.println(c2.parent.parent.equals(c));
 		System.out.println(c4.equals(c2));
-		Category test1 = Category.getCategory(new Vector<String>(Arrays.asList("Fachschaft","mit Bier","bla")));
-		Category test2 = Category.getCategory(new Vector<String>(Arrays.asList("Fachschaft","bla")));
+
 		
 		//XML Features
 		DefaultDocument doc = new DefaultDocument();

@@ -4,8 +4,6 @@ import java.io.File;
 import java.util.Locale;
 import java.util.Vector;
 
-import javax.swing.JDialog;
-
 import org.apache.log4j.BasicConfigurator;
 
 import fs.event.DataRetrievalListener;

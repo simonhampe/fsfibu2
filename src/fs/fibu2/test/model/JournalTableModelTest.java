@@ -16,7 +16,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.SwingWorker;
 
 import org.apache.log4j.BasicConfigurator;
@@ -32,7 +31,6 @@ import fs.fibu2.view.event.ProgressListener;
 import fs.fibu2.view.model.JournalTableModel;
 import fs.fibu2.view.render.BilancialPanel;
 import fs.fibu2.view.render.JournalTable;
-import fs.fibu2.view.render.JournalTableRenderer;
 import fs.gui.GUIToolbox;
 import fs.xml.FsfwDefaultReference;
 import fs.xml.XMLToolbox;

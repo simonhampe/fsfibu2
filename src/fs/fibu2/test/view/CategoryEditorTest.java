@@ -3,8 +3,6 @@ package fs.fibu2.test.view;
 import java.io.File;
 import java.util.Locale;
 
-import javax.swing.JDialog;
-
 import org.apache.log4j.BasicConfigurator;
 
 import fs.event.DataRetrievalListener;
