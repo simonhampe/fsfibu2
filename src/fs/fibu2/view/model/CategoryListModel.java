@@ -178,6 +178,10 @@ public class CategoryListModel extends AbstractListModel implements JournalListe
 				//Preserve selection if possible
 				model = new DefaultComboBoxModel(listOfCategories);
 				if(listOfCategories.contains(c)) model.setSelectedItem(c);
+				else {
+					if(listOfCategories.size() > 0) model.setSelectedItem(listOfCategories.get(0));
+					else model.setSelectedItem(null);
+				}
 				currentRecalculator = null;
 				fireContentsChanged();
 			} catch (Exception e) {

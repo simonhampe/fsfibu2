@@ -28,6 +28,8 @@ import javax.swing.JToolBar;
 
 import org.dom4j.Document;
 
+import fs.fibu2.data.event.JournalAdapter;
+import fs.fibu2.data.event.JournalListener;
 import fs.fibu2.data.model.Category;
 import fs.fibu2.data.model.Journal;
 import fs.fibu2.filter.CategoryFilter;
@@ -61,8 +63,6 @@ public class OverviewModule extends JPanel implements JournalModule, ResourceDep
 
 	// DATA ******************************
 	// ***********************************
-	
-	private Journal associatedJournal;
 	
 	private static HashMap<Journal, OverviewModule> modules = new HashMap<Journal, OverviewModule>();
 	
@@ -126,6 +126,18 @@ public class OverviewModule extends JPanel implements JournalModule, ResourceDep
 		}
 	};
 	
+	//Listens to the journal and update name/descr. when they're changed externally (e.g. by an undo)
+	private JournalListener journalListener = new JournalAdapter() {
+		@Override
+		public void descriptionChanged(Journal source, String oldValue,String newValue) {
+			descriptionArea.setText(newValue);
+		}
+		@Override
+		public void nameChanged(Journal source, String oldValue, String newValue) {
+			nameField.setText(newValue);
+		}
+	};
+	
 	// CONSTRUCTOR ***********************
 	// ***********************************
 	
@@ -151,30 +163,30 @@ public class OverviewModule extends JPanel implements JournalModule, ResourceDep
 		yearBox.setSelectedItem(null);
 
 		//Now extract preferences
-//		if(node != null) {
-//			String displayyear = node.get("displayyear", null);
-//			if(displayyear != null) table.getJournalTableModel().setYearSeparatorsVisible(Boolean.parseBoolean(displayyear));
-//			String displayreading = node.get("displayreading", null);
-//			if(displayreading != null) table.getJournalTableModel().setReadingPointsVisible(Boolean.parseBoolean(displayreading));
-//			String year = node.get("year", null);
-//			if(year != null && !(year.equals("null"))) {
-//				try {
-//					Integer intyear = Integer.parseInt(year);
-//					yearBox.setSelectedItem(intyear);
-//				}
-//				catch(NumberFormatException e) {
-//					//Ignore
-//				}
-//			}
-//			try {
-//				if(node.nodeExists("filter")) {
-//					CategoryFilter filter = (CategoryFilter)(new CategoryFilter()).createMeFromPreferences(node.node("filter"));
-//					categoryBox.setSelectedItem(filter.getEqualityCategory());
-//				}
-//			} catch (BackingStoreException e) {
-//				//Ignore
-//			}
-//		}
+		if(node != null) {
+			String displayyear = node.get("displayyear", null);
+			if(displayyear != null) table.getJournalTableModel().setYearSeparatorsVisible(Boolean.parseBoolean(displayyear));
+			String displayreading = node.get("displayreading", null);
+			if(displayreading != null) table.getJournalTableModel().setReadingPointsVisible(Boolean.parseBoolean(displayreading));
+			String year = node.get("year", null);
+			if(year != null && !(year.equals("null"))) {
+				try {
+					Integer intyear = Integer.parseInt(year);
+					yearBox.setSelectedItem(intyear);
+				}
+				catch(NumberFormatException e) {
+					//Ignore
+				}
+			}
+			try {
+				if(node.nodeExists("filter")) {
+					CategoryFilter filter = (CategoryFilter)(new CategoryFilter()).createMeFromPreferences(node.node("filter"));
+					categoryBox.setSelectedItem(filter.getEqualityCategory());
+				}
+			} catch (BackingStoreException e) {
+				//Ignore
+			}
+		}
 		
 		bar = new JournalTableBar(table);
 			bar.setFloatable(false);
@@ -258,7 +270,9 @@ public class OverviewModule extends JPanel implements JournalModule, ResourceDep
 		//Add listeners
 		categoryBox.addItemListener(categoryItemListener);
 		yearBox.addItemListener(yearItemListener);
+		table.getJournalTableModel().getAssociatedJournal().addJournalListener(journalListener);
 		
+		updateFilter();
 	}
 	
 	// MODULE ****************************

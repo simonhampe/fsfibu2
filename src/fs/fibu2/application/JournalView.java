@@ -40,7 +40,7 @@ public class JournalView extends JTabbedPane {
 	 * constructor looks for a node which bears as name the id of the module and if it exists, passes it on.
 	 */
 	public JournalView(Journal j, Preferences prefNode) {
-		associatedJournal = j == null? new Journal() : associatedJournal;
+		associatedJournal = j == null? new Journal() : j;
 		modules = makeOrderedList();
 		int index = 0;
 		for(JournalModule module : modules) {

@@ -1,6 +1,8 @@
 package fs.fibu2.application;
 
 import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -16,10 +18,13 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.UndoableEditEvent;
+import javax.swing.event.UndoableEditListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.apache.log4j.Logger;
@@ -30,7 +35,10 @@ import fs.fibu2.data.event.JournalChangeFlag;
 import fs.fibu2.data.format.Fsfibu1Converter;
 import fs.fibu2.data.model.Journal;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
+import fs.fibu2.resource.Fsfibu2DefaultReference;
+import fs.fibu2.undo.JournalUndoManager;
 import fs.gui.EditCloseTabComponent;
+import fs.gui.GUIToolbox;
 import fs.xml.FsfwDefaultReference;
 import fs.xml.ResourceDependent;
 import fs.xml.ResourceReference;
@@ -70,6 +78,8 @@ public class MainFrame extends JFrame implements ResourceDependent {
 		private JButton exportButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".button.export"));
 		private JButton helpButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".button.help"));
 		private JButton exitButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".button.exit"));
+		private JButton undoButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".button.undo"));
+		private JButton redoButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".button.redo"));
 		
 	// LISTENERS ************************************
 	// **********************************************
@@ -148,6 +158,29 @@ public class MainFrame extends JFrame implements ResourceDependent {
 		}
 	};
 	
+	private UndoableEditListener undoListener = new UndoableEditListener() {
+		@Override
+		public void undoableEditHappened(UndoableEditEvent e) {
+			updateTitleAndButtons();
+		}
+	};
+	
+	private ActionListener undoButtonListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JournalUndoManager mgr = JournalUndoManager.getInstance(journalsOpen.get(tabPane.getSelectedIndex()).journal);
+			if(mgr.canUndo()) mgr.undo();
+		}
+	};
+	
+	private ActionListener redoButtonListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JournalUndoManager mgr = JournalUndoManager.getInstance(journalsOpen.get(tabPane.getSelectedIndex()).journal);
+			if(mgr.canRedo()) mgr.redo();
+		}
+	};
+	
 	
 	// CONSTRUCTOR **********************************
 	// **********************************************
@@ -193,21 +226,42 @@ public class MainFrame extends JFrame implements ResourceDependent {
 		updateTitleAndButtons();
 		
 		//Add buttons
+		GridBagLayout gbl = new GridBagLayout();
+		toolBar.setLayout(gbl);
+		
+		int col = 0;
 		for(JButton b : Arrays.asList(newButton, openButton, saveButton, saveAsButton,exportButton, helpButton, exitButton)) {
+			GridBagConstraints gc = GUIToolbox.buildConstraints(col, 0, 1, 1);
+			gbl.setConstraints(b, gc);
 			toolBar.add(b);
+			col ++;
 		}
+		
+		JPanel fillPanel = new JPanel();
+		GridBagConstraints gcFill = GUIToolbox.buildConstraints(col, 0, 1, 1); col++;
+			gcFill.weightx = 100;
+		gbl.setConstraints(fillPanel, gcFill);
+		toolBar.add(fillPanel);
+		
+		GridBagConstraints gcUndo = GUIToolbox.buildConstraints(col, 0, 1, 1); col++;
+		GridBagConstraints gcRedo = GUIToolbox.buildConstraints(col, 0, 1, 1);
+		gbl.setConstraints(undoButton, gcUndo);
+		gbl.setConstraints(redoButton, gcRedo);
+		toolBar.add(undoButton); toolBar.add(redoButton);
+		
 		String path = "graphics/MainFrame/";
-		newButton.setIcon(new ImageIcon(path + "new.png"));
+		Fsfibu2DefaultReference ref = Fsfibu2DefaultReference.getDefaultReference();
+		newButton.setIcon(new ImageIcon(ref.getFullResourcePath(this, path + "new.png")));
 			newButton.addActionListener(newListener);
-		openButton.setIcon(new ImageIcon(path + "open.png"));
+		openButton.setIcon(new ImageIcon(ref.getFullResourcePath(this, path + "open.png")));
 			openButton.addActionListener(openListener);
-		saveButton.setIcon(new ImageIcon(path + "save.png"));
+		saveButton.setIcon(new ImageIcon(ref.getFullResourcePath(this,path + "save.png")));
 			saveButton.addActionListener(saveListener);
-		saveAsButton.setIcon(new ImageIcon(path + "save.png"));
+		saveAsButton.setIcon(new ImageIcon(ref.getFullResourcePath(this, path + "save.png")));
 			saveAsButton.addActionListener(saveAsListener);
-		exportButton.setIcon(new ImageIcon(path + "export.png"));
-		helpButton.setIcon(new ImageIcon(path + "help.png"));
-		exitButton.setIcon(new ImageIcon(path + "exit.png"));
+		exportButton.setIcon(new ImageIcon(ref.getFullResourcePath(this, path + "export.png")));
+		helpButton.setIcon(new ImageIcon(ref.getFullResourcePath(this, path + "help.png")));
+		exitButton.setIcon(new ImageIcon(ref.getFullResourcePath(this, path + "exit.png")));
 			exitButton.addActionListener(exitListener);
 			addWindowListener(new WindowAdapter() {
 				@Override
@@ -215,6 +269,10 @@ public class MainFrame extends JFrame implements ResourceDependent {
 					exit();
 				}
 			});
+		undoButton.setIcon(new ImageIcon(ref.getFullResourcePath(this, path + "undo.png")));
+			undoButton.addActionListener(undoButtonListener);
+		redoButton.setIcon(new ImageIcon(ref.getFullResourcePath(this, path + "redo.png")));
+			redoButton.addActionListener(redoButtonListener);
 		toolBar.setFloatable(false);
 		tabPane.addChangeListener(tabSelectionListener);
 		
@@ -245,6 +303,8 @@ public class MainFrame extends JFrame implements ResourceDependent {
 			saveButton.setEnabled(false);
 			saveAsButton.setEnabled(false);
 			exportButton.setEnabled(false);
+			undoButton.setEnabled(false);
+			redoButton.setEnabled(false);
 		}
 		else {
 			JournalVector vector = journalsOpen.get(tabPane.getSelectedIndex());
@@ -254,17 +314,25 @@ public class MainFrame extends JFrame implements ResourceDependent {
 				b.append("*");
 			saveButton.setEnabled(true);
 			saveAsButton.setEnabled(true);
-			exportButton.setEnabled(false);
+			exportButton.setEnabled(true);
 			for(int i = 0 ; i < journalsOpen.size(); i++) {
 				String name = journalsOpen.get(i).journal.getName();
 				if(name == null || name.trim().equals("")) name = Fsfibu2StringTableMgr.getString("fs.fibu2.MainFrame.unnamed");
 				if(journalsOpen.get(i).flag.hasBeenChanged()) name = name + "*";
 				if(tabPane.getTabComponentAt(i) != null)((EditCloseTabComponent)tabPane.getTabComponentAt(i)).getTextLabel().setText(name);
 			}
+			//Now update undo and redo button
+			JournalUndoManager mgr = JournalUndoManager.getInstance(vector.journal);
+			undoButton.setEnabled(mgr.canUndo());
+				if(undoButton.isEnabled()) undoButton.setToolTipText(mgr.getUndoPresentationName());
+			redoButton.setEnabled(mgr.canRedo());
+				if(redoButton.isEnabled()) redoButton.setToolTipText(mgr.getRedoPresentationName());
 		}
 		setTitle(b.toString());
-	}
+		
 
+	}
+	
 	/**
 	 * Adds a journal. If f == null, a new Journal is created, otherwise the journal is loaded from the file.
 	 * The method logs an error, if the file cannot be opened. The preference node is passed to the JournalView to
@@ -429,6 +497,7 @@ public class MainFrame extends JFrame implements ResourceDependent {
 			tabPane.setTabComponentAt(index, component);
 		tabPane.addChangeListener(tabSelectionListener);
 		vector.flag.addChangeListener(journalListener);
+		JournalUndoManager.getInstance(vector.journal).addUndoableEditListener(undoListener);
 			updateTitleAndButtons();
 	}
 
@@ -488,8 +557,7 @@ public class MainFrame extends JFrame implements ResourceDependent {
 		try {
 			Preferences.userRoot().flush();
 		} catch (BackingStoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.warn(Fsfibu2StringTableMgr.getString(sgroup + ".cannotsaveprefs",e.getLocalizedMessage()));
 		}
 		System.exit(0);
 	}
