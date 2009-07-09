@@ -33,7 +33,6 @@ import fs.fibu2.data.event.JournalListener;
 import fs.fibu2.data.model.Category;
 import fs.fibu2.data.model.Journal;
 import fs.fibu2.filter.CategoryFilter;
-import fs.fibu2.filter.DateFilter;
 import fs.fibu2.filter.DefaultFilters;
 import fs.fibu2.filter.EntryFilter;
 import fs.fibu2.filter.StackFilter;
@@ -64,6 +63,11 @@ public class OverviewModule extends JPanel implements JournalModule, ResourceDep
 	// DATA ******************************
 	// ***********************************
 	
+	/**
+	 * compiler-generated serial version uid
+	 */
+	private static final long serialVersionUID = 447931083760219155L;
+
 	private static HashMap<Journal, OverviewModule> modules = new HashMap<Journal, OverviewModule>();
 	
 	private final static String sgroup = "fs.fibu2.module.OverviewModule";
