@@ -7,6 +7,7 @@ import java.util.Vector;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import fs.fibu2.module.FilterModule;
 import fs.fibu2.module.OverviewModule;
 
 /**
@@ -23,9 +24,12 @@ public class JournalModuleLoader {
 	//An ordered list of all module IDs which were available from beginning (i.e. were added in the static code below and not dynamically)
 	private static Vector<String> defaultModules = new Vector<String>();
 	
-	//Init all default modules
+	//Init all default modules 
 	static {
+		setModule("ff2module_filter", FilterModule.class);
+			defaultModules.add("ff2module_overview");
 		setModule("ff2module_overview", OverviewModule.class);
+			defaultModules.add("ff2module_filter");
 	}
 	
 	/**
