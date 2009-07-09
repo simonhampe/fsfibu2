@@ -3,6 +3,7 @@ package fs.fibu2.application;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -283,8 +284,6 @@ public class MainFrame extends JFrame implements ResourceDependent {
 		
 		//Add journals
 		add(tabPane, BorderLayout.CENTER);
-		
-		setVisible(true);
 	}
 
 	// CONTROL METHODS ****************************

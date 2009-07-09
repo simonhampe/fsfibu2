@@ -160,8 +160,10 @@ public class Fsfibu2 {
 		
 		//Create MainFrame
 		frame = new MainFrame();
+		frame.pack();
+		frame.setVisible(true);
 		JFrame.setDefaultLookAndFeelDecorated(false);
-		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
 	}
 	
 	/**
