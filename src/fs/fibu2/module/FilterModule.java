@@ -1,5 +1,6 @@
 package fs.fibu2.module;
 
+import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -12,10 +13,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JToggleButton;
 
 import org.dom4j.Document;
 
+import fs.fibu2.application.JournalView;
 import fs.fibu2.data.model.Journal;
 import fs.fibu2.filter.EntryFilterEditor;
 import fs.fibu2.filter.StackFilter;
@@ -26,6 +29,7 @@ import fs.fibu2.view.model.JournalTableModel;
 import fs.fibu2.view.render.BilancialPanel;
 import fs.fibu2.view.render.JournalTable;
 import fs.fibu2.view.render.JournalTableBar;
+import fs.gui.EditCloseTabComponent;
 import fs.gui.GUIToolbox;
 import fs.xml.ResourceDependent;
 import fs.xml.ResourceReference;
@@ -46,23 +50,9 @@ public class FilterModule extends JPanel implements JournalModule, ResourceDepen
 	// COMPONENTS ********************
 	// *******************************
 	
-	private JournalTable table;
-	private JournalTableBar bar;
-	private JToggleButton filterButton = new JToggleButton(new ImageIcon(Fsfibu2DefaultReference.getDefaultReference().getFullResourcePath(this, "graphics/FilterModule/filter.png")));
-	private BilancialPanel bilancialPanel;
+	private JTabbedPane tabbedPane = new JTabbedPane();
 	
-	private StackFilter filter;
-	private EntryFilterEditor filterComponent;
-	
-	// LISTENERS *********************
-	// *******************************
-	
-	private ActionListener visbilityListener = new ActionListener() {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			filterComponent.setVisible(filterButton.isSelected());
-		}
-	};
+	private JButton addButton = new JButton(Fsfibu2StringTableMgr.getString("fs.fibu2.module.FilterModule.add"));
 	
 	// CONSTRUCTORS ******************
 	// *******************************
@@ -70,43 +60,14 @@ public class FilterModule extends JPanel implements JournalModule, ResourceDepen
 	public FilterModule() {}
 	
 	protected FilterModule(Journal j, Preferences node) {
-		super();
+		super(new BorderLayout());
+		//Create dummy tab for addition
+		JPanel dummyPanel = new JPanel();
+		tabbedPane.add(dummyPanel);
+		tabbedPane.setTabComponentAt(0, addButton);
+		tabbedPane.setEnabledAt(0, false);
 		
-		//Init components
-		filter = new StackFilter();
-		//TODO: Read out preferences here
-		table = new JournalTable(new JournalTableModel(j,filter,true,true));
-		filterButton.setToolTipText(Fsfibu2StringTableMgr.getString("fs.fibu2.module.FilterModule.filter"));
-		filterButton.setSelected(false);
-		filterButton.addActionListener(visbilityListener);
-		bar = new JournalTableBar(table);
-			bar.setFloatable(false);
-		bilancialPanel = new BilancialPanel(table);
-		filterComponent = filter.getEditor(j);
-		filterComponent.setVisible(false);
-		
-		JScrollPane scrollPane = new JScrollPane(table);
-		
-		//Layout
-		GridBagLayout gbl = new GridBagLayout();
-		setLayout(gbl);
-		
-		GridBagConstraints gcBar = GUIToolbox.buildConstraints(0, 0, 1, 1); gcBar.weightx = 100;
-		GridBagConstraints gcButton = GUIToolbox.buildConstraints(1, 0, 1, 1);
-		GridBagConstraints gcTable = GUIToolbox.buildConstraints(0, 1, 2, 1); gcTable.weighty = 100;
-		GridBagConstraints gcBilancial = GUIToolbox.buildConstraints(0, 2, 2, 1);
-		GridBagConstraints gcFilter = GUIToolbox.buildConstraints(2, 0, 1, 3); gcFilter.weighty = 100;
-		
-		gbl.setConstraints(bar, gcBar);
-		gbl.setConstraints(filterButton, gcButton);
-		gbl.setConstraints(scrollPane, gcTable);
-		gbl.setConstraints(bilancialPanel, gcBilancial);
-		gbl.setConstraints(filterComponent, gcFilter);
-		
-		add(bar); add(filterButton); add(scrollPane); add(bilancialPanel); 
-		add(filterComponent);
-		
-		
+		add(tabbedPane, BorderLayout.CENTER);
 	}
 	
 	// JOURNALMODULE *****************
