@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.swing.Icon;
@@ -12,6 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import org.apache.log4j.Logger;
 import org.dom4j.Document;
 
 import fs.fibu2.data.model.Journal;
@@ -38,6 +40,8 @@ public class FilterModule extends JPanel implements JournalModule, ResourceDepen
 	
 	private Journal associatedJournal;
 	
+	private Logger logger = Logger.getLogger(FilterModule.class);
+	
 	// COMPONENTS ********************
 	// *******************************
 	
@@ -63,6 +67,7 @@ public class FilterModule extends JPanel implements JournalModule, ResourceDepen
 	protected FilterModule(Journal j, Preferences node) {
 		super(new BorderLayout());
 		associatedJournal = j;
+		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		
 		//Create dummy tab for addition
 		JPanel dummyPanel = new JPanel();
@@ -71,6 +76,20 @@ public class FilterModule extends JPanel implements JournalModule, ResourceDepen
 		tabbedPane.setEnabledAt(0, false);
 		
 		add(tabbedPane, BorderLayout.CENTER);
+		
+		//Extract preferences
+		if(node != null) {
+			try {
+				while(node.nodeExists("paneNode")) {
+					node = node.node("paneNode");
+					if(node.nodeExists("config")) {
+						addPanel(node.node("config"));
+					}
+				}
+			} catch (BackingStoreException e) {
+				logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.module.FilterModule.preferror",e.getMessage()));
+			}
+		}		
 		
 		//Add listeners
 		addButton.addActionListener(addListener);
@@ -136,7 +155,24 @@ public class FilterModule extends JPanel implements JournalModule, ResourceDepen
 	}
 	
 	protected void insertPreferences(Preferences node) {
-		//TODO: Write
+		if(node != null) {
+			try {
+				//Clear old prefs
+				Preferences paneNode = node;
+				if(paneNode.nodeExists("paneNode")) {
+					paneNode.node("paneNode").removeNode(); 
+				}
+				paneNode = paneNode.node("paneNode");
+				//Write new prefs
+				for(int i = 1; i < tabbedPane.getTabCount(); i++) {
+					FilterPane pane = (FilterPane)tabbedPane.getComponentAt(i);
+					pane.insertPreferences(paneNode.node("config"));
+					paneNode = paneNode.node("paneNode");
+				}
+			} catch (BackingStoreException e) {
+				logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.module.FilterModule.prefsaveerror", e.getMessage()));;
+			}
+		}
 	}
 
 	// RESOURCEDEPENDENT *************************
