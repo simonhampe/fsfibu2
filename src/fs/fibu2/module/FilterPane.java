@@ -4,10 +4,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
@@ -15,6 +15,7 @@ import javax.swing.JToggleButton;
 import org.dom4j.Document;
 
 import fs.fibu2.data.model.Journal;
+import fs.fibu2.filter.EntryFilter;
 import fs.fibu2.filter.EntryFilterEditor;
 import fs.fibu2.filter.StackFilter;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
@@ -26,6 +27,7 @@ import fs.fibu2.view.render.JournalTableBar;
 import fs.gui.GUIToolbox;
 import fs.xml.ResourceDependent;
 import fs.xml.ResourceReference;
+import fs.xml.XMLDirectoryTree;
 
 /**
  * Contains a journal table view with table bar and a filter editor which can be toggled on/off
@@ -34,6 +36,11 @@ import fs.xml.ResourceReference;
  */
 public class FilterPane extends JPanel implements ResourceDependent {
 
+	/**
+	 * compiler-generated serial version uid
+	 */
+	private static final long serialVersionUID = -3491854264546994038L;
+	
 	// COMPONENTS ********************
 	// *******************************
 	
@@ -42,7 +49,7 @@ public class FilterPane extends JPanel implements ResourceDependent {
 	private JToggleButton filterButton = new JToggleButton(new ImageIcon(Fsfibu2DefaultReference.getDefaultReference().getFullResourcePath(this, "graphics/FilterModule/filter.png")));
 	private BilancialPanel bilancialPanel;
 	
-	private StackFilter filter;
+	private EntryFilter filter;
 	private EntryFilterEditor filterComponent;
 	
 	// LISTENERS *********************
@@ -66,8 +73,24 @@ public class FilterPane extends JPanel implements ResourceDependent {
 		
 		//Init components
 		filter = new StackFilter();
-		//TODO: Read out preferences here
-		table = new JournalTable(new JournalTableModel(j,filter,true,true));
+		
+		table = new JournalTable(new JournalTableModel(j,null,true,true));
+		//Read out preferences
+		if(node != null) {
+			String displayyear = node.get("displayyear", null);
+			if(displayyear != null) table.getJournalTableModel().setYearSeparatorsVisible(Boolean.parseBoolean(displayyear));
+			String displayreading = node.get("displayreading", null);
+			if(displayreading != null) table.getJournalTableModel().setReadingPointsVisible(Boolean.parseBoolean(displayreading));
+			try {
+				if(node.nodeExists("filter")) {
+					filter = filter.createMeFromPreferences(node.node("filter"));
+				}
+			} catch (BackingStoreException e) {
+				//Ignore
+			}
+		}
+		table.getJournalTableModel().setFilter(filter);
+		
 		filterButton.setToolTipText(Fsfibu2StringTableMgr.getString("fs.fibu2.module.FilterPane.filter"));
 		filterButton.setSelected(false);
 		filterButton.addActionListener(visbilityListener);
@@ -106,7 +129,11 @@ public class FilterPane extends JPanel implements ResourceDependent {
 	 * Inserts the preferences of this pane into the given node
 	 */
 	public void insertPreferences(Preferences node) {
-		
+		if(node != null) {
+			node.put("displayyear", Boolean.toString(table.getJournalTableModel().areYearSeparatorsVisible()));
+			node.put("displayreading", Boolean.toString(table.getJournalTableModel().areReadingPointsVisible()));
+			filter.insertMyPreferences(node);
+		}
 	}
 	
 	// RESOURCEDEPENDENT *************
@@ -114,14 +141,14 @@ public class FilterPane extends JPanel implements ResourceDependent {
 	
 	@Override
 	public void assignReference(ResourceReference r) {
-		// TODO Auto-generated method stub
-
+		//Ignore
 	}
 
 	@Override
 	public Document getExpectedResourceStructure() {
-		// TODO Auto-generated method stub
-		return null;
+		XMLDirectoryTree tree = new XMLDirectoryTree();
+		tree.addPath("graphics/FilterModule/filter.png");
+		return tree;
 	}
 
 }

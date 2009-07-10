@@ -36,6 +36,11 @@ public class FilterModule extends JPanel implements JournalModule, ResourceDepen
 	// DATA **************************
 	// *******************************
 	
+	/**
+	 * compiler-generated serial version uid
+	 */
+	private static final long serialVersionUID = 3851970671264968499L;
+
 	private static HashMap<Journal, FilterModule> modules = new HashMap<Journal, FilterModule>();
 	
 	private Journal associatedJournal;
@@ -78,7 +83,15 @@ public class FilterModule extends JPanel implements JournalModule, ResourceDepen
 		add(tabbedPane, BorderLayout.CENTER);
 		
 		//Extract preferences
+		
 		if(node != null) {
+			Integer selected = 0;
+			try {
+				selected = Integer.parseInt(node.get("selected", "0"));
+			}
+			catch(NumberFormatException e) {
+				//Ignore
+			}
 			try {
 				while(node.nodeExists("paneNode")) {
 					node = node.node("paneNode");
@@ -89,6 +102,7 @@ public class FilterModule extends JPanel implements JournalModule, ResourceDepen
 			} catch (BackingStoreException e) {
 				logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.module.FilterModule.preferror",e.getMessage()));
 			}
+			if(selected > 0 && selected < tabbedPane.getTabCount()) tabbedPane.setSelectedIndex(selected);
 		}		
 		
 		//Add listeners
@@ -105,7 +119,9 @@ public class FilterModule extends JPanel implements JournalModule, ResourceDepen
 	protected void addPanel(Preferences node) {
 		FilterPane pane = new FilterPane(node,associatedJournal);
 		tabbedPane.add(pane);
-		EditCloseTabComponent tabComponent = new EditCloseTabComponent(Fsfibu2StringTableMgr.getString("fs.fibu2.module.FilterModule.defaulttitle"),
+		String title = node == null? Fsfibu2StringTableMgr.getString("fs.fibu2.module.FilterModule.defaulttitle") :
+				node.get("name", Fsfibu2StringTableMgr.getString("fs.fibu2.module.FilterModule.defaulttitle"));
+		EditCloseTabComponent tabComponent = new EditCloseTabComponent(title,
 				tabbedPane,true,true,FsfwDefaultReference.getDefaultReference());
 		tabbedPane.setTabComponentAt(tabbedPane.getTabCount()-1, tabComponent);
 		tabbedPane.setSelectedIndex(tabbedPane.getTabCount()-1);
@@ -162,12 +178,14 @@ public class FilterModule extends JPanel implements JournalModule, ResourceDepen
 				if(paneNode.nodeExists("paneNode")) {
 					paneNode.node("paneNode").removeNode(); 
 				}
-				paneNode = paneNode.node("paneNode");
+				
 				//Write new prefs
+				if(tabbedPane.getTabCount() > 1) node.put("selected", Integer.toString(tabbedPane.getSelectedIndex()));
 				for(int i = 1; i < tabbedPane.getTabCount(); i++) {
-					FilterPane pane = (FilterPane)tabbedPane.getComponentAt(i);
-					pane.insertPreferences(paneNode.node("config"));
 					paneNode = paneNode.node("paneNode");
+					FilterPane pane = (FilterPane)tabbedPane.getComponentAt(i);
+					paneNode.node("config").put("name", ((EditCloseTabComponent)tabbedPane.getTabComponentAt(i)).getTextLabel().getText());
+					pane.insertPreferences(paneNode.node("config"));
 				}
 			} catch (BackingStoreException e) {
 				logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.module.FilterModule.prefsaveerror", e.getMessage()));;
