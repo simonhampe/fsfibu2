@@ -137,11 +137,10 @@ public class BilancialPanel extends JPanel {
 	 * @throws ClassCastException - if the table model is not of type {@link JournalTableModel}.
 	 */
 	public BilancialPanel(JournalTable table) throws ClassCastException {
-		//Copy data and listen
+		//Copy data 
 		tableModel = table.getJournalTableModel();
-			tableModel.addTableModelListener(tableListener);
 		selectionModel = table.getSelectionModel();
-			selectionModel.addListSelectionListener(selectionListener);
+			
 		this.table = table;
 		
 		//Init GUI ----------------------------
@@ -262,6 +261,10 @@ public class BilancialPanel extends JPanel {
 		add(thirdPanel);
 
 		updateValues();
+		
+		//Add listeners
+		tableModel.addTableModelListener(tableListener);
+		selectionModel.addListSelectionListener(selectionListener);
 	}
 	
 	// CONTROL METHODS **********************************
