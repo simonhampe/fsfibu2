@@ -1,8 +1,6 @@
 package fs.fibu2.module;
 
 import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
@@ -12,25 +10,16 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JToggleButton;
 
 import org.dom4j.Document;
 
-import fs.fibu2.application.JournalView;
 import fs.fibu2.data.model.Journal;
-import fs.fibu2.filter.EntryFilterEditor;
-import fs.fibu2.filter.StackFilter;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
 import fs.fibu2.resource.Fsfibu2DefaultReference;
 import fs.fibu2.view.model.JournalModule;
-import fs.fibu2.view.model.JournalTableModel;
-import fs.fibu2.view.render.BilancialPanel;
-import fs.fibu2.view.render.JournalTable;
-import fs.fibu2.view.render.JournalTableBar;
 import fs.gui.EditCloseTabComponent;
-import fs.gui.GUIToolbox;
+import fs.xml.FsfwDefaultReference;
 import fs.xml.ResourceDependent;
 import fs.xml.ResourceReference;
 import fs.xml.XMLDirectoryTree;
@@ -45,7 +34,9 @@ public class FilterModule extends JPanel implements JournalModule, ResourceDepen
 	// DATA **************************
 	// *******************************
 	
-	private HashMap<Journal, FilterModule> modules = new HashMap<Journal, FilterModule>();
+	private static HashMap<Journal, FilterModule> modules = new HashMap<Journal, FilterModule>();
+	
+	private Journal associatedJournal;
 	
 	// COMPONENTS ********************
 	// *******************************
@@ -54,6 +45,16 @@ public class FilterModule extends JPanel implements JournalModule, ResourceDepen
 	
 	private JButton addButton = new JButton(Fsfibu2StringTableMgr.getString("fs.fibu2.module.FilterModule.add"));
 	
+	// LISTENERS *********************
+	// *******************************
+	
+	private ActionListener addListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			addPanel(null);
+		}
+	};
+	
 	// CONSTRUCTORS ******************
 	// *******************************
 	
@@ -61,6 +62,8 @@ public class FilterModule extends JPanel implements JournalModule, ResourceDepen
 	
 	protected FilterModule(Journal j, Preferences node) {
 		super(new BorderLayout());
+		associatedJournal = j;
+		
 		//Create dummy tab for addition
 		JPanel dummyPanel = new JPanel();
 		tabbedPane.add(dummyPanel);
@@ -68,6 +71,28 @@ public class FilterModule extends JPanel implements JournalModule, ResourceDepen
 		tabbedPane.setEnabledAt(0, false);
 		
 		add(tabbedPane, BorderLayout.CENTER);
+		
+		//Add listeners
+		addButton.addActionListener(addListener);
+	}
+	
+	// CONTROL METHODS ***************
+	// *******************************
+	
+	/**
+	 * Adds a panel using the given preferences. If node == null, adds a new panel with default values. 
+	 * The new tab is automatically selected and if node == null, the tab component is set to edit mode
+	 */
+	protected void addPanel(Preferences node) {
+		FilterPane pane = new FilterPane(node,associatedJournal);
+		tabbedPane.add(pane);
+		EditCloseTabComponent tabComponent = new EditCloseTabComponent(Fsfibu2StringTableMgr.getString("fs.fibu2.module.FilterModule.defaulttitle"),
+				tabbedPane,true,true,FsfwDefaultReference.getDefaultReference());
+		tabbedPane.setTabComponentAt(tabbedPane.getTabCount()-1, tabComponent);
+		tabbedPane.setSelectedIndex(tabbedPane.getTabCount()-1);
+		if(node == null) {
+			tabComponent.setToEditMode();
+		}
 	}
 	
 	// JOURNALMODULE *****************
