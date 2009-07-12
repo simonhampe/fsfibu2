@@ -91,6 +91,12 @@ public class StackFilter implements EntryFilter {
 		}
 	}
 	
+	public StackFilter clone() {
+		StackFilter filter = new StackFilter();
+		filter.filterList = new Vector<StackFilterElement>(filterList);
+		return filter;
+	}
+	
 	// FILTER METHODS *************************
 	// ****************************************
 	
