@@ -546,8 +546,8 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 
 		@Override
 		protected void done() {
+			fireTaskFinished(this);
 			if(!isCancelled()) {
-				fireTaskFinished(this);
 				fireTableChanged(new TableModelEvent(JournalTableModel.this));
 			}
 		}	

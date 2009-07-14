@@ -13,7 +13,8 @@ import fs.fibu2.view.model.JournalModule;
 /**
  * Several {@link JournalModule}s use {@link StackFilter}s for their views and sometimes it might be useful to copy an existing filter into another
  * module without the need to recreate it from scratch. Hence each {@link JournalModule} can add/remove the StackFilters it uses to this pool.
- * They can then be retrieved by other modules. More precisely, the pool stores the filter and returns a clone of it, whenever it is requested.
+ * They can then be retrieved by other modules. More precisely, the pool stores the filter and returns it, whenever it is requested. A requesting module
+ * should always clone the filter retrieved to avoid side-effects, but there is no guarantee as to that.
  * @author Simon Hampe
  *
  */
@@ -41,6 +42,7 @@ public class FilterPool {
 		FilterPool p = pools.get(j);
 		if(p == null) {
 			p = new FilterPool();
+			pools.put(j, p);
 		}
 		return p;
 	}
@@ -63,19 +65,30 @@ public class FilterPool {
 	}
 	
 	/**
+	 * Changes the name of the filter (if it exists in this pool)
+	 * @param filter The filter whose name should be changed
+	 * @param newName The new name. If null, the empty string is used
+	 */
+	public void setFilterName(StackFilter filter, String newName) {
+		if(filterNames.containsKey(filter)) filterNames.put(filter, newName == null? "" : newName);
+		fireStateChanged();
+	}
+	
+	/**
 	 * Removes the given filter, if it is contained in the pool
 	 */
 	public void removeFilter(StackFilter filter) {
 		if(filterModules.containsKey(filter)) {
 			filterModules.remove(filter);
 			filterNames.remove(filter);
+			fireStateChanged();
 		}
 	}
 	
 	public HashSet<StackFilterTripel> getListOfFilters() {
 		HashSet<StackFilterTripel> set = new HashSet<StackFilterTripel>();
 		for(StackFilter f : filterModules.keySet()) {
-			set.add(new StackFilterTripel(f.clone(),filterModules.get(f), filterNames.get(f)));
+			set.add(new StackFilterTripel(f,filterModules.get(f), filterNames.get(f)));
 		}
 		return set;
 	}

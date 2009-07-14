@@ -15,7 +15,6 @@ import javax.swing.JToggleButton;
 import org.dom4j.Document;
 
 import fs.fibu2.data.model.Journal;
-import fs.fibu2.filter.EntryFilter;
 import fs.fibu2.filter.EntryFilterEditor;
 import fs.fibu2.filter.StackFilter;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
@@ -49,7 +48,7 @@ public class FilterPane extends JPanel implements ResourceDependent {
 	private JToggleButton filterButton = new JToggleButton(new ImageIcon(Fsfibu2DefaultReference.getDefaultReference().getFullResourcePath(this, "graphics/FilterModule/filter.png")));
 	private BilancialPanel bilancialPanel;
 	
-	private EntryFilter filter;
+	private StackFilter filter;
 	private EntryFilterEditor filterComponent;
 	
 	// LISTENERS *********************
@@ -66,13 +65,14 @@ public class FilterPane extends JPanel implements ResourceDependent {
 	// *******************************
 	
 	/**
-	 * Construct a filter pane for the given journal, using the given preferences. If node == null, default values are used
+	 * Construct a filter pane for the given journal, using the given filter and the given preferences. If node == null, default values are used.
+	 * Filter values from node override f.
 	 */
-	public FilterPane(Preferences node, Journal j) {
+	public FilterPane(Preferences node, StackFilter f, Journal j) {
 		super();
 		
 		//Init components
-		filter = new StackFilter();
+		filter = f == null? new StackFilter() : f;
 		
 		table = new JournalTable(new JournalTableModel(j,null,true,true));
 		//Read out preferences
@@ -83,7 +83,7 @@ public class FilterPane extends JPanel implements ResourceDependent {
 			if(displayreading != null) table.getJournalTableModel().setReadingPointsVisible(Boolean.parseBoolean(displayreading));
 			try {
 				if(node.nodeExists("filter")) {
-					filter = filter.createMeFromPreferences(node.node("filter"));
+					filter = (StackFilter)filter.createMeFromPreferences(node.node("filter"));
 				}
 			} catch (BackingStoreException e) {
 				//Ignore
@@ -134,6 +134,13 @@ public class FilterPane extends JPanel implements ResourceDependent {
 			node.put("displayreading", Boolean.toString(table.getJournalTableModel().areReadingPointsVisible()));
 			filter.insertMyPreferences(node);
 		}
+	}
+	
+	/**
+	 * @return The filter associated to this pane
+	 */
+	public StackFilter getFilter() {
+		return filter;
 	}
 	
 	// RESOURCEDEPENDENT *************
