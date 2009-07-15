@@ -281,6 +281,7 @@ public class MainFrame extends JFrame implements ResourceDependent {
 		tabPane.addChangeListener(tabSelectionListener);
 		
 		logAppender = new SwingAppender(Fsfibu2StringTableMgr.getString(".appendertitle"));
+			
 		Logger.getLogger("fs.fibu2").addAppender(logAppender.getModel());
 		JPanel statusBar = new JPanel(new BorderLayout());
 		statusBar.add(logAppender,BorderLayout.WEST);

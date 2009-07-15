@@ -482,7 +482,6 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 	public void descriptionChanged(Journal source, String oldValue,
 			String newValue) {
 		//Ignore
-		
 	}
 
 	@Override
