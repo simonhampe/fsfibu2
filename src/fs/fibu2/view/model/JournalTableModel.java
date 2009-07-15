@@ -44,7 +44,7 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 	
 	//A sorted list of all displayed entries and separators + all entries not displayed which come before the first entry displayed
 	//Despite the order induced by the comparator the starting separator will be moved to firstIndexDisplayed when creating the list
-	private Vector<Object> indexedData = new Vector<Object>();
+	//private Vector<Object> indexedData = new Vector<Object>();
 	//The index of the first element displayed in indexedData (i.e. of the start separator)
 	private int firstIndexDisplayed;
 	
@@ -74,7 +74,7 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 	private Logger logger = Logger.getLogger(JournalTableModel.class);
 	
 	//The currently running/last requested instance of the recalculator
-	private static Recalculator runningInstance = null;
+	private Recalculator runningInstance = null;
 	
 	//Visibility flags
 	private boolean displayYearSeparators = true;
@@ -101,8 +101,14 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 		if(filter != null && (filter instanceof StackFilter)) ((StackFilter)filter).addChangeListener(this);
 		
 		//Recalculate (when instantiating, this is actually done in the AWT thread)
-		recalculateLists();
-		recalculateBilancials(0);
+		DataVector v = new DataVector();
+		recalculateLists(v);
+		recalculateBilancials(0,v);
+		//indexedData = v.indexedData;
+		displayedData = v.displayedData;
+		firstIndexDisplayed = v.firstIndexDisplayed;
+		displayedSeparators = v.displayedSeparators;
+		bilancialData = v.bilancialData;
 	}
 	
 	// GETTERS / SETTERS ********************************
@@ -286,9 +292,9 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 	
 	/**
 	 * This method recalculates the sorted lists of entries/reading points. The unsorted reading point collections
-	 * are not reloaded but used as they are.  
+	 * are not reloaded but used as they are.  The final data is copied into the given DataVector
 	 */
-	protected void recalculateLists() {
+	protected void recalculateLists(DataVector v) {
 		TreeSet<Object> sortedSet = new TreeSet<Object>(new TableModelComparator());
 		TreeSet<EntrySeparator> sortedSeparators = new TreeSet<EntrySeparator>(new TableModelComparator());
 		//Load all entries and add separators
@@ -348,23 +354,22 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 		firstContainedIndex = finalData.indexOf(startSeparator);
 		
 		//Copy data
-		synchronized (this) {
-			indexedData = finalData;
-			displayedData = new Vector<Object>(indexedData);
-			displayedData.removeAll(elementsNotDisplayed);
-			firstIndexDisplayed = firstContainedIndex;
-			displayedSeparators = new Vector<EntrySeparator>(sortedSeparators);
-		}
+		v.indexedData = finalData;
+		v.displayedData = new Vector<Object>(v.indexedData);
+		v.displayedData.removeAll(elementsNotDisplayed);
+		v.firstIndexDisplayed = firstContainedIndex;
+		v.displayedSeparators = new Vector<EntrySeparator>(sortedSeparators);
 	}
 	
 	/**
 	 * Recalculates the bilancial vector, starting from a given index in the range of the size of indexedData. All preceding bilancial 
 	 * data will be used as a base for further calculation. If index <= 0, the data is computed completely anew. If the
 	 * index is greater than the actual size of indexedData, nothing changes. Only the bilancial data for displayed elements is stored in detail.
-	 * The bilancial data for all elements which come before is only stored in sum in the start separator.
+	 * The bilancial data for all elements which come before is only stored in sum in the start separator. The element data is taken from the data vector and the 
+	 * final bilancial data is copied into the DataVector
 	 */
-	protected void recalculateBilancials(int index) {
-		if(index >= displayedData.size()) return;
+	protected void recalculateBilancials(int index, DataVector v) {
+		if(index >= v.displayedData.size()) return;
 		if(index <  0) index = 0;
 		
 		Vector<BilancialMapping> newbilancials = new Vector<BilancialMapping>();
@@ -389,16 +394,16 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 		}
 		
 		//Calculate new bilancial
-		for(int i = index; i < indexedData.size(); i++) {
-			Object o = indexedData.get(i);
+		for(int i = index; i < v.indexedData.size(); i++) {
+			Object o = v.indexedData.get(i);
 			BilancialMapping nextMapping = lastMapping.clone();
 			//If this is the first displayed element, add the StartSeparator
-			if(i == firstIndexDisplayed) {
+			if(i == v.firstIndexDisplayed) {
 				precedingSeparators.add(startSeparator);
 			}
 			//If it is a reading point, just copy the last bilancial info and add it to the separator list
 			//But if we are not yet at the displayed elements, we don't add the separator
-			if(o instanceof EntrySeparator && i > firstIndexDisplayed) {
+			if(o instanceof EntrySeparator && i > v.firstIndexDisplayed) {
 				precedingSeparators.add((EntrySeparator)o);
 			}
 			//If it is an entry, add values
@@ -416,9 +421,7 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 			newbilancials.add(nextMapping);
 			lastMapping = nextMapping;
 		}
-		synchronized (this) {
-			bilancialData = newbilancials;
-		}
+		v.bilancialData = newbilancials;
 	}
 	
 	// CHANGELISTENER **********************************************
@@ -538,28 +541,44 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 	 * the recalculation is still so quick that it did eventually seem a bit too much effort. Its background method does not return anything, it
 	 * just calls the corresponding calculation methods of the {@link JournalTableModel}
 	 */
-	private class Recalculator extends SwingWorker<Object, Object> {
+	protected class Recalculator extends SwingWorker<Object, Object> {
 		
 		@Override
 		protected Object doInBackground() throws Exception {
-			recalculateLists();
-			recalculateBilancials(0);
-			return null;
+			DataVector v = new DataVector();
+			recalculateLists(v);
+			recalculateBilancials(0,v);
+			return v;
 		}
 
 		@Override
 		protected void done() {
-			fireTaskFinished(this);
 			if(!isCancelled()) {
-				fireTableChanged(new TableModelEvent(JournalTableModel.this));
-				logger.trace(Fsfibu2StringTableMgr.getString(sgroup + ".logrecalculate"));
+				DataVector v;
+				try {
+					v = (DataVector)get();
+					//indexedData = v.indexedData;
+					displayedData = v.displayedData;
+					firstIndexDisplayed = v.firstIndexDisplayed;
+					displayedSeparators = v.displayedSeparators;
+					bilancialData = v.bilancialData;
+					logger.trace(Fsfibu2StringTableMgr.getString(sgroup + ".logrecalculate"));
+				} catch (Exception e) {
+					//Ignore
+				}
 			}
+			fireTaskFinished(this);
+			fireTableChanged(new TableModelEvent(JournalTableModel.this));
 		}	
-		
-		
-		
 	}
 	
-	
+	//Returns the data calculated by Recalculator
+	protected class DataVector {
+		public Vector<Object> indexedData = new Vector<Object>();
+		public Vector<Object> displayedData = new Vector<Object>();
+		public int firstIndexDisplayed = 0;
+		public Vector<EntrySeparator> displayedSeparators = new Vector<EntrySeparator>();
+		public Vector<BilancialMapping> bilancialData = new Vector<BilancialMapping>();		
+	}
 	
 }
