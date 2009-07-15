@@ -40,6 +40,7 @@ import fs.fibu2.resource.Fsfibu2DefaultReference;
 import fs.fibu2.undo.JournalUndoManager;
 import fs.gui.EditCloseTabComponent;
 import fs.gui.GUIToolbox;
+import fs.gui.SwingAppender;
 import fs.xml.FsfwDefaultReference;
 import fs.xml.ResourceDependent;
 import fs.xml.ResourceReference;
@@ -81,6 +82,8 @@ public class MainFrame extends JFrame implements ResourceDependent {
 		private JButton exitButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".button.exit"));
 		private JButton undoButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".button.undo"));
 		private JButton redoButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".button.redo"));
+		
+	private SwingAppender logAppender;	
 		
 	// LISTENERS ************************************
 	// **********************************************
@@ -277,10 +280,16 @@ public class MainFrame extends JFrame implements ResourceDependent {
 		toolBar.setFloatable(false);
 		tabPane.addChangeListener(tabSelectionListener);
 		
+		logAppender = new SwingAppender(Fsfibu2StringTableMgr.getString(".appendertitle"));
+		Logger.getLogger("fs.fibu2").addAppender(logAppender.getModel());
+		JPanel statusBar = new JPanel(new BorderLayout());
+		statusBar.add(logAppender,BorderLayout.WEST);
+		
 		//Layout
 		setLayout(new BorderLayout());
 		
 		add(toolBar,BorderLayout.NORTH);
+		add(statusBar,BorderLayout.SOUTH);
 		
 		//Add journals
 		add(tabPane, BorderLayout.CENTER);

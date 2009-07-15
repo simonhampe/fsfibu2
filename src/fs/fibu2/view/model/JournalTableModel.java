@@ -11,6 +11,8 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
+import org.apache.log4j.Logger;
+
 import fs.fibu2.data.event.JournalListener;
 import fs.fibu2.data.model.Account;
 import fs.fibu2.data.model.Entry;
@@ -68,6 +70,8 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 	//Misc ******
 	
 	private final static String sgroup = "fs.fibu2.model.JournalTableModel";
+	
+	private Logger logger = Logger.getLogger(JournalTableModel.class);
 	
 	//The currently running/last requested instance of the recalculator
 	private static Recalculator runningInstance = null;
@@ -549,6 +553,7 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 			fireTaskFinished(this);
 			if(!isCancelled()) {
 				fireTableChanged(new TableModelEvent(JournalTableModel.this));
+				logger.trace(Fsfibu2StringTableMgr.getString(sgroup + ".logrecalculate"));
 			}
 		}	
 		
