@@ -214,33 +214,40 @@ public class BilancialTreeModel implements TreeModel, JournalListener {
 	}
 
 	@Override
-	public Object getChild(Object arg0, int arg1) {
-		// TODO Auto-generated method stub
-		return null;
+	public Object getChild(Object c, int index) {
+		if(used.contains(c) && index >= 0 && index < directSubcategories.get(c).size()) {
+			return directSubcategories.get(c).get(index);
+		}
+		else return null;
 	}
 
 	@Override
-	public int getChildCount(Object arg0) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int getChildCount(Object c) {
+		if(used.contains(c)) {
+			return directSubcategories.get(c).size();
+		}
+		else return 0;
 	}
 
 	@Override
-	public int getIndexOfChild(Object arg0, Object arg1) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int getIndexOfChild(Object c, Object t) {
+		if(used.contains(c)) {
+			return directSubcategories.get(c).indexOf(t);
+		}
+		else return -1;
 	}
 
 	@Override
 	public Object getRoot() {
-		// TODO Auto-generated method stub
-		return null;
+		return Category.getRootCategory();
 	}
 
 	@Override
-	public boolean isLeaf(Object arg0) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean isLeaf(Object c) {
+		if(used.contains(c)) {
+			return directSubcategories.get(c).size() == 0;
+		}
+		else return true;
 	}
 
 	@Override
