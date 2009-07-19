@@ -25,7 +25,8 @@ import fs.fibu2.filter.StackFilter;
  * integrated in the calculation in any supercategory) or masked (i.e. displayed under a different name - this is relevant for printing). For each account
  * used in the journal the status before and after the selected entries is monitored, where before means: The sum over all entries in this account before
  * the first entry accepted by this filter (the order is imposed by {@link TableModelComparator}) and after means: The last sum + the sum over all entries 
- * accepted by this filter.
+ * accepted by this filter. Visibility and mask information is lost, whenever a node is removed from the model (e.g. the filter changes and there are
+ * no more entries in a certain category).
  * @author Simon Hampe
  *
  */
@@ -167,7 +168,40 @@ public class BilancialTreeModel implements TreeModel, JournalListener {
 		if(c != null && c != Category.getRootCategory() && used.contains(c)) {
 			if(visible) invisbles.remove(c);
 			else invisbles.add(c);
-			fireTreeNodesChanged(new TreeModelEvent(this,getPath(c),new int[]{getIndex(c)},new Object[]{c}));
+			fireTreeNodesChanged(new TreeModelEvent(this,getPath(c.parent),new int[]{getIndex(c)},new Object[]{c}));
+		}
+	}
+	
+	/**
+	 * Sets the visibility of the additional node in the given category (if it exists)
+	 */
+	public void setIndividualVisibility(Category c, boolean visible) {
+		if(c != null && used.contains(c) &&  directSubcategories.get(c).contains(c)) {
+			if(visible) invisibleIndiv.remove(c);
+			else invisibleIndiv.add(c);
+			fireTreeNodesChanged(new TreeModelEvent(this,getPath(c).pathByAddingChild(c),new int[]{0}, new Object[]{c}));
+		}
+	}
+	
+	/**
+	 * Sets the mask of the given category node (not the additional node). If mask == null, the mask is removed
+	 */
+	public void setMask(Category c, String  maskString) {
+		if(c != null && used.contains(c)) {
+			if(maskString == null) mask.remove(c);
+			else mask.put(c, maskString);
+			fireTreeNodesChanged(new TreeModelEvent(this, getPath(c.parent), new int[]{getIndex(c)},new Object[]{c}));
+		}
+	}
+	
+	/**
+	 * Sets the mask of the additional node in the given category, if it exists. A null value removes the mask
+	 */
+	public void setIndividualMask(Category c, String maskString) {
+		if(c != null && used.contains(c) && directSubcategories.get(c).contains(c)) {
+			if(maskString == null) maskIndiv.remove(c);
+			else maskIndiv.put(c, maskString);
+			fireTreeNodesChanged(new TreeModelEvent(this, getPath(c),new int[]{0},new Object[]{c}));
 		}
 	}
 	
