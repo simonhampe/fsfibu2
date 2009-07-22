@@ -3,6 +3,8 @@ package fs.fibu2.data.model;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Vector;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Element;
@@ -253,6 +255,53 @@ public final class Category implements XMLConfigurable, Comparable<Category>{
 		return (parent == root || parent == null? "" : parent.toString() + " - ") + tail;
 	}
 
+	// PREFERENCES METHODS *******************************************************
+	// ***************************************************************************
+	
+	/**
+	 * Will first remove any 'tail' node it finds and then insert a recursive sequence of 'tail' nodes for each element of the category 
+	 * sequence and within each tail node a key value pair ('tail', ...) indicating the actual value in the sequence
+	 */
+	public void insertMyPreferences(Preferences node) {
+		if(node != null) { 
+			//First of all delete any existing tail node
+			try {
+				if(node.nodeExists("tail")) {
+					node.node("tail").removeNode();
+				}
+			} catch (BackingStoreException e) {
+				logger.warn("Cannot save category " + toString() + " to preferences: " + e.getMessage());
+				return;
+			}
+			//Insert representation
+			for(String s : orderedList) {
+				node = node.node("tail");
+				node.put("tail", s);
+			}
+		}
+	}
+	
+	/**
+	 * Creates a category from the given node. For each node named 'tail' in node it obtains the value of the key 'tail' in this node and 
+	 * appends it to the string sequence defining the resulting category. As soon as this node does not exist or the key does not exist, the process ends
+	 * and the resulting category is returned
+	 */
+	public Category createFromPreferences(Preferences node) {
+		if(node == null) return getRootCategory();
+		Vector<String> sequence = new  Vector<String>();
+		try {
+			while(node.nodeExists("tail")) {
+				node = node.node("tail");
+				String s = node.get("tail", null);
+				if(s == null) break;
+				else sequence.add(s);
+			}
+		} catch (BackingStoreException e) {
+			//Ignore
+		}
+		return getCategory(sequence);
+	}
+	
 	// XMLCONFIGURATION METHODS **************************************************
 	// ***************************************************************************
 	

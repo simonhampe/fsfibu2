@@ -33,7 +33,8 @@ import fs.fibu2.view.event.ProgressListener;
  * used in the journal the status before and after the selected entries is monitored, where before means: The sum over all entries in this account before
  * the first entry accepted by this filter (the order is imposed by {@link TableModelComparator}) and after means: The last sum + the sum over all entries 
  * accepted by this filter. Visibility and mask information is lost, whenever a node is removed from the model (e.g. the filter changes and there are
- * no more entries in a certain category).
+ * no more entries in a certain category).<br>
+ * Preferences are stored in the following way: ???
  * @author Simon Hampe
  *
  */
@@ -101,7 +102,7 @@ public class BilancialTreeModel implements TreeModel, JournalListener {
 			plusIndiv = v.plusIndiv;
 			minusIndiv = v.minusIndiv;
 		
-		//TODO: Extract preferences
+		
 	}
 	
 	// RECALCULATION ***************
@@ -267,7 +268,17 @@ public class BilancialTreeModel implements TreeModel, JournalListener {
 		plusIndiv = v.plusIndiv;
 		minusIndiv = v.minusIndiv;
 		
-		//TODO: Update mask and visibility
+		//Update mask and visibility
+		HashSet<ExtendedCategory> noLongerInvisible = new HashSet<ExtendedCategory>();
+		HashSet<ExtendedCategory> noLongerMasked = new HashSet<ExtendedCategory>();
+		for(ExtendedCategory ec : invisibles) {
+			if(!used.contains(ec)) noLongerInvisible.add(ec);
+		}
+		for(ExtendedCategory ec : mask.keySet()) {
+			if(!used.contains(ec)) noLongerMasked.add(ec);
+		}
+		invisibles.removeAll(noLongerInvisible);
+		for(ExtendedCategory ec : noLongerMasked) mask.remove(ec);
 		
 		//Construct addition paths
 		for(ExtendedCategory eca : addedNodes) {
