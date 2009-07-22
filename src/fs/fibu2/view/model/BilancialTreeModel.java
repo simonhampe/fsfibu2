@@ -1,9 +1,11 @@
 package fs.fibu2.view.model;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TreeSet;
 import java.util.Vector;
+import java.util.concurrent.ExecutionException;
 import java.util.prefs.Preferences;
 
 import javax.swing.SwingWorker;
@@ -74,6 +76,8 @@ public class BilancialTreeModel implements TreeModel, JournalListener {
 	private HashSet<TreeModelListener> listenerList = new HashSet<TreeModelListener>();
 	private HashSet<ProgressListener<Object, Object>> progressListeners = new HashSet<ProgressListener<Object,Object>>();
 	
+	private Recalculator runningInstance = null;
+	
 	// CONSTRUCTOR *****************
 	// *****************************
 	
@@ -82,40 +86,81 @@ public class BilancialTreeModel implements TreeModel, JournalListener {
 	 * will be ignored in this process. 
 	 */
 	public BilancialTreeModel(Journal j, StackFilter f, Preferences node) {
+		associatedJournal = j == null? new Journal() : j;
+		filter = f == null? new StackFilter() : f;
 		
+		DataVector v = recalculateModel();
+			used = v.used;
+			directSubcategories = v.directSubcategories;
+			before = v.before;
+			after = v.after;
+			sum = v.sum;
+			plus = v.plus;
+			minus = v.minus;
+			sumIndiv = v.sumIndiv;
+			plusIndiv = v.plusIndiv;
+			minusIndiv = v.minusIndiv;
+		
+		//TODO: Extract preferences
 	}
 	
 	// RECALCULATION ***************
 	// *****************************
+	
+	/**
+	 * Starts a recalculator in a separate thread. If one is already running, it is cancelled
+	 */
+	protected void recalculate() {
+		if(runningInstance != null) {
+			runningInstance.cancel(true);
+		}
+		runningInstance = new Recalculator();
+		fireTaskBegins(runningInstance);
+		runningInstance.execute();
+	}
 	
 	protected DataVector recalculateModel() {
 		DataVector v = new DataVector();
 		
 		//Whether an entry has already been accepted by the filter
 		boolean entriesAccepted = false;
+		
 		//The bilancial of all entries 'before'
-		BilancialInformation biBefore = new BilancialInformation();
-		//The overall bilancial of all accepted entries (divided into minus, plus, sum)
+		BilancialInformation biBefore = new BilancialInformation(associatedJournal);
+		//The overall bilancial of all accepted entries (divided into minus, plus, sum) and of each separate category
 		BilancialInformation biAcceptedPlus = new BilancialInformation();
 		BilancialInformation biAcceptedMinus = new BilancialInformation();
 		BilancialInformation biAcceptedSum = new BilancialInformation();
-		//The overall bilancial off all 'before' and accepted entries
+		HashMap<Category, BilancialInformation> biAcceptedPlusIndiv = new HashMap<Category, BilancialInformation>();
+		HashMap<Category, BilancialInformation>  biAcceptedMinusIndiv = new HashMap<Category, BilancialInformation>();
+		HashMap<Category, BilancialInformation>  biAcceptedSumIndiv = new  HashMap<Category, BilancialInformation>();
+		//The overall bilancial of all 'before' and accepted entries
 		BilancialInformation biOverall = new BilancialInformation();
+		
 		//The sorted set of all entries
 		TreeSet<Entry> entries = new TreeSet<Entry>(new TableModelComparator());
 			entries.addAll(associatedJournal.getEntries());
-		for(Entry e : entries) {
+		
+			for(Entry e : entries) {
 			if(filter.verifyEntry(e)) {
 				entriesAccepted = true;
+				
 				//Increment bilancial
+				if(!biAcceptedMinusIndiv.containsKey(e.getCategory())) biAcceptedMinusIndiv.put(e.getCategory(), new BilancialInformation());
+				if(!biAcceptedPlusIndiv.containsKey(e.getCategory())) biAcceptedPlusIndiv.put(e.getCategory(), new BilancialInformation());
+				if(!biAcceptedSumIndiv.containsKey(e.getCategory())) biAcceptedSumIndiv.put(e.getCategory(), new BilancialInformation());
+				if(e.getValue() >= 0) {
+					biAcceptedPlus.increment(e);
+					biAcceptedPlusIndiv.get(e.getCategory()).increment(e);
+				}
+				else {
+					biAcceptedMinus.increment(e);
+					biAcceptedMinusIndiv.get(e.getCategory()).increment(e);
+				}
 				
-				if(e.getValue() >= 0) biAcceptedPlus.increment(e);
-				else biAcceptedMinus.increment(e);
-				
+				biAcceptedSumIndiv.get(e.getCategory()).increment(e);
 				biAcceptedSum.increment(e);
 				biOverall.increment(e);
-				
-				//Add category
 				
 			}
 			else {
@@ -126,10 +171,46 @@ public class BilancialTreeModel implements TreeModel, JournalListener {
 			}
 		}
 		
-		//Copy data
-		for(Category c : biAccepted.getCategoryMappings().keySet()) {
-			v.used.add(new ExtendedCategory(c,false));
+		//Copy data:
 			
+		//Extract categories & subcategories
+		v.used.add(new ExtendedCategory(Category.getRootCategory(),false));
+		for(Category c : biAcceptedSum.getCategoryMappings().keySet()) {
+			while(c != Category.getRootCategory()) {
+				ExtendedCategory ec = new ExtendedCategory(c,false); 
+				ExtendedCategory ecp = new ExtendedCategory(c.parent,false);
+				v.used.add(ec);
+				if(v.directSubcategories.get(ecp) == null) v.directSubcategories.put(ecp, new Vector<ExtendedCategory>());
+				v.directSubcategories.get(ecp).add(ec);
+				c = c.parent;
+			}
+		}
+		
+		//Sort subcategories
+		for(ExtendedCategory ecp : v.directSubcategories.keySet()) {
+			TreeSet<ExtendedCategory> scs = new TreeSet<ExtendedCategory>(new ExtCatComparator());
+				scs.addAll(v.directSubcategories.get(ecp));
+			v.directSubcategories.put(ecp,new Vector<ExtendedCategory>(scs));
+		}
+		
+		//Find additional nodes and copy bilancials
+		for(ExtendedCategory ec : v.used) {
+			//Copy own bilancials
+			v.minus.put(ec.category(), biAcceptedMinus.getCategoryMappings().get(ec.category()));
+			v.plus.put(ec.category(), biAcceptedPlus.getCategoryMappings().get(ec.category()));
+			v.sum.put(ec.category(), biAcceptedSum.getCategoryMappings().get(ec.category()));
+			//Copy individual bilancials
+			if(biAcceptedSumIndiv.containsKey(ec.category())) {
+				v.minusIndiv.put(ec.category(), biAcceptedMinusIndiv.get(ec.category()).getCategoryMappings().get(ec.category()));
+				v.plusIndiv.put(ec.category(), biAcceptedPlusIndiv.get(ec.category()).getCategoryMappings().get(ec.category()));
+				v.sumIndiv.put(ec.category(), biAcceptedSumIndiv.get(ec.category()).getCategoryMappings().get(ec.category()));
+				//If in addition this category has subcategories, add the additional node
+				if(v.directSubcategories.get(ec) != null && v.directSubcategories.get(ec).size() > 0) {
+					ExtendedCategory newec = new ExtendedCategory(ec.category(),true);
+					v.used.add(newec);
+					v.directSubcategories.get(ec).add(0, newec);
+				}
+			}
 		}
 		
 		v.before = biBefore.getAccountMappings();
@@ -137,6 +218,73 @@ public class BilancialTreeModel implements TreeModel, JournalListener {
 		
 		
 		return v;
+	}
+	
+	/**
+	 * Copies the values from the given data vector and fires appropriate listener calls. Visibility and mask status of removed categories
+	 * are lost. This call is ignored, if v == null
+	 */
+	protected void adoptChanges(DataVector v) {
+		if(v == null) return;
+		
+		HashSet<TreeModelEvent> removals = new HashSet<TreeModelEvent>();
+		HashSet<TreeModelEvent> additions = new HashSet<TreeModelEvent>();
+			HashSet<ExtendedCategory> addedNodes = new HashSet<ExtendedCategory>();
+		HashSet<TreeModelEvent> changes = new HashSet<TreeModelEvent>();
+		
+		//First find removed nodes
+		for(ExtendedCategory ec : used) {
+			if(!v.used.contains(ec)){
+				ExtendedCategory ecp = new ExtendedCategory(ec.category() == Category.getRootCategory()? ec.category : ec.category().parent,false);
+				removals.add(new TreeModelEvent(this,getPath(ecp),new int[]{getIndex(ec)},new Object[]{ec}));
+			}
+		}
+		//Now find added and changed nodes
+		for(ExtendedCategory ec : v.used) {
+			if(!used.contains(ec)) addedNodes.add(ec);
+			else {
+				if(sum.get(ec.category()) != v.sum.get(ec.category()) ||
+				   sumIndiv.get(ec.category()) != v.sumIndiv.get(ec.category()) || 
+				   minus.get(ec.category()) != v.minus.get(ec.category()) ||
+				   minusIndiv.get(ec.category()) != v.minusIndiv.get(ec.category()) ||
+				   plus.get(ec.category()) != v.plus.get(ec.category()) ||
+				   plusIndiv.get(ec.category()) != v.plusIndiv.get(ec.category())) {
+					ExtendedCategory ecp = new ExtendedCategory(ec.category() == Category.getRootCategory() ? ec.category() : ec.category().parent,false);
+					changes.add(new TreeModelEvent(this,getPath(ecp),new int[]{getIndex(ec)},new Object[]{ec}));
+				}
+			}
+		}
+		
+		//Copy data
+		used = v.used;
+		directSubcategories = v.directSubcategories;
+		after = v.after;
+		before = v.before;
+		sum = v.sum;
+		plus = v.plus;
+		minus = v.minus;
+		sumIndiv = v.sumIndiv;
+		plusIndiv = v.plusIndiv;
+		minusIndiv = v.minusIndiv;
+		
+		//TODO: Update mask and visibility
+		
+		//Construct addition paths
+		for(ExtendedCategory eca : addedNodes) {
+			ExtendedCategory ecp = new ExtendedCategory(eca.category() == Category.getRootCategory()? eca.category() : eca.category().parent,false);
+			additions.add(new TreeModelEvent(this,getPath(ecp),new int[]{getIndex(eca)},new Object[]{eca}));
+		}
+		
+		//Call on listeners
+		for(TreeModelEvent e : removals) {
+			fireTreeNodesRemoved(e);
+		}
+		for(TreeModelEvent e : additions) {
+			fireTreeNodesInserted(e);
+		}
+		for(TreeModelEvent e : changes) {
+			fireTreeNodesChanged(e);
+		}
 	}
 	
 	// GETTERS & SETTERS ***********
@@ -335,63 +483,53 @@ public class BilancialTreeModel implements TreeModel, JournalListener {
 	@Override
 	public void descriptionChanged(Journal source, String oldValue,
 			String newValue) {
-		// TODO Auto-generated method stub
-		
+		//Ignored
 	}
 
 	@Override
 	public void entriesAdded(Journal source, Entry[] newEntries) {
-		// TODO Auto-generated method stub
-		
+		recalculate();
 	}
 
 	@Override
 	public void entriesRemoved(Journal source, Entry[] oldEntries) {
-		// TODO Auto-generated method stub
-		
+		recalculate();
 	}
 
 	@Override
 	public void entryReplaced(Journal source, Entry oldEntry, Entry newEntry) {
-		// TODO Auto-generated method stub
-		
+		recalculate();
 	}
 
 	@Override
 	public void nameChanged(Journal source, String oldValue, String newValue) {
-		// TODO Auto-generated method stub
-		
+		//Ignored
 	}
 
 	@Override
 	public void readingPointAdded(Journal source, ReadingPoint point) {
-		// TODO Auto-generated method stub
-		
+		//Ignored
 	}
 
 	@Override
 	public void readingPointRemoved(Journal source, ReadingPoint point) {
-		// TODO Auto-generated method stub
-		
+		//Ignored
 	}
 
 	@Override
 	public void startValueChanged(Journal source, Account a, Float oldValue,
 			Float newValue) {
-		// TODO Auto-generated method stub
-		
+		recalculate();
 	}
 
 	@Override
 	public void dateChanged(ReadingPoint source) {
-		// TODO Auto-generated method stub
-		
+		//Ignored
 	}
 
 	@Override
 	public void nameChanged(ReadingPoint source) {
-		// TODO Auto-generated method stub
-		
+		//Ignored
 	}
 	
 	// LISTENER MECHANISM ******************
@@ -514,33 +652,47 @@ public class BilancialTreeModel implements TreeModel, JournalListener {
 	private class DataVector {
 		public HashSet<ExtendedCategory> used = new HashSet<ExtendedCategory>();
 		public HashMap<ExtendedCategory, Vector<ExtendedCategory>> directSubcategories = new HashMap<ExtendedCategory, Vector<ExtendedCategory>>();
-		public HashMap<ExtendedCategory, Float> minus = new HashMap<ExtendedCategory, Float>();
-		public HashMap<ExtendedCategory, Float> plus = new HashMap<ExtendedCategory, Float>();
-		public HashMap<ExtendedCategory, Float> sum = new HashMap<ExtendedCategory, Float>();
-		public HashMap<ExtendedCategory, Float> minusIndiv = new HashMap<ExtendedCategory, Float>();
-		public HashMap<ExtendedCategory, Float> plusIndiv = new HashMap<ExtendedCategory, Float>();
-		public HashMap<ExtendedCategory, Float> sumIndiv = new HashMap<ExtendedCategory, Float>();
+		public HashMap<Category, Float> minus = new HashMap<Category, Float>();
+		public HashMap<Category, Float> plus = new HashMap<Category, Float>();
+		public HashMap<Category, Float> sum = new HashMap<Category, Float>();
+		public HashMap<Category, Float> minusIndiv = new HashMap<Category, Float>();
+		public HashMap<Category, Float> plusIndiv = new HashMap<Category, Float>();
+		public HashMap<Category, Float> sumIndiv = new HashMap<Category, Float>();
 		public HashMap<Account, Float> before = new HashMap<Account, Float>();
 		public HashMap<Account, Float> after = new HashMap<Account, Float>();
 	}
+	
+	private class ExtCatComparator implements Comparator<ExtendedCategory>{
+		@Override
+		public int compare(ExtendedCategory o1, ExtendedCategory o2) {
+			if(o1 == null && o2 == null) return 0;
+			if(o1 == null || o2 == null) return -1;
+			return o1.category().compareTo(o2.category());
+		}
+	};
 	
 	/**
 	 * Recalculator class used for recalculating the model in a separate thread
 	 * @author Simon Hampe
 	 *
 	 */
-	private class Recalculator extends SwingWorker<DataVector, DataVector> {
+	private class Recalculator extends SwingWorker<Object, Object> {
 
 		@Override
-		protected DataVector doInBackground() throws Exception {
-			// TODO Auto-generated method stub
-			return null;
+		protected Object doInBackground() throws Exception {
+			return recalculateModel();
 		}
 
 		@Override
 		protected void done() {
-			// TODO Auto-generated method stub
-			super.done();
+			if(!isCancelled()) {
+				try {
+					adoptChanges((DataVector)get());
+				} catch (Exception e) {
+					//Ignore
+				}
+			}
+			fireTaskFinished(this);
 		}
 	}
 
