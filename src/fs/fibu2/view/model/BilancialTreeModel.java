@@ -405,6 +405,16 @@ public class BilancialTreeModel implements TreeModel, JournalListener {
 	}
 	
 	/**
+	 * @return Whether this node AND all its parent nodes are visible
+	 */
+	public boolean isInheritedVisible(Category c, boolean additionalNode) {
+		ExtendedCategory ec = new ExtendedCategory(c,additionalNode);
+		if(!used.contains(ec)) return false;
+		if(c == Category.getRootCategory()) return !invisibles.contains(ec);
+		else return (!invisibles.contains(ec)) && isInheritedVisible(c.parent, false);
+	}
+	
+	/**
 	 * @return The mask of the given category (NOT the additional child node) or null, if this category is not masked
 	 */
 	public String getMask(Category c) {

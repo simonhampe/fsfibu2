@@ -11,6 +11,9 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.TableModel;
 
+import com.sun.corba.se.spi.orbutil.fsm.FSM;
+
+import fs.fibu2.lang.Fsfibu2StringTableMgr;
 import fs.fibu2.view.render.BilancialTree;
 
 /**
@@ -24,29 +27,43 @@ public class BilancialTableModel implements TableModel, TreeExpansionListener,
 
 	private HashSet<TableModelListener> listenerList = new HashSet<TableModelListener>();
 	
+	private final static String sgroup = "fs.fibu2.model.BilancialTableModel";
+	
 	@Override
 	public void addTableModelListener(TableModelListener l) {
 		if(l != null) listenerList.add(l);
 	}
 
 	/**
-	 * @return Float for the first 3 columns, Boolean for the 4th and 5th and 
+	 * @return Float for the first 3 columns, Boolean for the 4th and String for the 5th
 	 */
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {
-		
+		switch(columnIndex) {
+		case 0:
+		case 1:
+		case 2: return Float.class;
+		case 3: return Boolean.class;
+		case 4: return String.class;
+		default: return Object.class;
+		}
 	}
 
 	@Override
 	public int getColumnCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		return 5;
 	}
 
 	@Override
 	public String getColumnName(int columnIndex) {
-		// TODO Auto-generated method stub
-		return null;
+		switch(columnIndex) {
+		case 0: return Fsfibu2StringTableMgr.getString(sgroup + ".in");
+		case 1: return Fsfibu2StringTableMgr.getString(sgroup + ".out");
+		case 2: return Fsfibu2StringTableMgr.getString(sgroup + ".sum");
+		case 3: return Fsfibu2StringTableMgr.getString(sgroup + ".invisible");
+		case 4: return Fsfibu2StringTableMgr.getString(sgroup + ".mask");
+		default: return "";
+		}
 	}
 
 	@Override
