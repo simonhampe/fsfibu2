@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TreeSet;
 import java.util.Vector;
-import java.util.concurrent.ExecutionException;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.swing.SwingWorker;
@@ -14,7 +14,7 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
+import org.apache.log4j.Logger;
 
 import fs.fibu2.data.event.JournalListener;
 import fs.fibu2.data.model.Account;
@@ -34,7 +34,10 @@ import fs.fibu2.view.event.ProgressListener;
  * the first entry accepted by this filter (the order is imposed by {@link TableModelComparator}) and after means: The last sum + the sum over all entries 
  * accepted by this filter. Visibility and mask information is lost, whenever a node is removed from the model (e.g. the filter changes and there are
  * no more entries in a certain category).<br>
- * Preferences are stored in the following way: ???
+ * Preferences are stored in the following way: In the node passed on in {@link #insertMyPreferences(Preferences)}, for each invisible category there is a 
+ * (recursively added) node named 'invisible', which contains a further node 'category' and a key-value pair ('additional', true/false), identifying the category
+ * (and optionally a further 'invisible' node). For each masked category there is a recursively added node named 'masked' containing a node 'category' and
+ * the same key-value pair and another key-value pair ('mask', String) identifying the mask.
  * @author Simon Hampe
  *
  */
@@ -74,10 +77,14 @@ public class BilancialTreeModel implements TreeModel, JournalListener {
 	//The filter used by this model
 	private StackFilter filter;
 	
+	//Misc
+	
 	private HashSet<TreeModelListener> listenerList = new HashSet<TreeModelListener>();
 	private HashSet<ProgressListener<Object, Object>> progressListeners = new HashSet<ProgressListener<Object,Object>>();
 	
 	private Recalculator runningInstance = null;
+	
+	private Logger logger = Logger.getLogger(this.getClass());
 	
 	// CONSTRUCTOR *****************
 	// *****************************
@@ -102,6 +109,38 @@ public class BilancialTreeModel implements TreeModel, JournalListener {
 			plusIndiv = v.plusIndiv;
 			minusIndiv = v.minusIndiv;
 		
+		//Read out preferences
+		if(node != null) {
+			try {
+				//First read out invisibility
+				Preferences ivNode = node;
+				while(ivNode.nodeExists("invisble")) {
+					ivNode = ivNode.node("invisible");
+					if(!ivNode.nodeExists("category")) break;
+					Preferences categoryNode = ivNode.node("category");
+					Category c = Category.createFromPreferences(categoryNode);
+					boolean add = Boolean.parseBoolean(ivNode.get("additional", "false"));
+					ExtendedCategory ec = new ExtendedCategory(c,add);
+					if(used.contains(ec)) invisibles.add(ec);
+				}
+				//Now read out masks
+				Preferences maskNode = node;
+				while(maskNode.nodeExists("masked")) {
+					maskNode = maskNode.node("masked");
+					if(!maskNode.nodeExists("category")) break;
+					Preferences categoryNode = maskNode.node("category");
+					Category c = Category.createFromPreferences(categoryNode);
+					boolean add = Boolean.parseBoolean(maskNode.get("additional", "false"));
+					ExtendedCategory ec = new ExtendedCategory(c,add);
+					if(used.contains(ec)) {
+						String maskString = maskNode.get("mask", null);
+						if(maskString != null) mask.put(ec, maskString);
+					}
+				}
+			} catch (BackingStoreException e) {
+				//Just abort
+			}
+		}
 		
 	}
 	
@@ -143,7 +182,7 @@ public class BilancialTreeModel implements TreeModel, JournalListener {
 			entries.addAll(associatedJournal.getEntries());
 		
 			for(Entry e : entries) {
-			if(filter.verifyEntry(e)) {
+			if(filter == null || filter.verifyEntry(e)) {
 				entriesAccepted = true;
 				
 				//Increment bilancial
@@ -430,6 +469,61 @@ public class BilancialTreeModel implements TreeModel, JournalListener {
 		}
 	}
 	
+	/**
+	 * @return The status of a before the regarded entries (or 0, if the account does not figure in this bilancial)
+	 */
+	public float getAccountBefore(Account a) {
+		Float f = before.get(a);
+		if(f == null) return 0;
+		else return f;
+	}
+	
+	/**
+	 * @return The status of a after the regarded entries (or 0, if the account does not figure in this bilancial)
+	 */
+	public float getAccountAfter(Account a) {
+		Float f = after.get(a);
+		if(f == null) return 0;
+		else return f;
+	}
+	
+	/**
+	 * Saves the preferences of this model in the given node (i.e. the mask and visibility status), if it isn't null. The same node
+	 * should be passed to the constructor when whishing to create a model with the same preferences
+	 */
+	public void insertMyPreferences(Preferences  node) {
+		if(node == null) return;
+
+		try {
+			//First remove any existing 'invisible' and 'masked' node
+			if(node.nodeExists("invisible")) node.node("invisible").removeNode();
+			if(node.nodeExists("masked")) node.node("masked").removeNode();
+			
+			//Save invisibility status
+			Preferences ivNode = node;
+			for(ExtendedCategory ec : invisibles) {
+				ivNode = ivNode.node("invisible");
+				Preferences categoryNode = ivNode.node("category");
+				ec.category().insertMyPreferences(categoryNode);
+				ivNode.put("additional", Boolean.toString(ec.isAdditional()));
+			}
+			
+			//Save mask status
+			Preferences maskNode = node;
+			for(ExtendedCategory ec : mask.keySet()) {
+				maskNode = node.node("masked");
+				Preferences categoryNode = maskNode.node("category");
+				ec.category().insertMyPreferences(categoryNode);
+				maskNode.put("additional",Boolean.toString(ec.isAdditional()));
+				maskNode.put("mask", mask.get(ec));
+			}
+			
+		} catch (BackingStoreException e) {
+			logger.warn("Could not save preferences of BilancialTreeModel: " + e.getMessage());
+		}
+		
+	}
+	
 	// TREEMODEL *******************
 	// *****************************
 	
@@ -470,7 +564,7 @@ public class BilancialTreeModel implements TreeModel, JournalListener {
 	@Override
 	public boolean isLeaf(Object c) {
 		if(used.contains(c)) {
-			return directSubcategories.get(c).size() == 0;
+			return directSubcategories.get(c) == null || directSubcategories.get(c).size() == 0;
 		}
 		else return true;
 	}

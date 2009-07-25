@@ -286,7 +286,7 @@ public final class Category implements XMLConfigurable, Comparable<Category>{
 	 * appends it to the string sequence defining the resulting category. As soon as this node does not exist or the key does not exist, the process ends
 	 * and the resulting category is returned
 	 */
-	public Category createFromPreferences(Preferences node) {
+	public static Category createFromPreferences(Preferences node) {
 		if(node == null) return getRootCategory();
 		Vector<String> sequence = new  Vector<String>();
 		try {
