@@ -1,7 +1,12 @@
 package fs.fibu2.test.model;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Currency;
+import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Vector;
 
 import javax.swing.JFrame;
 import javax.swing.JTree;
@@ -9,7 +14,14 @@ import javax.swing.JTree;
 import org.apache.log4j.BasicConfigurator;
 
 import fs.fibu2.data.format.Fsfibu1Converter;
+import fs.fibu2.data.model.Category;
+import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.Journal;
+import fs.fibu2.filter.CategoryFilter;
+import fs.fibu2.filter.DateFilter;
+import fs.fibu2.filter.DefaultFilters;
+import fs.fibu2.filter.EntryFilter;
+import fs.fibu2.filter.StackFilter;
 import fs.fibu2.resource.Fsfibu2DefaultReference;
 import fs.fibu2.view.model.BilancialTreeModel;
 import fs.fibu2.view.render.BilancialTreeRenderer;
@@ -33,10 +45,15 @@ public class BilancialTreeTest {
 		
 		try {
 			final Journal j = Fsfibu1Converter.convertFsfibu1Journal(XMLToolbox.loadXMLFile(new File(basedir + "/fsfibu/KassenbuchAb2008.xml")));
+			j.addEntry(new Entry("bla",3,Currency.getInstance("EUR"),new GregorianCalendar(),Category.getCategory(Category.getRootCategory(), "Fachschaft"),
+					"bank_account",null,null));
 			
 			JFrame frame = new JFrame();
 			
 			JTree tree = new JTree();
+				CategoryFilter cfilter = new CategoryFilter(Category.getCategory(Category.getRootCategory(), "Fachschaft"));
+				DateFilter dfilter = DefaultFilters.getYearFilter(2009);
+				StackFilter filter = new StackFilter(new Vector<EntryFilter>(Arrays.asList(dfilter)),(HashSet<EntryFilter>)null, (HashSet<EntryFilter>)null);
 				BilancialTreeModel model = new BilancialTreeModel(j,null,null);
 				tree.setModel(model);
 				BilancialTreeRenderer renderer = new BilancialTreeRenderer();

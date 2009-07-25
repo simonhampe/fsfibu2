@@ -95,7 +95,7 @@ public class BilancialTreeModel implements TreeModel, JournalListener {
 	 */
 	public BilancialTreeModel(Journal j, StackFilter f, Preferences node) {
 		associatedJournal = j == null? new Journal() : j;
-		filter = f == null? new StackFilter() : f;
+		filter = f;
 		
 		DataVector v = recalculateModel();
 			used = v.used;
@@ -190,23 +190,23 @@ public class BilancialTreeModel implements TreeModel, JournalListener {
 				if(!biAcceptedPlusIndiv.containsKey(e.getCategory())) biAcceptedPlusIndiv.put(e.getCategory(), new BilancialInformation());
 				if(!biAcceptedSumIndiv.containsKey(e.getCategory())) biAcceptedSumIndiv.put(e.getCategory(), new BilancialInformation());
 				if(e.getValue() >= 0) {
-					biAcceptedPlus.increment(e);
-					biAcceptedPlusIndiv.get(e.getCategory()).increment(e);
+					biAcceptedPlus = biAcceptedPlus.increment(e);
+					biAcceptedPlusIndiv.put(e.getCategory(),biAcceptedPlusIndiv.get(e.getCategory()).increment(e));
 				}
 				else {
-					biAcceptedMinus.increment(e);
-					biAcceptedMinusIndiv.get(e.getCategory()).increment(e);
+					biAcceptedMinus = biAcceptedMinus.increment(e);
+					biAcceptedMinusIndiv.put(e.getCategory(),biAcceptedMinusIndiv.get(e.getCategory()).increment(e));
 				}
 				
-				biAcceptedSumIndiv.get(e.getCategory()).increment(e);
-				biAcceptedSum.increment(e);
-				biOverall.increment(e);
+				biAcceptedSumIndiv.put(e.getCategory(), biAcceptedSumIndiv.get(e.getCategory()).increment(e));
+				biAcceptedSum = biAcceptedSum.increment(e);
+				biOverall = biOverall.increment(e);
 				
 			}
 			else {
 				if(!entriesAccepted) {
-					biBefore.increment(e);
-					biOverall.increment(e);
+					biBefore = biBefore.increment(e);
+					biOverall = biOverall.increment(e);
 				}
 			}
 		}
@@ -234,7 +234,7 @@ public class BilancialTreeModel implements TreeModel, JournalListener {
 		}
 		
 		//Find additional nodes and copy bilancials
-		for(ExtendedCategory ec : v.used) {
+		for(ExtendedCategory ec : new HashSet<ExtendedCategory>(v.used)) {
 			//Copy own bilancials
 			v.minus.put(ec.category(), biAcceptedMinus.getCategoryMappings().get(ec.category()));
 			v.plus.put(ec.category(), biAcceptedPlus.getCategoryMappings().get(ec.category()));

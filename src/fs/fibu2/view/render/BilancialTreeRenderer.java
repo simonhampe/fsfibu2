@@ -6,10 +6,12 @@ import javax.swing.JLabel;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
+import fs.fibu2.data.model.Category;
+import fs.fibu2.lang.Fsfibu2StringTableMgr;
 import fs.fibu2.view.model.BilancialTreeModel.ExtendedCategory;
 
 /**
- * For any {@link ExtendedCategory} as value, displays the tail of the associated category
+ * For any {@link ExtendedCategory} as value, displays the tail of the associated category (in brackets, if it is the additional node)
  * @author Simon Hampe
  *
  */
@@ -27,6 +29,8 @@ public class BilancialTreeRenderer extends DefaultTreeCellRenderer {
 		JLabel label = (JLabel)super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
 		if(value instanceof ExtendedCategory) {
 			label.setText(((ExtendedCategory)value).category().tail);
+			if(((ExtendedCategory)value).isAdditional()) label.setText("(" + label.getText() + ")");
+			if(((ExtendedCategory)value).category() == Category.getRootCategory()) label.setText(Fsfibu2StringTableMgr.getString("fs.fibu2.view.BilancialTreeRenderer.root"));
 		}
 		
 		return label;
