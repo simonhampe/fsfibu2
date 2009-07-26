@@ -1,5 +1,6 @@
 package fs.fibu2.test.model;
 
+import java.awt.BorderLayout;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Currency;
@@ -9,6 +10,7 @@ import java.util.Locale;
 import java.util.Vector;
 
 import javax.swing.JFrame;
+import javax.swing.JTable;
 import javax.swing.JTree;
 
 import org.apache.log4j.BasicConfigurator;
@@ -23,7 +25,9 @@ import fs.fibu2.filter.DefaultFilters;
 import fs.fibu2.filter.EntryFilter;
 import fs.fibu2.filter.StackFilter;
 import fs.fibu2.resource.Fsfibu2DefaultReference;
+import fs.fibu2.view.model.BilancialTableModel;
 import fs.fibu2.view.model.BilancialTreeModel;
+import fs.fibu2.view.render.BilancialTree;
 import fs.fibu2.view.render.BilancialTreeRenderer;
 import fs.xml.FsfwDefaultReference;
 import fs.xml.XMLToolbox;
@@ -50,15 +54,18 @@ public class BilancialTreeTest {
 			
 			JFrame frame = new JFrame();
 			
-			JTree tree = new JTree();
-				CategoryFilter cfilter = new CategoryFilter(Category.getCategory(Category.getRootCategory(), "Fachschaft"));
-				DateFilter dfilter = DefaultFilters.getYearFilter(2009);
-				StackFilter filter = new StackFilter(new Vector<EntryFilter>(Arrays.asList(dfilter)),(HashSet<EntryFilter>)null, (HashSet<EntryFilter>)null);
-				BilancialTreeModel model = new BilancialTreeModel(j,null,null);
-				tree.setModel(model);
-				BilancialTreeRenderer renderer = new BilancialTreeRenderer();
-				tree.setCellRenderer(renderer);
-			frame.add(tree);
+			CategoryFilter cfilter = new CategoryFilter(Category.getCategory(Category.getRootCategory(), "Fachschaft"));
+			DateFilter dfilter = DefaultFilters.getYearFilter(2009);
+			StackFilter filter = new StackFilter(new Vector<EntryFilter>(Arrays.asList(dfilter)),(HashSet<EntryFilter>)null, (HashSet<EntryFilter>)null);
+			BilancialTreeModel model = new BilancialTreeModel(j,null,null);
+			BilancialTree tree = new BilancialTree(model);
+				
+			JTable table = new JTable();
+				table.setModel(new BilancialTableModel(tree));
+			
+			frame.setLayout(new BorderLayout());
+			frame.add(tree,BorderLayout.WEST);
+			frame.add(table, BorderLayout.EAST);
 			frame.pack();
 				
 			frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);

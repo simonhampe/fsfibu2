@@ -393,7 +393,7 @@ public class BilancialTreeModel implements TreeModel, JournalListener {
 	 * there are subcategories AND entries in a category, but only the overall node of this category
 	 */
 	public boolean isVisible(Category c) {
-		return invisibles.contains(new ExtendedCategory(c,false));
+		return !invisibles.contains(new ExtendedCategory(c,false));
 	}
 	
 	/**
@@ -401,7 +401,7 @@ public class BilancialTreeModel implements TreeModel, JournalListener {
 	 * whenever there is no such node
 	 */
 	public boolean isVisibleIndiv(Category c) {
-		return invisibles.contains(new ExtendedCategory(c,true));
+		return !invisibles.contains(new ExtendedCategory(c,true));
 	}
 	
 	/**
