@@ -182,33 +182,39 @@ public class BilancialTreeModel implements TreeModel, JournalListener {
 			entries.addAll(associatedJournal.getEntries());
 		
 			for(Entry e : entries) {
-			if(filter == null || filter.verifyEntry(e)) {
-				entriesAccepted = true;
-				
-				//Increment bilancial
-				if(!biAcceptedMinusIndiv.containsKey(e.getCategory())) biAcceptedMinusIndiv.put(e.getCategory(), new BilancialInformation());
-				if(!biAcceptedPlusIndiv.containsKey(e.getCategory())) biAcceptedPlusIndiv.put(e.getCategory(), new BilancialInformation());
-				if(!biAcceptedSumIndiv.containsKey(e.getCategory())) biAcceptedSumIndiv.put(e.getCategory(), new BilancialInformation());
-				if(e.getValue() >= 0) {
-					biAcceptedPlus = biAcceptedPlus.increment(e);
-					biAcceptedPlusIndiv.put(e.getCategory(),biAcceptedPlusIndiv.get(e.getCategory()).increment(e));
+				if(filter == null || filter.verifyEntry(e)) {
+					entriesAccepted = true;
+					
+					biOverall = biOverall.increment(e);
+					
+					//Dirty trick for invisible entries: Create a clone entry in the same category and account, but only with value 0,
+					//so it actually does not count for any sums (only for account sums, that's why we DID increment biOverall before
+					if(!isInheritedVisible(e.getCategory(), false) || !isInheritedVisible(e.getCategory(), true)) {
+						e = new Entry("",0,e.getCurrency(),e.getDate(),e.getCategory(),e.getAccount().getID(),null,null);
+					}
+					
+					//Increment bilancial
+					if(!biAcceptedMinusIndiv.containsKey(e.getCategory())) biAcceptedMinusIndiv.put(e.getCategory(), new BilancialInformation());
+					if(!biAcceptedPlusIndiv.containsKey(e.getCategory())) biAcceptedPlusIndiv.put(e.getCategory(), new BilancialInformation());
+					if(!biAcceptedSumIndiv.containsKey(e.getCategory())) biAcceptedSumIndiv.put(e.getCategory(), new BilancialInformation());
+					if(e.getValue() >= 0) {
+						biAcceptedPlus = biAcceptedPlus.increment(e);
+						biAcceptedPlusIndiv.put(e.getCategory(),biAcceptedPlusIndiv.get(e.getCategory()).increment(e));
+					}
+					else {
+						biAcceptedMinus = biAcceptedMinus.increment(e);
+						biAcceptedMinusIndiv.put(e.getCategory(),biAcceptedMinusIndiv.get(e.getCategory()).increment(e));
+					}
+					
+					biAcceptedSumIndiv.put(e.getCategory(), biAcceptedSumIndiv.get(e.getCategory()).increment(e));
+					biAcceptedSum = biAcceptedSum.increment(e);					
 				}
 				else {
-					biAcceptedMinus = biAcceptedMinus.increment(e);
-					biAcceptedMinusIndiv.put(e.getCategory(),biAcceptedMinusIndiv.get(e.getCategory()).increment(e));
+					if(!entriesAccepted) {
+						biBefore = biBefore.increment(e);
+						biOverall = biOverall.increment(e);
+					}
 				}
-				
-				biAcceptedSumIndiv.put(e.getCategory(), biAcceptedSumIndiv.get(e.getCategory()).increment(e));
-				biAcceptedSum = biAcceptedSum.increment(e);
-				biOverall = biOverall.increment(e);
-				
-			}
-			else {
-				if(!entriesAccepted) {
-					biBefore = biBefore.increment(e);
-					biOverall = biOverall.increment(e);
-				}
-			}
 		}
 		
 		//Copy data:
@@ -389,43 +395,27 @@ public class BilancialTreeModel implements TreeModel, JournalListener {
 	}
 	
 	/**
-	 * @return Whether the given catgory node is visible. This does NOT concern the additional node, which might be inserted under a category, whenever
-	 * there are subcategories AND entries in a category, but only the overall node of this category
+	 * @return Whether the given catgory node is visible (returns also true for nodes, which do not exist)
 	 */
-	public boolean isVisible(Category c) {
-		return !invisibles.contains(new ExtendedCategory(c,false));
+	public boolean isVisible(ExtendedCategory c) {
+		return !invisibles.contains(c);
 	}
 	
 	/**
-	 * @return Whether the additional category node (which is inserted whenever there are subcategories and entries in c) is visible. Returns also true, 
-	 * whenever there is no such node
-	 */
-	public boolean isVisibleIndiv(Category c) {
-		return !invisibles.contains(new ExtendedCategory(c,true));
-	}
-	
-	/**
-	 * @return Whether this node AND all its parent nodes are visible
+	 * @return Whether this node AND all its parent nodes are visible (this also might return true for non-existing nodes, if a parent
+	 * category actually IS in this model).
 	 */
 	public boolean isInheritedVisible(Category c, boolean additionalNode) {
 		ExtendedCategory ec = new ExtendedCategory(c,additionalNode);
-		if(!used.contains(ec)) return false;
 		if(c == Category.getRootCategory()) return !invisibles.contains(ec);
-		else return (!invisibles.contains(ec)) && isInheritedVisible(c.parent, false);
+		else return (!invisibles.contains(ec) && isInheritedVisible(additionalNode? c : c.parent, false));
 	}
 	
 	/**
-	 * @return The mask of the given category (NOT the additional child node) or null, if this category is not masked
+	 * @return The mask of the given category 
 	 */
-	public String getMask(Category c) {
-		return mask.get(new ExtendedCategory(c,false));
-	}
-	
-	/**
-	 * @return The mask of the additional node for the given category or null, if the node is not masked or does not exist
-	 */
-	public String getIndividualMask(Category c) {
-		return mask.get(new ExtendedCategory(c,true));
+	public String getMask(ExtendedCategory c) {
+		return mask.get(c);
 	}
 	
 	/**
@@ -436,7 +426,8 @@ public class BilancialTreeModel implements TreeModel, JournalListener {
 		if(c != null && c != Category.getRootCategory() && used.contains(ec)) {
 			if(visible) invisibles.remove(ec);
 			else invisibles.add(ec);
-			fireTreeNodesChanged(new TreeModelEvent(this,getPath(new ExtendedCategory(c.parent,false)),new int[]{getIndex(ec)},new Object[]{ec}));
+			recalculate();
+			fireAllTreeNodesChanged();
 		}
 	}
 	
@@ -449,7 +440,8 @@ public class BilancialTreeModel implements TreeModel, JournalListener {
 		if(c != null && used.contains(ecp) &&  directSubcategories.get(ecp).contains(ec)) {
 			if(visible) invisibles.remove(ec);
 			else invisibles.add(ec);
-			fireTreeNodesChanged(new TreeModelEvent(this,getPath(ecp),new int[]{getIndex(ec)}, new Object[]{ec}));
+			recalculate();
+			fireAllTreeNodesChanged();
 		}
 	}
 	
@@ -650,6 +642,16 @@ public class BilancialTreeModel implements TreeModel, JournalListener {
 	// LISTENER MECHANISM ******************
 	// *************************************
 	
+	//Helper method firing a nodeschanged for EVERY node. This is used when all nodes' bilancials might be changed
+	//to preserve tree expansion status
+	protected void fireAllTreeNodesChanged() {
+		for(ExtendedCategory ec : used) {
+			ExtendedCategory parent = ec.category == Category.getRootCategory()? new ExtendedCategory(ec.category, false) : 
+																				 new ExtendedCategory(ec.isAdditional? ec.category : ec.category.parent , false);
+			fireTreeNodesChanged(new TreeModelEvent(this,getPath(parent),new int[]{getIndex(ec)},new Object[]{ec}));
+		}
+	}
+	
 	protected void fireTreeNodesChanged(TreeModelEvent e) {
 		for(TreeModelListener l : listenerList) l.treeNodesChanged(e);
 	}
@@ -709,6 +711,7 @@ public class BilancialTreeModel implements TreeModel, JournalListener {
 	protected int getIndex(ExtendedCategory c) {
 		if(c == null || !used.contains(c)) return -1;
 		if(c.isAdditional()) return 0;
+		if(c.category == Category.getRootCategory()) return 0;
 		else {
 			return directSubcategories.get(new ExtendedCategory(c.category.parent,false)).indexOf(c);
 		}

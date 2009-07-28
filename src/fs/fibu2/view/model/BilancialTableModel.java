@@ -8,11 +8,7 @@ import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.TableModel;
-
-import com.sun.corba.se.spi.orbutil.fsm.FSM;
 
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
 import fs.fibu2.view.model.BilancialTreeModel.ExtendedCategory;
@@ -25,7 +21,7 @@ import fs.fibu2.view.render.BilancialTree;
  *
  */
 public class BilancialTableModel implements TableModel, TreeExpansionListener,
-		TreeModelListener, TreeSelectionListener {
+		TreeModelListener {
 
 	private BilancialTree tree;
 	
@@ -97,8 +93,8 @@ public class BilancialTableModel implements TableModel, TreeExpansionListener,
 		case 0: return ec.isAdditional()? tree.getModel().getIndividualPlus(ec.category()) : tree.getModel().getCategoryPlus(ec.category());
 		case 1: return ec.isAdditional()? tree.getModel().getIndividualMinus(ec.category()) : tree.getModel().getCategoryMinus(ec.category());
 		case 2: return ec.isAdditional()? tree.getModel().getIndividualSum(ec.category()) : tree.getModel().getCategorySum(ec.category());
-		case 3: return ec.isAdditional()? !tree.getModel().isVisibleIndiv(ec.category()) : !tree.getModel().isVisible(ec.category());
-		case 4: String mask = ec.isAdditional()? tree.getModel().getIndividualMask(ec.category()) : tree.getModel().getMask(ec.category());
+		case 3: return !tree.getModel().isVisible(ec);
+		case 4: String mask = tree.getModel().getMask(ec);
 				return mask == null? "" : mask;
 		default: return "";
 		}
@@ -106,7 +102,7 @@ public class BilancialTableModel implements TableModel, TreeExpansionListener,
 
 	@Override
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
-		return columnIndex == 3 || columnIndex == 4;
+		return (columnIndex == 3 && rowIndex != 0) || columnIndex == 4;
 	}
 
 	@Override
@@ -120,12 +116,12 @@ public class BilancialTableModel implements TableModel, TreeExpansionListener,
 		else {
 			ExtendedCategory ec = (ExtendedCategory) tree.getPathForRow(rowIndex).getLastPathComponent();
 			if(columnIndex == 3 && value instanceof Boolean) {
-				if(ec.isAdditional()) tree.getModel().setIndividualVisibility(ec.category(), (Boolean)value);
-				else tree.getModel().setVisibility(ec.category(), (Boolean)value);
+				if(ec.isAdditional()) tree.getModel().setIndividualVisibility(ec.category(), !(Boolean)value);
+				else tree.getModel().setVisibility(ec.category(), !(Boolean)value);
 			}
 			if(columnIndex == 4 && value instanceof String) {
-				if(ec.isAdditional()) tree.getModel().setIndividualMask(ec.category(), (String)value);
-				else tree.getModel().setMask(ec.category(), (String)value);
+				if(ec.isAdditional()) tree.getModel().setIndividualMask(ec.category(), value.equals("")? null : (String)value);
+				else tree.getModel().setMask(ec.category(), value.equals("")? null : (String)value);
 			}
 		}
 	}
@@ -165,10 +161,5 @@ public class BilancialTableModel implements TableModel, TreeExpansionListener,
 	@Override
 	public void treeStructureChanged(TreeModelEvent e) {
 		fireTableChanged();	}
-
-	@Override
-	public void valueChanged(TreeSelectionEvent e) {
-		fireTableChanged();
-	}
 
 }

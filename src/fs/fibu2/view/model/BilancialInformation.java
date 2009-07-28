@@ -97,7 +97,7 @@ public final class BilancialInformation {
 				newcategory.put(cat, c == null? e.getValue() : e.getValue() + c);
 				cat = cat.parent;
 			}
-			while(cat != Category.getRootCategory() && cat != null);
+			while(/*cat != Category.getRootCategory() && */ cat != null);
 		HashMap<Account, Float> newaccount = new HashMap<Account, Float>(accountSums);
 			Float a = newaccount.get(e.getAccount());
 			newaccount.put(e.getAccount(), a == null? e.getValue() : e.getValue() + a);

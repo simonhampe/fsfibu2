@@ -1,5 +1,6 @@
 package fs.fibu2.view.render;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.util.Currency;
 import java.util.Locale;
@@ -35,7 +36,8 @@ public class MoneyCellRenderer extends DefaultTableCellRenderer {
 		JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus,
 				row, column);
 		if(value instanceof Float) {
-			label.setText(DefaultCurrencyFormat.formatAsHTML((Float)value, currency));
+			label.setText(DefaultCurrencyFormat.getFormat(currency).format((Float)value));
+			label.setForeground(((Float)value) < 0? Color.RED : Color.BLACK);
 			label.setHorizontalAlignment(RIGHT);
 		}
 		return label;

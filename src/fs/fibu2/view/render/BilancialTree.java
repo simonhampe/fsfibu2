@@ -23,7 +23,7 @@ public class BilancialTree extends JTree {
 		if(model == null) throw new NullPointerException("Cannot create tree from null model");
 		else this.model = model;
 		setModel(model);
-		setCellRenderer(new BilancialTreeRenderer());
+		setCellRenderer(new BilancialTreeRenderer(model));
 	}
 	
 	/**
