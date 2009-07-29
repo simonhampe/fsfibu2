@@ -9,6 +9,8 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.swing.SwingWorker;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
@@ -41,7 +43,7 @@ import fs.fibu2.view.event.ProgressListener;
  * @author Simon Hampe
  *
  */
-public class BilancialTreeModel implements TreeModel, JournalListener {
+public class BilancialTreeModel implements TreeModel, JournalListener, ChangeListener {
 
 	// DATA ************************
 	// *****************************
@@ -96,6 +98,7 @@ public class BilancialTreeModel implements TreeModel, JournalListener {
 	public BilancialTreeModel(Journal j, StackFilter f, Preferences node) {
 		associatedJournal = j == null? new Journal() : j;
 		filter = f;
+		if(filter != null) filter.addChangeListener(this);
 		
 		DataVector v = recalculateModel();
 			used = v.used;
@@ -162,107 +165,112 @@ public class BilancialTreeModel implements TreeModel, JournalListener {
 	protected DataVector recalculateModel() {
 		DataVector v = new DataVector();
 		
-		//Whether an entry has already been accepted by the filter
-		boolean entriesAccepted = false;
-		
 		//The bilancial of all entries 'before'
 		BilancialInformation biBefore = new BilancialInformation(associatedJournal);
-		//The overall bilancial of all accepted entries (divided into minus, plus, sum) and of each separate category
-		BilancialInformation biAcceptedPlus = new BilancialInformation();
-		BilancialInformation biAcceptedMinus = new BilancialInformation();
-		BilancialInformation biAcceptedSum = new BilancialInformation();
-		HashMap<Category, BilancialInformation> biAcceptedPlusIndiv = new HashMap<Category, BilancialInformation>();
-		HashMap<Category, BilancialInformation>  biAcceptedMinusIndiv = new HashMap<Category, BilancialInformation>();
-		HashMap<Category, BilancialInformation>  biAcceptedSumIndiv = new  HashMap<Category, BilancialInformation>();
+		//The individual bilancials of all accepted entries
+		HashMap<Category, Float> biAcceptedPlusIndiv = new HashMap<Category, Float>();
+		HashMap<Category, Float>  biAcceptedMinusIndiv = new HashMap<Category, Float>();
+		HashMap<Category, Float>  biAcceptedSumIndiv = new  HashMap<Category, Float>();
 		//The overall bilancial of all 'before' and accepted entries
 		BilancialInformation biOverall = new BilancialInformation();
+		
+		//Whether an entry has already been accepted by the filter
+		boolean entriesAccepted = false;
 		
 		//The sorted set of all entries
 		TreeSet<Entry> entries = new TreeSet<Entry>(new TableModelComparator());
 			entries.addAll(associatedJournal.getEntries());
 		
-			for(Entry e : entries) {
-				if(filter == null || filter.verifyEntry(e)) {
-					entriesAccepted = true;
-					
-					biOverall = biOverall.increment(e);
-					
-					//Dirty trick for invisible entries: Create a clone entry in the same category and account, but only with value 0,
-					//so it actually does not count for any sums (only for account sums, that's why we DID increment biOverall before
-					if(!isInheritedVisible(e.getCategory(), false) || !isInheritedVisible(e.getCategory(), true)) {
-						e = new Entry("",0,e.getCurrency(),e.getDate(),e.getCategory(),e.getAccount().getID(),null,null);
-					}
-					
-					//Increment bilancial
-					if(!biAcceptedMinusIndiv.containsKey(e.getCategory())) biAcceptedMinusIndiv.put(e.getCategory(), new BilancialInformation());
-					if(!biAcceptedPlusIndiv.containsKey(e.getCategory())) biAcceptedPlusIndiv.put(e.getCategory(), new BilancialInformation());
-					if(!biAcceptedSumIndiv.containsKey(e.getCategory())) biAcceptedSumIndiv.put(e.getCategory(), new BilancialInformation());
-					if(e.getValue() >= 0) {
-						biAcceptedPlus = biAcceptedPlus.increment(e);
-						biAcceptedPlusIndiv.put(e.getCategory(),biAcceptedPlusIndiv.get(e.getCategory()).increment(e));
-					}
-					else {
-						biAcceptedMinus = biAcceptedMinus.increment(e);
-						biAcceptedMinusIndiv.put(e.getCategory(),biAcceptedMinusIndiv.get(e.getCategory()).increment(e));
-					}
-					
-					biAcceptedSumIndiv.put(e.getCategory(), biAcceptedSumIndiv.get(e.getCategory()).increment(e));
-					biAcceptedSum = biAcceptedSum.increment(e);					
+		for(Entry e : entries) {
+			//Add accepted entries to the individual bilancial
+			if(filter == null || filter.verifyEntry(e)) {
+				entriesAccepted = true;
+				biOverall = biOverall.increment(e);
+				
+				if(!biAcceptedMinusIndiv.keySet().contains(e.getCategory())) biAcceptedMinusIndiv.put(e.getCategory(), 0.0f);
+				if(!biAcceptedPlusIndiv.keySet().contains(e.getCategory())) biAcceptedPlusIndiv.put(e.getCategory(), 0.0f);
+				if(!biAcceptedSumIndiv.keySet().contains(e.getCategory())) biAcceptedSumIndiv.put(e.getCategory(), 0.0f);
+				
+				if(e.getValue() >= 0) {
+					biAcceptedPlusIndiv.put(e.getCategory(), biAcceptedPlusIndiv.get(e.getCategory()) + e.getValue());
 				}
 				else {
-					if(!entriesAccepted) {
-						biBefore = biBefore.increment(e);
-						biOverall = biOverall.increment(e);
-					}
+					biAcceptedMinusIndiv.put(e.getCategory(), biAcceptedMinusIndiv.get(e.getCategory()) + e.getValue());
 				}
+				
+				biAcceptedSumIndiv.put(e.getCategory(), biAcceptedSumIndiv.get(e.getCategory()) + e.getValue());
+				
+			}
+			//Add non-accepted entries to the 'before' bilancials as long as no entry has been accepted
+			else {
+				if(!entriesAccepted) {
+					biBefore = biBefore.increment(e);
+					biOverall = biOverall.increment(e);
+				}
+			}
 		}
 		
-		//Copy data:
-			
-		//Extract categories & subcategories
+		//Create categories and subcategory hierarchy
 		v.used.add(new ExtendedCategory(Category.getRootCategory(),false));
-		for(Category c : biAcceptedSum.getCategoryMappings().keySet()) {
+		for(Category c : biAcceptedSumIndiv.keySet()) {
 			while(c != Category.getRootCategory()) {
-				ExtendedCategory ec = new ExtendedCategory(c,false); 
-				ExtendedCategory ecp = new ExtendedCategory(c.parent,false);
+				ExtendedCategory ec = new ExtendedCategory(c,false);
 				v.used.add(ec);
+				c = c.parent;
+				ExtendedCategory ecp = new ExtendedCategory(c,false);
 				if(v.directSubcategories.get(ecp) == null) v.directSubcategories.put(ecp, new Vector<ExtendedCategory>());
 				v.directSubcategories.get(ecp).add(ec);
-				c = c.parent;
+			}
+		}
+		//Sort subcategory lists and detect additional nodes
+		for(ExtendedCategory c : new HashSet<ExtendedCategory>(v.directSubcategories.keySet())) {
+			TreeSet<ExtendedCategory> sortedSet = new TreeSet<ExtendedCategory>(new ExtCatComparator());
+				sortedSet.addAll(v.directSubcategories.get(c));
+			v.directSubcategories.put(c, new Vector<ExtendedCategory>(sortedSet));
+			if(sortedSet.size() > 0 && biAcceptedSumIndiv.keySet().contains(c.category)) {
+				ExtendedCategory addNode = new ExtendedCategory(c.category(),true);
+				v.used.add(addNode);
+				v.directSubcategories.get(c).add(0, addNode);
 			}
 		}
 		
-		//Sort subcategories
-		for(ExtendedCategory ecp : v.directSubcategories.keySet()) {
-			TreeSet<ExtendedCategory> scs = new TreeSet<ExtendedCategory>(new ExtCatComparator());
-				scs.addAll(v.directSubcategories.get(ecp));
-			v.directSubcategories.put(ecp,new Vector<ExtendedCategory>(scs));
-		}
-		
-		//Find additional nodes and copy bilancials
-		for(ExtendedCategory ec : new HashSet<ExtendedCategory>(v.used)) {
-			//Copy own bilancials
-			v.minus.put(ec.category(), biAcceptedMinus.getCategoryMappings().get(ec.category()));
-			v.plus.put(ec.category(), biAcceptedPlus.getCategoryMappings().get(ec.category()));
-			v.sum.put(ec.category(), biAcceptedSum.getCategoryMappings().get(ec.category()));
-			//Copy individual bilancials
-			if(biAcceptedSumIndiv.containsKey(ec.category())) {
-				v.minusIndiv.put(ec.category(), biAcceptedMinusIndiv.get(ec.category()).getCategoryMappings().get(ec.category()));
-				v.plusIndiv.put(ec.category(), biAcceptedPlusIndiv.get(ec.category()).getCategoryMappings().get(ec.category()));
-				v.sumIndiv.put(ec.category(), biAcceptedSumIndiv.get(ec.category()).getCategoryMappings().get(ec.category()));
-				//If in addition this category has subcategories, add the additional node
-				if(v.directSubcategories.get(ec) != null && v.directSubcategories.get(ec).size() > 0) {
-					ExtendedCategory newec = new ExtendedCategory(ec.category(),true);
-					v.used.add(newec);
-					v.directSubcategories.get(ec).add(0, newec);
-				}
+		//Now calculate bilancials
+		v.plusIndiv = biAcceptedPlusIndiv;
+		v.minusIndiv = biAcceptedMinusIndiv;
+		v.sumIndiv = biAcceptedSumIndiv;
+		for(ExtendedCategory c : v.used) {
+			//We only have to calculate this for leafs:
+			if((v.directSubcategories.get(c) != null && v.directSubcategories.get(c).size() > 0) || 
+					(c.category() == Category.getRootCategory() && !c.isAdditional())) continue;
+			//For leafs, just pass up the bilancial value while you're still in a visible range
+			Float plus = v.plusIndiv.get(c.category());
+			Float minus = v.minusIndiv.get(c.category());
+			Float sum = v.sumIndiv.get(c.category());
+			//Non-additional leaf nodes add their bilancials to their sum anyway
+			if(!c.isAdditional) {
+				if(!v.sum.containsKey(c.category())) v.sum.put(c.category(), sum);
+				else v.sum.put(c.category(), v.sum.get(c.category()) + sum);
+				if(!v.plus.containsKey(c.category())) v.plus.put(c.category(), plus);
+				else v.plus.put(c.category(), v.plus.get(c.category()) + plus);
+				if(!v.minus.containsKey(c.category())) v.minus.put(c.category(), minus);
+				else v.minus.put(c.category(), v.minus.get(c.category()) + minus);
+			}
+			while(!invisibles.contains(c) && c != null) {
+				ExtendedCategory ecp = new ExtendedCategory(c.isAdditional()? c.category() : c.category().parent,false);
+				if(!v.sum.containsKey(ecp.category())) v.sum.put(ecp.category(), sum);
+				else v.sum.put(ecp.category(), v.sum.get(ecp.category()) + sum);
+				if(!v.plus.containsKey(ecp.category())) v.plus.put(ecp.category(), plus);
+				else v.plus.put(ecp.category(), v.plus.get(ecp.category()) + plus);
+				if(!v.minus.containsKey(ecp.category())) v.minus.put(ecp.category(), minus);
+				else v.minus.put(ecp.category(), v.minus.get(ecp.category()) + minus);
+				c = ecp.category() == Category.getRootCategory()? null : ecp;
 			}
 		}
 		
+		//Finally copy account values
 		v.before = biBefore.getAccountMappings();
 		v.after = biOverall.getAccountMappings();
-		
-		
+
 		return v;
 	}
 	
@@ -526,6 +534,16 @@ public class BilancialTreeModel implements TreeModel, JournalListener {
 		
 	}
 	
+	/**
+	 * Sets the filter of this model. Null indicates that all entries should be accepted.
+	 */
+	public void setFilter(StackFilter filter) {
+		if(this.filter != null) this.filter.removeChangeListener(this);
+		this.filter = filter;
+		if(this.filter != null) this.filter.addChangeListener(this);
+		recalculate();
+	}
+	
 	// TREEMODEL *******************
 	// *****************************
 	
@@ -686,6 +704,11 @@ public class BilancialTreeModel implements TreeModel, JournalListener {
 	
 	public void removeProgressListener(ProgressListener<Object, Object> l) {
 		progressListeners.remove(l);
+	}
+	
+	@Override
+	public void stateChanged(ChangeEvent e) {
+		recalculate();
 	}
 	
 	// HELPER METHODS **************************

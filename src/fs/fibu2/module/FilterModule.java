@@ -124,7 +124,7 @@ public class FilterModule extends JPanel implements JournalModule, ResourceDepen
 			tabPanel.add(addButton);
 			tabPanel.add(new JLabel(Fsfibu2StringTableMgr.getString("fs.fibu2.module.copyfilter")));
 			tabPanel.add(copyBox);
-			copyBox.setModel(new FilterPoolModel(associatedJournal,null,true));
+			copyBox.setModel(new FilterPoolModel(associatedJournal,this,true));
 			copyBox.setRenderer(new FilterPoolRenderer());
 		tabbedPane.setTabComponentAt(0, tabPanel);
 		tabbedPane.setEnabledAt(0, false);
