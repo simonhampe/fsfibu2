@@ -498,6 +498,13 @@ public class BilancialTreeModel implements TreeModel, JournalListener, ChangeLis
 	}
 	
 	/**
+	 * @return The list of accounts used in the current setting
+	 */
+	public HashSet<Account> getAccounts() {
+		return new HashSet<Account>(after.keySet());
+	}
+	
+	/**
 	 * Saves the preferences of this model in the given node (i.e. the mask and visibility status), if it isn't null. The same node
 	 * should be passed to the constructor when whishing to create a model with the same preferences
 	 */
