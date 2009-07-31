@@ -1,12 +1,9 @@
 package fs.fibu2.application;
 
-import java.awt.Component;
 import java.util.Vector;
 import java.util.prefs.Preferences;
 
-import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
-import javax.swing.SwingConstants;
 
 import org.apache.log4j.Logger;
 

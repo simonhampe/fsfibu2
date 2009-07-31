@@ -27,6 +27,7 @@ import fs.fibu2.filter.DateFilter;
 import fs.fibu2.filter.DefaultFilters;
 import fs.fibu2.filter.EntryFilter;
 import fs.fibu2.filter.StackFilter;
+import fs.fibu2.module.BilancialPane;
 import fs.fibu2.resource.Fsfibu2DefaultReference;
 import fs.fibu2.view.model.BilancialTableModel;
 import fs.fibu2.view.model.BilancialTreeModel;
@@ -55,24 +56,24 @@ public class BilancialTreeTest {
 			final Journal j = Fsfibu1Converter.convertFsfibu1Journal(XMLToolbox.loadXMLFile(new File(basedir + "/fsfibu/KassenbuchAb2008.xml")));
 			j.addEntry(new Entry("bla",3,Currency.getInstance("EUR"),new GregorianCalendar(),Category.getRootCategory()//Category.getCategory(Category.getRootCategory(), "Fachschaft")
 					,"bank_account",null,null));
-			
 			JFrame frame = new JFrame();
 			
-			CategoryFilter cfilter = new CategoryFilter(Category.getCategory(Category.getRootCategory(), "Fachschaft"));
-			DateFilter dfilter = DefaultFilters.getYearFilter(2009);
-			StackFilter filter = new StackFilter(new Vector<EntryFilter>(Arrays.asList(dfilter)),(HashSet<EntryFilter>)null, (HashSet<EntryFilter>)null);
-			BilancialTreeModel model = new BilancialTreeModel(j,null,null);
-			BilancialTree tree = new BilancialTree(model);
-				
-			JTable table = new JTable();
-				table.setModel(new BilancialTableModel(tree));
-				tree.addTreeExpansionListener((BilancialTableModel)table.getModel());
-				tree.getModel().addTreeModelListener((BilancialTableModel)table.getModel());
-				table.setDefaultRenderer(Float.class, new MoneyCellRenderer(Fsfibu2Constants.defaultCurrency));
-			
-			frame.setLayout(new BorderLayout());
-			frame.add(tree,BorderLayout.WEST);
-			frame.add(new JScrollPane(table), BorderLayout.EAST);
+//			CategoryFilter cfilter = new CategoryFilter(Category.getCategory(Category.getRootCategory(), "Fachschaft"));
+//			DateFilter dfilter = DefaultFilters.getYearFilter(2009);
+//			StackFilter filter = new StackFilter(new Vector<EntryFilter>(Arrays.asList(dfilter)),(HashSet<EntryFilter>)null, (HashSet<EntryFilter>)null);
+//			BilancialTreeModel model = new BilancialTreeModel(j,null,null);
+//			BilancialTree tree = new BilancialTree(model);
+//				
+//			JTable table = new JTable();
+//				table.setModel(new BilancialTableModel(tree));
+//				tree.addTreeExpansionListener((BilancialTableModel)table.getModel());
+//				tree.getModel().addTreeModelListener((BilancialTableModel)table.getModel());
+//				table.setDefaultRenderer(Float.class, new MoneyCellRenderer(Fsfibu2Constants.defaultCurrency));
+////			
+//			frame.setLayout(new BorderLayout());
+//			frame.add(tree,BorderLayout.WEST);
+//			frame.add(new JScrollPane(table), BorderLayout.EAST);
+			frame.add(new BilancialPane(j,null,null));
 			frame.pack();
 				
 			frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);

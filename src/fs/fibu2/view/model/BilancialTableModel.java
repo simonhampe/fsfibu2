@@ -38,6 +38,8 @@ public class BilancialTableModel implements TableModel, TreeExpansionListener,
 	public BilancialTableModel(BilancialTree tree) {
 		if(tree == null) throw new NullPointerException("Cannot create BilancialTableModel from null tree");
 		else this.tree = tree;
+		tree.getModel().addTreeModelListener(this);
+		tree.addTreeExpansionListener(this);
 	}
 	
 	// TABLEMODEL ******************************

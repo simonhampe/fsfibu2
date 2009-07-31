@@ -31,6 +31,7 @@ public class BilancialAccountModel implements TableModel, TreeModelListener {
 	public BilancialAccountModel(BilancialTreeModel m) {
 		if(m == null) throw new NullPointerException("Cannot create model from null tree model");
 		model = m;
+		model.addTreeModelListener(this);
 		recalculate();
 	}
 	

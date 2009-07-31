@@ -172,7 +172,7 @@ public class BilancialTreeModel implements TreeModel, JournalListener, ChangeLis
 		HashMap<Category, Float>  biAcceptedMinusIndiv = new HashMap<Category, Float>();
 		HashMap<Category, Float>  biAcceptedSumIndiv = new  HashMap<Category, Float>();
 		//The overall bilancial of all 'before' and accepted entries
-		BilancialInformation biOverall = new BilancialInformation();
+		BilancialInformation biOverall = new BilancialInformation(associatedJournal);
 		
 		//Whether an entry has already been accepted by the filter
 		boolean entriesAccepted = false;
@@ -185,7 +185,7 @@ public class BilancialTreeModel implements TreeModel, JournalListener, ChangeLis
 			//Add accepted entries to the individual bilancial
 			if(filter == null || filter.verifyEntry(e)) {
 				entriesAccepted = true;
-				biOverall = biOverall.increment(e);
+				if(isInheritedVisible(e.getCategory(), true) && isInheritedVisible(e.getCategory(),false)) biOverall = biOverall.increment(e);
 				
 				if(!biAcceptedMinusIndiv.keySet().contains(e.getCategory())) biAcceptedMinusIndiv.put(e.getCategory(), 0.0f);
 				if(!biAcceptedPlusIndiv.keySet().contains(e.getCategory())) biAcceptedPlusIndiv.put(e.getCategory(), 0.0f);
