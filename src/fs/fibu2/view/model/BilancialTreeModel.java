@@ -755,7 +755,7 @@ public class BilancialTreeModel implements TreeModel, JournalListener, ChangeLis
 	 *  'real' category node or the additional category node in the category itself (a boolean flag: It is true, when 
 	 *  the object is the additional node)
 	 */
-	public final class ExtendedCategory {
+	public static final class ExtendedCategory {
 		private Category category;
 		private boolean isAdditional;
 		
