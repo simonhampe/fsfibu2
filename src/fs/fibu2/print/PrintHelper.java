@@ -53,4 +53,17 @@ public class PrintHelper {
 		g.drawString(s, (int)xpos, (int)ypos);
 	}
 	
+	/**
+	 * Calculates the maximal font size for a given string to fit into a given rectangle
+	 * @param g The graphics context for which this is calculated
+	 * @param s The string which should be printed
+	 * @param r the rectangle in which the string should fit
+	 * @return The maximal font size (> 0), which is gradually decreased by 1
+	 */
+	public static float maximalFontSize(Graphics g, String s, Rectangle r) {
+		float fontSize = r.height;
+		while(g.getFontMetrics(g.getFont().deriveFont(fontSize)).getStringBounds(s, g).getWidth() > r.width && fontSize > 1) fontSize--;
+		return fontSize;
+	}
+	
 }

@@ -570,7 +570,8 @@ public class BilancialTreeModel implements TreeModel, JournalListener, ChangeLis
 	@Override
 	public int getChildCount(Object c) {
 		if(used.contains(c)) {
-			return directSubcategories.get(c).size();
+			Vector<ExtendedCategory> children = directSubcategories.get(c);
+			return children == null? 0 : children.size();
 		}
 		else return 0;
 	}

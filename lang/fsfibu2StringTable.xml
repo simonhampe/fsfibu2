@@ -83,6 +83,9 @@
   <polyglotstring id="fs.fibu2.init.loadingfilters" group="fs.fibu2.init">
     <variant lang="en">Loading plugin filters...</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.print.BilancialPageable.outcaption" group="fs.fibu2.print.BilancialPageable">
+    <variant lang="en">Expenditures</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.model.BilancialTableModel.out" group="fs.fibu2.model.BilancialTableModel">
     <variant lang="en">Expenditures</variant>
   </polyglotstring>
@@ -100,6 +103,9 @@
   </polyglotstring>
   <polyglotstring id="fs.fibu2.view.BilancialPanel.selectionentry" group="fs.fibu2.view.BilancialPanel">
     <variant lang="en">Bilancial of selected entries</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.print.BilancialPageable.before" group="fs.fibu2.print.BilancialPageable">
+    <variant lang="en">Before</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.view.JournalTableBar.readingtooltip" group="fs.fibu2.view.JournalTableBar">
     <variant lang="en">Toggles visibility of reading points</variant>
@@ -161,6 +167,9 @@
   <polyglotstring id="fs.fibu2.Entry.currency" group="fs.fibu2.Entry">
     <variant lang="en">Currency</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.print.BilancialPageable.sumcaption" group="fs.fibu2.print.BilancialPageable">
+    <variant lang="en">Sum</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.view.EntryDialog.name" group="fs.fibu2.view.EntryDialog">
     <variant lang="en">Name:</variant>
   </polyglotstring>
@@ -172,6 +181,9 @@
   </polyglotstring>
   <polyglotstring id="fs.fibu2.view.BilancialPanel.overalltitle" group="fs.fibu2.view.BilancialPanel">
     <variant lang="en">Category / Overall bilancial</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.print.BilancialPageable.accounts" group="fs.fibu2.print.BilancialPageable">
+    <variant lang="en">Accounts</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.AbstractAccount.description" group="fs.fibu2.AbstractAccount">
     <variant lang="en">An abstract account implementing invoice information</variant>
@@ -214,6 +226,9 @@
   </polyglotstring>
   <polyglotstring id="fs.fibu2.undo.JournalInfoEdit.setto" group="fs.fibu2.undo.JournalInfoEdit">
     <variant lang="en">Sets %s of journal %s to '%s'</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.print.BilancialPageable.incaption" group="fs.fibu2.print.BilancialPageable">
+    <variant lang="en">Earnings</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.BankAccount.description" group="fs.fibu2.BankAccount">
     <variant lang="en">A generic bank account</variant>
@@ -419,6 +434,9 @@
   <polyglotstring id="fs.fibu2.view.BilancialPanel.category" group="fs.fibu2.view.BilancialPanel">
     <variant lang="en">Category</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.print.BilancialPageable.overall" group="fs.fibu2.print.BilancialPageable">
+    <variant lang="en">Without category:</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.describematches" group="fs.fibu2.filter">
     <variant lang="en">%s matches '%s'</variant>
   </polyglotstring>
@@ -497,6 +515,9 @@
   <polyglotstring id="fs.fibu2.filter.CategoryFilter.level" group="fs.fibu2.filter.CategoryFilter">
     <variant lang="en">Level</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.print.BilancialPageable.after" group="fs.fibu2.print.BilancialPageable">
+    <variant lang="en">After</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.Entry.account" group="fs.fibu2.Entry">
     <variant lang="en">Account</variant>
   </polyglotstring>
@@ -557,6 +578,9 @@
   <polyglotstring id="fs.fibu2.filter.StackFilter.edittooltip" group="fs.fibu2.filter.StackFilter">
     <variant lang="en">Edit this filter</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.print.BilancialPageable.difference" group="fs.fibu2.print.BilancialPageable">
+    <variant lang="en">Difference</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.module.FilterModule.tooltip" group="fs.fibu2.module.FilterModule">
     <variant lang="en">Constructs advanced search filters</variant>
   </polyglotstring>
@@ -595,6 +619,9 @@
   </polyglotstring>
   <polyglotstring id="fs.fibu2.undo.JournalStartEdit.presentation" group="fs.fibu2.undo.JournalStartEdit">
     <variant lang="en">Changes the start value of account %s in journal %s.</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.print.BilancialPageable.finalsum" group="fs.fibu2.print.BilancialPageable">
+    <variant lang="en">Overall:</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.view.EntryDialog.previnvalid" group="fs.fibu2.view.EntryDialog">
     <variant lang="en">&lt;html&gt;&lt;i&gt;(invalid)&lt;/i&gt;&lt;/html&gt;</variant>
