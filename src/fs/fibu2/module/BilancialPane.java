@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+import javax.print.PrintException;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -32,6 +33,7 @@ import fs.fibu2.data.model.Journal;
 import fs.fibu2.filter.EntryFilterEditor;
 import fs.fibu2.filter.StackFilter;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
+import fs.fibu2.print.BilancialPrintDialog;
 import fs.fibu2.resource.Fsfibu2DefaultReference;
 import fs.fibu2.view.model.BilancialAccountModel;
 import fs.fibu2.view.model.BilancialTableModel;
@@ -114,6 +116,19 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 		}
 	};
 	
+	private ActionListener printListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			try {
+				BilancialPrintDialog diag = new BilancialPrintDialog(tree.getModel());
+				diag.setVisible(true);
+			}
+			catch(PrintException e1) {
+				//Ignore
+			}
+		}		
+	};
+	
 	// MISC *******************************
 	// ************************************
 	
@@ -169,7 +184,8 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 			filterButton.addActionListener(visibilityListener);
 			filterButton.setIcon(filterIcon);
 		printButton.setToolTipText(Fsfibu2StringTableMgr.getString(sgroup + ".printtip"));
-			printButton.setEnabled(false); //TODO: Enable printing!
+			printButton.setEnabled(true);
+			printButton.addActionListener(printListener);
 			printButton.setIcon(printIcon);
 		
 		

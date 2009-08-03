@@ -23,6 +23,8 @@ public class BilancialPrintConfiguration {
 	
 	private PageFormat format; //The page format
 	
+	private boolean printAccounts = true;
+	
 	private PrintPolicy policy; //The print policy (a unit is always printed on one page, a new page is
 								//created only if the lines reach the end of the page)
 	
@@ -35,6 +37,7 @@ public class BilancialPrintConfiguration {
 	 * @param model The tree model from which to retrieve the visibility and mask data
 	 * @param job The print job which provides page format and other information
 	 * @param format The page format which should be used
+	 * @param printAccounts Whether the account bilancial should be printed
 	 * @param policy The page break policy: <br>
 	 * PRESERVE_UNIT: This tries to ensure that every category unit (i.e. the bilancial of a node with subnodes) is printed on one and the same page, i.e.
 	 * this prints with the given line height and induces a page break if necessary<br>
@@ -42,12 +45,13 @@ public class BilancialPrintConfiguration {
 	 * 
 	 */
 	public BilancialPrintConfiguration(int lineHeight, String title,
-			BilancialTreeModel model, PrinterJob job, PageFormat format, PrintPolicy policy) {
+			BilancialTreeModel model, PrinterJob job, PageFormat format, boolean printAccounts, PrintPolicy policy) {
 		this.lineHeight = lineHeight;
 		this.title = title;
 		this.model = model;
 		this.job = job;
 		this.format = format;
+		this.printAccounts = printAccounts;
 		this.policy = policy;
 	}
 
@@ -73,6 +77,10 @@ public class BilancialPrintConfiguration {
 
 	public PrintPolicy getPolicy() {
 		return policy;
+	}
+	
+	public boolean doesPrintAccounts() {
+		return printAccounts;
 	}
 	
 	

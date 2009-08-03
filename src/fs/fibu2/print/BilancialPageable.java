@@ -10,19 +10,15 @@ import java.awt.print.PrinterException;
 import java.util.TreeSet;
 import java.util.Vector;
 
-import javax.sound.sampled.Line;
-
 import fs.fibu2.data.Fsfibu2Constants;
 import fs.fibu2.data.format.DefaultAccountComparator;
 import fs.fibu2.data.format.DefaultCurrencyFormat;
 import fs.fibu2.data.model.Account;
-import fs.fibu2.data.model.AccountLoader;
 import fs.fibu2.data.model.Category;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
 import fs.fibu2.module.BilancialPane;
 import fs.fibu2.print.PrintHelper.XAlign;
 import fs.fibu2.print.PrintHelper.YALign;
-import fs.fibu2.view.model.AccountListModel;
 import fs.fibu2.view.model.BilancialTreeModel.ExtendedCategory;
 
 /**
@@ -53,23 +49,6 @@ public class BilancialPageable implements Pageable {
 	
 	public BilancialPageable(BilancialPrintConfiguration config) {
 		configuration = config;
-//		//TODO: Test code
-//		printables.add(new Printable(){
-//		
-//			@Override
-//			public int print(Graphics graphics, PageFormat pageFormat, int pageIndex)
-//					throws PrinterException {
-////				(new NodeTitleUnit(new ExtendedCategory(Category.getCategory(Category.getRootCategory(), "Fachschaft"),false),0,null)).print(graphics, 0, configuration.getLineHeight(), 0, 0);
-////				(new TitleUnit()).print(graphics, 0, configuration.getLineHeight(), 0, 4);
-////				(new NodeSumUnit(new ExtendedCategory(Category.getRootCategory(),true),0,true)).print(graphics, 0, configuration.getLineHeight(), 0, 0);
-////				(new NthLevelNodeUnit(new ExtendedCategory(Category.getCategory(Category.getRootCategory(), "Fachschaft"),false),10,true)).print(graphics, 0, configuration.getLineHeight(), 0, 30);
-////				(new OverallSumUnit()).print(graphics, 0, configuration.getLineHeight(), 0, 0);
-////				(new AccountSumUnit(AccountLoader.getAccount("bank_account"))).print(graphics, 0, configuration.getLineHeight(), 0, 0);
-////				(new CaptionUnit(false)).print(graphics, 0, configuration.getLineHeight(), 0, 0);
-////				(new AccountUnit()).print(graphics, 0, configuration.getLineHeight(), 0, 10);
-//				return Printable.PAGE_EXISTS;
-//			}
-//		});
 		
 		//Create printables
 		
@@ -93,9 +72,10 @@ public class BilancialPageable implements Pageable {
 		//Add overall bilancial
 		units.add(new OverallSumUnit());
 		units.add(new EmptyLinePrintUnit(1));
-		units.add(new AccountUnit());
+		if(configuration.doesPrintAccounts()) units.add(new AccountUnit());
 		
 		//Distribute line units
+		
 		int linesPerPage = (int)Math.max(1, Math.floor(configuration.getFormat().getImageableHeight() / configuration.getLineHeight()));
 		
 		int linesToPrint = 0;
@@ -117,6 +97,7 @@ public class BilancialPageable implements Pageable {
 			
 			//Add units
 			while(linesLeftOnPage > 0 && linesToPrint > 0) {
+				//If there is enough space for the unit, insert it completely
 				int unitLinesToPrint = units.get(currentUnit).getNumberOfLines() - currentLine;  
 				if(unitLinesToPrint <= linesLeftOnPage) {
 					endUnit = currentUnit;
@@ -193,7 +174,7 @@ public class BilancialPageable implements Pageable {
 
 		@Override
 		public int getNumberOfLines() {
-			return 5;
+			return 4;
 		}
 
 		@Override
@@ -438,6 +419,8 @@ public class BilancialPageable implements Pageable {
 		private boolean sumNegative = false;
 		
 		public OverallSumUnit() {
+			String mask = configuration.getModel().getMask(new ExtendedCategory(Category.getRootCategory(),false));
+			if(mask != null) tail = mask;
 			float fIn = configuration.getModel().getCategoryPlus(Category.getRootCategory());
 			float fOut = configuration.getModel().getCategoryMinus(Category.getRootCategory());
 			float fSum = configuration.getModel().getCategorySum(Category.getRootCategory());
@@ -484,6 +467,7 @@ public class BilancialPageable implements Pageable {
 			PrintHelper.printString(g, in, inRect, inNegative? Color.RED : Color.BLACK, XAlign.RIGHT, YALign.BOTTOM, false);
 			PrintHelper.printString(g, out, outRect, outNegative? Color.RED : Color.BLACK, XAlign.RIGHT, YALign.BOTTOM, false);
 			PrintHelper.printString(g, sum, sumRect, sumNegative? Color.RED : Color.BLACK, XAlign.RIGHT, YALign.BOTTOM, false);
+			g.setColor(Color.BLACK);
 			g.drawLine(tailRect.x, tailRect.y-1, (int)(configuration.getFormat().getImageableX() + configuration.getFormat().getImageableWidth()), tailRect.y-1);
 		}	
 	}
@@ -677,6 +661,13 @@ public class BilancialPageable implements Pageable {
 				units.get(i).print(graphics, linePosition, configuration.getLineHeight(), startLine, endLine);
 				linePosition += (endLine - startLine) +1;
 			}
+			//Prints a rectangle around each line for debug:
+//			for(int i = 0; i < (int)Math.floor(configuration.getFormat().getImageableHeight() / configuration.getLineHeight()); i++) {
+//				graphics.drawRect((int)configuration.getFormat().getImageableX(), 
+//						(int)(configuration.getFormat().getImageableY() + i*configuration.getLineHeight()), 
+//						(int)configuration.getFormat().getImageableWidth(), 
+//						(int)configuration.getLineHeight());
+//			}
 			return Printable.PAGE_EXISTS;
 		}
 	}

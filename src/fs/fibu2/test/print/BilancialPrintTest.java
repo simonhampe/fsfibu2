@@ -11,6 +11,13 @@ import java.util.Vector;
 
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttribute;
+import javax.print.attribute.standard.Destination;
+import javax.print.attribute.standard.Media;
+import javax.print.attribute.standard.MediaName;
+import javax.print.attribute.standard.MediaSizeName;
+import javax.print.attribute.standard.OrientationRequested;
+import javax.print.attribute.standard.OutputDeviceAssigned;
+import javax.swing.JDialog;
 
 import org.apache.log4j.BasicConfigurator;
 
@@ -20,6 +27,7 @@ import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.Journal;
 import fs.fibu2.print.BilancialPageable;
 import fs.fibu2.print.BilancialPrintConfiguration;
+import fs.fibu2.print.BilancialPrintDialog;
 import fs.fibu2.print.BilancialPrintConfiguration.PrintPolicy;
 import fs.fibu2.resource.Fsfibu2DefaultReference;
 import fs.fibu2.view.model.BilancialTreeModel;
@@ -44,15 +52,20 @@ public class BilancialPrintTest {
 					Category.getCategory(new Vector<String>(Arrays.asList("Fachschaft","Spiele","Mehrspiele"))),"bank_account",null,null));
 			j.addEntry(new Entry("bla",3,Currency.getInstance("EUR"),new GregorianCalendar(),Category.getRootCategory()//Category.getCategory(Category.getRootCategory(), "Fachschaft")
 					,"bank_account",null,null));
-			PrinterJob job = PrinterJob.getPrinterJob();
-			HashPrintRequestAttributeSet set = new HashPrintRequestAttributeSet();
-//			PageFormat format = job.getPageFormat(set);
-			job.printDialog();
 			BilancialTreeModel model = new BilancialTreeModel(j,null,null);
-			model.setMask(Category.getCategory(Category.getRootCategory(), "Fachschaft"), "hurraaa");
-			BilancialPrintConfiguration config = new BilancialPrintConfiguration(11,"Bilanz 2009",model,job,job.defaultPage(),PrintPolicy.NO_CONSTRAINT);
-			job.setPageable(new BilancialPageable(config));
-			job.print();
+			BilancialPrintDialog diag = new BilancialPrintDialog(model);
+			diag.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			diag.setVisible(true);
+//			PrinterJob job = PrinterJob.getPrinterJob();
+//			HashPrintRequestAttributeSet set = new HashPrintRequestAttributeSet();
+//			job.printDialog(set);
+//			PageFormat format = job.getPageFormat(set);	
+//			
+//			model.setMask(Category.getCategory(Category.getRootCategory(), "Fachschaft"), "hurraaa");
+//			BilancialPrintConfiguration config = new BilancialPrintConfiguration(11,"Bilanz 2009",model,job,format,PrintPolicy.PRESERVE_UNIT);
+//			job.setPageable(new BilancialPageable(config));
+//			job.print(set);
+//			System.out.println(job.getPrintService().getName());
 		}
 		catch(Exception e) {
 			System.out.println("AAAH");
