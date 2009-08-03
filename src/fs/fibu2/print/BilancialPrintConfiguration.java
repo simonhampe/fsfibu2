@@ -23,10 +23,10 @@ public class BilancialPrintConfiguration {
 	
 	private PageFormat format; //The page format
 	
-	private PrintPolicy policy; //The print policy (a unit is always printed on one page, everything is on one page, a new page is
+	private PrintPolicy policy; //The print policy (a unit is always printed on one page, a new page is
 								//created only if the lines reach the end of the page)
 	
-	public enum PrintPolicy {PRESERVE_UNIT, ONE_PAGE, NO_CONSTRAINT}; 
+	public enum PrintPolicy {PRESERVE_UNIT, NO_CONSTRAINT}; 
 
 	/**
 	 * Creates a configuration
@@ -36,7 +36,6 @@ public class BilancialPrintConfiguration {
 	 * @param job The print job which provides page format and other information
 	 * @param format The page format which should be used
 	 * @param policy The page break policy: <br>
-	 * 	ONE_PAGE: Everything should be printed on one page. This will ignore the given line height and use the maximal possible line height<br>
 	 * PRESERVE_UNIT: This tries to ensure that every category unit (i.e. the bilancial of a node with subnodes) is printed on one and the same page, i.e.
 	 * this prints with the given line height and induces a page break if necessary<br>
 	 * NO_CONSTRAINT: This just prints with the given line height and induces a page break whenever necessary.

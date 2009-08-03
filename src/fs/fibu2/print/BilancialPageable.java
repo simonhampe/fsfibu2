@@ -108,8 +108,23 @@ public class BilancialPageable implements Pageable {
 		int endLine = 0;
 		int endUnit = 0;
 		
+		
+		
 		while(linesLeftToPrint > 0) {
-			
+			while(linesLeftOnPage > 0) {
+				int linesToPrint = units.get(currentUnit).getNumberOfLines() - startLine + 1 ; 
+				//Add current unit (what is left of it), if there is enough space  
+				if(linesToPrint <= linesLeftOnPage) {
+					endUnit ++;
+					
+					endLine = units.get(currentUnit).getNumberOfLines() -1;
+					currentUnit ++;
+				}
+				//If there is no space left, we add only a part or nothing, if PRESERVE_UNIT is chosen 
+				else {
+					
+				}
+			}
 		}
 		
 		
