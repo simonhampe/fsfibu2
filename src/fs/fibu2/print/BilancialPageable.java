@@ -53,23 +53,23 @@ public class BilancialPageable implements Pageable {
 	
 	public BilancialPageable(BilancialPrintConfiguration config) {
 		configuration = config;
-		//TODO: Test code
-		printables.add(new Printable(){
-		
-			@Override
-			public int print(Graphics graphics, PageFormat pageFormat, int pageIndex)
-					throws PrinterException {
-//				(new NodeTitleUnit(new ExtendedCategory(Category.getCategory(Category.getRootCategory(), "Fachschaft"),false),0,null)).print(graphics, 0, configuration.getLineHeight(), 0, 0);
-//				(new TitleUnit()).print(graphics, 0, configuration.getLineHeight(), 0, 4);
-//				(new NodeSumUnit(new ExtendedCategory(Category.getRootCategory(),true),0,true)).print(graphics, 0, configuration.getLineHeight(), 0, 0);
-//				(new NthLevelNodeUnit(new ExtendedCategory(Category.getCategory(Category.getRootCategory(), "Fachschaft"),false),10,true)).print(graphics, 0, configuration.getLineHeight(), 0, 30);
-//				(new OverallSumUnit()).print(graphics, 0, configuration.getLineHeight(), 0, 0);
-//				(new AccountSumUnit(AccountLoader.getAccount("bank_account"))).print(graphics, 0, configuration.getLineHeight(), 0, 0);
-//				(new CaptionUnit(false)).print(graphics, 0, configuration.getLineHeight(), 0, 0);
-//				(new AccountUnit()).print(graphics, 0, configuration.getLineHeight(), 0, 10);
-				return Printable.PAGE_EXISTS;
-			}
-		});
+//		//TODO: Test code
+//		printables.add(new Printable(){
+//		
+//			@Override
+//			public int print(Graphics graphics, PageFormat pageFormat, int pageIndex)
+//					throws PrinterException {
+////				(new NodeTitleUnit(new ExtendedCategory(Category.getCategory(Category.getRootCategory(), "Fachschaft"),false),0,null)).print(graphics, 0, configuration.getLineHeight(), 0, 0);
+////				(new TitleUnit()).print(graphics, 0, configuration.getLineHeight(), 0, 4);
+////				(new NodeSumUnit(new ExtendedCategory(Category.getRootCategory(),true),0,true)).print(graphics, 0, configuration.getLineHeight(), 0, 0);
+////				(new NthLevelNodeUnit(new ExtendedCategory(Category.getCategory(Category.getRootCategory(), "Fachschaft"),false),10,true)).print(graphics, 0, configuration.getLineHeight(), 0, 30);
+////				(new OverallSumUnit()).print(graphics, 0, configuration.getLineHeight(), 0, 0);
+////				(new AccountSumUnit(AccountLoader.getAccount("bank_account"))).print(graphics, 0, configuration.getLineHeight(), 0, 0);
+////				(new CaptionUnit(false)).print(graphics, 0, configuration.getLineHeight(), 0, 0);
+////				(new AccountUnit()).print(graphics, 0, configuration.getLineHeight(), 0, 10);
+//				return Printable.PAGE_EXISTS;
+//			}
+//		});
 		
 		//Create printables
 		
@@ -97,33 +97,62 @@ public class BilancialPageable implements Pageable {
 		
 		//Distribute line units
 		int linesPerPage = (int)Math.max(1, Math.floor(configuration.getFormat().getImageableHeight() / configuration.getLineHeight()));
-		int currentPageable = 0;
-		int currentUnit = 0;
-		int linesLeftOnPage = linesPerPage;
-		int linesLeftToPrint = 0;
-		for(LinePrintUnit u : units) linesLeftToPrint += u.getNumberOfLines();
+		
+		int linesToPrint = 0;
+		for(LinePrintUnit u : units) linesToPrint += u.getNumberOfLines();
 		
 		int startLine = 0;
 		int startUnit = 0;
 		int endLine = 0;
 		int endUnit = 0;
-		
-		
-		
-		while(linesLeftToPrint > 0) {
-			while(linesLeftOnPage > 0) {
-				int linesToPrint = units.get(currentUnit).getNumberOfLines() - startLine + 1 ; 
-				//Add current unit (what is left of it), if there is enough space  
-				if(linesToPrint <= linesLeftOnPage) {
-					endUnit ++;
-					
+		while(linesToPrint > 0) {
+			//Create new printable:
+			int linesLeftOnPage = linesPerPage;
+			//The current unit
+			int currentUnit = startUnit;
+			//the current line in the current unit
+			int currentLine = startLine;
+			
+			//Add as much as possible
+			
+			//Add units
+			while(linesLeftOnPage > 0 && linesToPrint > 0) {
+				int unitLinesToPrint = units.get(currentUnit).getNumberOfLines() - currentLine;  
+				if(unitLinesToPrint <= linesLeftOnPage) {
+					endUnit = currentUnit;
 					endLine = units.get(currentUnit).getNumberOfLines() -1;
+					linesLeftOnPage -= unitLinesToPrint;
+					linesToPrint -= unitLinesToPrint;
+					currentLine = 0;
 					currentUnit ++;
 				}
-				//If there is no space left, we add only a part or nothing, if PRESERVE_UNIT is chosen 
+				//If we do not have enough space, the behavior depends on the chosen policy
 				else {
-					
+					switch(configuration.getPolicy()) {
+					case PRESERVE_UNIT: //Print it anyway , if the size is larger than the total number of lines available, otherwise we stop here
+						if(unitLinesToPrint <= linesPerPage)  {
+							linesLeftOnPage = 0;
+							break;
+						}
+					case NO_CONSTRAINT: //Just print as many lines as possible
+						endUnit = currentUnit;
+						endLine = currentLine + linesLeftOnPage;
+						linesToPrint -= (linesLeftOnPage+1);
+						linesLeftOnPage = 0;
+					}
 				}
+			}
+			
+			//Add it
+			if(endUnit > startUnit || endLine > startLine) printables.add(new UnitPrinter(startUnit,startLine,endUnit,endLine));
+			//Adapt indices
+			if(endLine == units.get(endUnit).getNumberOfLines() -1) {
+				startLine = 0;
+				startUnit = endUnit+1;
+			}
+			else {
+				startLine = endLine + 1;
+				startUnit = endUnit;
 			}
 		}
 		
@@ -332,6 +361,7 @@ public class BilancialPageable implements Pageable {
 			PrintHelper.printString(g, in, inRect, inNegative? Color.RED : Color.BLACK, XAlign.RIGHT, YALign.BOTTOM, true);
 			PrintHelper.printString(g, out, outRect, outNegative? Color.RED : Color.BLACK, XAlign.RIGHT, YALign.BOTTOM, true);
 			PrintHelper.printString(g, sum, sumRect, sumNegative? Color.RED : Color.BLACK, XAlign.RIGHT, YALign.BOTTOM, true);
+			g.setColor(Color.BLACK);
 			if(isSumNode) g.drawLine(tailRect.x, tailRect.y-1, (int)(configuration.getFormat().getImageableX() + configuration.getFormat().getImageableWidth()), tailRect.y-1);	
 		}	
 	}

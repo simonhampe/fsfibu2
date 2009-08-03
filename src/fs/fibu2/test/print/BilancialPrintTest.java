@@ -50,7 +50,7 @@ public class BilancialPrintTest {
 			job.printDialog();
 			BilancialTreeModel model = new BilancialTreeModel(j,null,null);
 			model.setMask(Category.getCategory(Category.getRootCategory(), "Fachschaft"), "hurraaa");
-			BilancialPrintConfiguration config = new BilancialPrintConfiguration(12,"Bilanz 2009",model,job,job.defaultPage(),PrintPolicy.NO_CONSTRAINT);
+			BilancialPrintConfiguration config = new BilancialPrintConfiguration(11,"Bilanz 2009",model,job,job.defaultPage(),PrintPolicy.NO_CONSTRAINT);
 			job.setPageable(new BilancialPageable(config));
 			job.print();
 		}
