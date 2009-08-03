@@ -66,12 +66,52 @@ public class BilancialPageable implements Pageable {
 //				(new OverallSumUnit()).print(graphics, 0, configuration.getLineHeight(), 0, 0);
 //				(new AccountSumUnit(AccountLoader.getAccount("bank_account"))).print(graphics, 0, configuration.getLineHeight(), 0, 0);
 //				(new CaptionUnit(false)).print(graphics, 0, configuration.getLineHeight(), 0, 0);
-				(new AccountUnit()).print(graphics, 0, configuration.getLineHeight(), 0, 10);
+//				(new AccountUnit()).print(graphics, 0, configuration.getLineHeight(), 0, 10);
 				return Printable.PAGE_EXISTS;
 			}
 		});
 		
 		//Create printables
+		
+		//Add title
+		units.add(new TitleUnit());
+		//Add category bilancial
+		ExtendedCategory overallAdditional = null;
+		for(int i = 0; i < configuration.getModel().getChildCount(configuration.getModel().getRoot()); i++) {
+			ExtendedCategory ec = (ExtendedCategory)configuration.getModel().getChild(configuration.getModel().getRoot(),i);
+			if(!configuration.getModel().isLeaf(ec) && configuration.getModel().isVisible(ec)) {
+				units.add(new NthLevelNodeUnit(ec,offsetPerLevel,i == 0));
+				units.add(new EmptyLinePrintUnit(1));
+			}
+			else if(configuration.getModel().isLeaf(ec)) overallAdditional = ec;
+		}
+		//Add categoryless bilancial
+		if(overallAdditional != null) {
+			units.add(new NodeSumUnit(overallAdditional,false,0,true));
+		}
+		units.add(new EmptyLinePrintUnit(1));
+		//Add overall bilancial
+		units.add(new OverallSumUnit());
+		units.add(new EmptyLinePrintUnit(1));
+		units.add(new AccountUnit());
+		
+		//Distribute line units
+		int linesPerPage = (int)Math.max(1, Math.floor(configuration.getFormat().getImageableHeight() / configuration.getLineHeight()));
+		int currentPageable = 0;
+		int currentUnit = 0;
+		int linesLeftOnPage = linesPerPage;
+		int linesLeftToPrint = 0;
+		for(LinePrintUnit u : units) linesLeftToPrint += u.getNumberOfLines();
+		
+		int startLine = 0;
+		int startUnit = 0;
+		int endLine = 0;
+		int endUnit = 0;
+		
+		while(linesLeftToPrint > 0) {
+			
+		}
+		
 		
 		
 	}
@@ -170,7 +210,8 @@ public class BilancialPageable implements Pageable {
 	}
 	
 	/**
-	 * This prints the last line of a node bilancial, i.e. the final bilancial, with (optionally) a line above
+	 * This prints the last line of a node bilancial, i.e. the final bilancial, with (optionally) a line above. 
+	 * Alternatively, this can print the sum bilancial of the account list
 	 * @author Simon Hampe
 	 *
 	 */
@@ -190,37 +231,61 @@ public class BilancialPageable implements Pageable {
 		/**
 		 * Creates a new unit
 		 * @param ec The extended category for which this should be drawn
+		 * @param a If this is true, the ec parameter is ignored, as well as the offset and this prints the sum bilancial of 
+		 * the account list
 		 * @param levelOffset The horizontal offset to the right
 		 */
-		public NodeSumUnit(ExtendedCategory ec, double levelOffset, boolean isSum) {
-			//Obtain name
-			if(ec.category() == Category.getRootCategory()) {
-				tail = Fsfibu2StringTableMgr.getString("fs.fibu2.print.BilancialPageable.overall");
-				String mask = configuration.getModel().getMask(ec);
-				if(mask != null) tail = mask;
+		public NodeSumUnit(ExtendedCategory ec, boolean accountSum, double levelOffset, boolean isSum) {
+			if(!accountSum) {
+				//Obtain name
+				if(ec.category() == Category.getRootCategory()) {
+					tail = Fsfibu2StringTableMgr.getString("fs.fibu2.print.BilancialPageable.overall");
+					String mask = configuration.getModel().getMask(ec);
+					if(mask != null) tail = mask;
+				}
+				else {
+					tail = ec.category().tail;
+					String mask = configuration.getModel().getMask(ec);
+					if(mask != null) tail = mask;
+					tail = isSum? Fsfibu2StringTableMgr.getString("fs.fibu2.print.BilancialPageable.sum") + " (" + tail + "):" : 
+						tail;
+					if(ec.isAdditional()) tail = "(" + tail + ")";
+				}
+				
+				//Obtain values
+				float fIn = ec.isAdditional()? configuration.getModel().getIndividualPlus(ec.category()) : configuration.getModel().getCategoryPlus(ec.category());
+				float fOut = ec.isAdditional()? configuration.getModel().getIndividualMinus(ec.category()) : configuration.getModel().getCategoryMinus(ec.category());
+				float fSum = ec.isAdditional()? configuration.getModel().getIndividualSum(ec.category()) : configuration.getModel().getCategorySum(ec.category());
+				inNegative = fIn < 0;
+				outNegative = fOut < 0;
+				sumNegative = fSum < 0;
+				in = DefaultCurrencyFormat.getFormat(Fsfibu2Constants.defaultCurrency).format(fIn);
+				out = DefaultCurrencyFormat.getFormat(Fsfibu2Constants.defaultCurrency).format(fOut);
+				sum = DefaultCurrencyFormat.getFormat(Fsfibu2Constants.defaultCurrency).format(fSum);
+				
+				offset = levelOffset;
+				isSumNode = isSum; 
 			}
 			else {
-				tail = ec.category().tail;
-				String mask = configuration.getModel().getMask(ec);
-				if(mask != null) tail = mask;
-				tail = isSum? Fsfibu2StringTableMgr.getString("fs.fibu2.print.BilancialPageable.sum") + " (" + tail + "):" : 
-					tail;
-				if(ec.isAdditional()) tail = "(" + tail + ")";
+				tail = Fsfibu2StringTableMgr.getString("fs.fibu2.print.BilancialPageable.sum") + ":";
+				float fIn = 0;
+				float fOut = 0;
+				float fSum = 0;
+				for(Account account : configuration.getModel().getAccounts()) {
+					fIn += configuration.getModel().getAccountBefore(account);
+					fOut += configuration.getModel().getAccountAfter(account);
+				}
+				fSum = fOut - fIn;
+				inNegative = fIn < 0;
+				outNegative = fOut < 0;
+				sumNegative = fSum < 0;
+				in = DefaultCurrencyFormat.getFormat(Fsfibu2Constants.defaultCurrency).format(fIn);
+				out = DefaultCurrencyFormat.getFormat(Fsfibu2Constants.defaultCurrency).format(fOut);
+				sum = DefaultCurrencyFormat.getFormat(Fsfibu2Constants.defaultCurrency).format(fSum);
+				isSumNode = true;
 			}
 			
-			//Obtain values
-			float fIn = ec.isAdditional()? configuration.getModel().getIndividualPlus(ec.category()) : configuration.getModel().getCategoryPlus(ec.category());
-			float fOut = ec.isAdditional()? configuration.getModel().getIndividualMinus(ec.category()) : configuration.getModel().getCategoryMinus(ec.category());
-			float fSum = ec.isAdditional()? configuration.getModel().getIndividualSum(ec.category()) : configuration.getModel().getCategorySum(ec.category());
-			inNegative = fIn < 0;
-			outNegative = fOut < 0;
-			sumNegative = fSum < 0;
-			in = DefaultCurrencyFormat.getFormat(Fsfibu2Constants.defaultCurrency).format(fIn);
-			out = DefaultCurrencyFormat.getFormat(Fsfibu2Constants.defaultCurrency).format(fOut);
-			sum = DefaultCurrencyFormat.getFormat(Fsfibu2Constants.defaultCurrency).format(fSum);
-			
-			offset = levelOffset;
-			isSumNode = isSum;
+	
 		}
 		
 		@Override
@@ -280,7 +345,7 @@ public class BilancialPageable implements Pageable {
 		//Inserts the given node's bilancial starting at the specified position in units
 		private void insertNode(ExtendedCategory ec, int position, double offset, boolean includeCaption) {
 			if(!configuration.getModel().isLeaf(ec)) {
-				units.add(position,new NodeSumUnit(ec,offset,true));
+				units.add(position,new NodeSumUnit(ec,false,offset,true));
 				units.add(position,new EmptyLinePrintUnit(1));
 				for(int i = configuration.getModel().getChildCount(ec)-1;i >= 0; i--) {
 					ExtendedCategory ecc = (ExtendedCategory)configuration.getModel().getChild(ec, i); 
@@ -290,7 +355,7 @@ public class BilancialPageable implements Pageable {
 				units.add(position,new NodeTitleUnit(ec,offset,null));
 			}
 			else {
-				units.add(position,new NodeSumUnit(ec,offset,false));
+				units.add(position,new NodeSumUnit(ec,false,offset,false));
 			}
 			if(includeCaption) units.add(0,new CaptionUnit(true));
 		}
@@ -510,6 +575,8 @@ public class BilancialPageable implements Pageable {
 			for(Account a : accounts) {
 				units.add(new AccountSumUnit(a));
 			}
+			units.add(new EmptyLinePrintUnit(1));
+			units.add(new NodeSumUnit(null,true,0,true));
 		}
 		
 		@Override
