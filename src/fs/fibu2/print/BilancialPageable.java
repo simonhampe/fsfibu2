@@ -56,16 +56,18 @@ public class BilancialPageable implements Pageable {
 		units.add(new TitleUnit());
 		//Add category bilancial
 		ExtendedCategory overallAdditional = null;
+		boolean captionPrinted = false;
 		for(int i = 0; i < configuration.getModel().getChildCount(configuration.getModel().getRoot()); i++) {
 			ExtendedCategory ec = (ExtendedCategory)configuration.getModel().getChild(configuration.getModel().getRoot(),i);
 			if(!configuration.getModel().isLeaf(ec) && configuration.getModel().isVisible(ec)) {
-				units.add(new NthLevelNodeUnit(ec,offsetPerLevel,i == 0));
+				units.add(new NthLevelNodeUnit(ec,offsetPerLevel,!captionPrinted));
+				captionPrinted = true;
 				units.add(new EmptyLinePrintUnit(1));
 			}
 			else if(configuration.getModel().isLeaf(ec)) overallAdditional = ec;
 		}
 		//Add categoryless bilancial
-		if(overallAdditional != null) {
+		if(overallAdditional != null && configuration.getModel().isVisible(overallAdditional)) {
 			units.add(new NodeSumUnit(overallAdditional,false,0,true));
 		}
 		units.add(new EmptyLinePrintUnit(1));
