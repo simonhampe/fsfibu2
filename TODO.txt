@@ -1,0 +1,6 @@
+TODOS:
+
+- Print the journal!
+- CSV Export for BilancialView
+- General export: BackupModule and ExportDialog
+- ChartModule (Maybe there should be a button to change the type of the chart)
