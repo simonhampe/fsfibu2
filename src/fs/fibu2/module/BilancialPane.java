@@ -14,12 +14,15 @@ import javax.print.PrintException;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
@@ -35,6 +38,7 @@ import fs.fibu2.filter.StackFilter;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
 import fs.fibu2.print.BilancialPrintDialog;
 import fs.fibu2.resource.Fsfibu2DefaultReference;
+import fs.fibu2.view.event.ProgressListener;
 import fs.fibu2.view.model.BilancialAccountModel;
 import fs.fibu2.view.model.BilancialTableModel;
 import fs.fibu2.view.model.BilancialTreeModel;
@@ -74,6 +78,10 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 	
 	private ImageIcon filterIcon = new ImageIcon(Fsfibu2DefaultReference.getDefaultReference().getFullResourcePath(this, "graphics/BilancialPane/filter.png"));
 	private ImageIcon printIcon = new ImageIcon(Fsfibu2DefaultReference.getDefaultReference().getFullResourcePath(this, "graphics/BilancialPane/print.png"));
+	
+	private JPanel progressPanel = new JPanel();
+	private JLabel recalculateLabel = new JLabel(Fsfibu2StringTableMgr.getString("fs.fibu2.view.JournalTableBar.progress"));
+	private JProgressBar progressBar = new JProgressBar();
 	
 	// DATA *******************************
 	// ************************************
@@ -129,6 +137,24 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 		}		
 	};
 	
+	private ProgressListener<Object, Object> progressListener = new ProgressListener<Object, Object>() {
+		@Override
+		public void progressed(SwingWorker<Object, Object> source) {
+			//Ignored
+		}
+		@Override
+		public void taskBegins(SwingWorker<Object, Object> source) {
+			progressPanel.setVisible(true);
+			progressBar.setIndeterminate(true);
+		}
+
+		@Override
+		public void taskFinished(SwingWorker<Object, Object> source) {
+			progressPanel.setVisible(false);
+			progressBar.setIndeterminate(false);
+		}
+	};
+	
 	// MISC *******************************
 	// ************************************
 	
@@ -150,6 +176,9 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 		try {
 			if(node != null && node.nodeExists("model")) {
 				modelNode = node.node("model");
+			}
+			if(node != null && node.nodeExists("filter")) {
+				filter = (StackFilter)new StackFilter().createMeFromPreferences(node.node("filter"));
 			}
 		} catch (BackingStoreException e) {
 			//Ignore
@@ -179,6 +208,10 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 			editor.setVisible(false);
 		bar = new JToolBar();
 			bar.setFloatable(false);
+			progressPanel.setVisible(false);
+			progressPanel.add(recalculateLabel); 
+			progressPanel.add(progressBar);
+			model.addProgressListener(progressListener);
 		filterButton.setToolTipText(Fsfibu2StringTableMgr.getString("fs.fibu2.module.FilterPane.filter"));
 			filterButton.setSelected(false);
 			filterButton.addActionListener(visibilityListener);
@@ -205,7 +238,10 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 		
 		//Layout
 		//Toolbar
-		bar.add(printButton);
+		bar.setLayout(new BorderLayout());
+		bar.add(printButton, BorderLayout.WEST);
+		bar.add(progressPanel, BorderLayout.EAST);
+			
 			
 		//Tree panel
 		GridBagLayout tbl = new GridBagLayout();
@@ -255,11 +291,20 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 	public void insertMyPreferences(Preferences node) {
 		try {
 			if(node.nodeExists("model")) node.node("model").removeNode();
+			if(node.nodeExists("filter")) node.node("filter").removeNode();
 			tree.getModel().insertMyPreferences(node.node("model"));
+			filter.insertMyPreferences(node);
 		} catch (BackingStoreException e) {
 			//Ignore
 		}
 		
+	}
+	
+	/**
+	 * @return The filter associated to this pane
+	 */
+	public StackFilter getFilter() {
+		return filter;
 	}
 	
 	// RESOURCEDEPENDENT ******************

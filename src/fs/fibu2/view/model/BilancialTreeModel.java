@@ -97,6 +97,7 @@ public class BilancialTreeModel implements TreeModel, JournalListener, ChangeLis
 	 */
 	public BilancialTreeModel(Journal j, StackFilter f, Preferences node) {
 		associatedJournal = j == null? new Journal() : j;
+		associatedJournal.addJournalListener(this);
 		filter = f;
 		if(filter != null) filter.addChangeListener(this);
 		
@@ -339,15 +340,27 @@ public class BilancialTreeModel implements TreeModel, JournalListener, ChangeLis
 			additions.add(new TreeModelEvent(this,getPath(ecp),new int[]{getIndex(eca)},new Object[]{eca}));
 		}
 		
-		//Call on listeners
-		for(TreeModelEvent e : removals) {
-			fireTreeNodesRemoved(e);
+		/*
+		 * REMARK: Using the detailed tree change methods seems to 'confuse' the jtree quite a lot. Maybe there is some calculation problem
+		 * above, maybe I would have to fire these events in a certain order. However: Whenever there is some node addition or removal going on,
+		 * I just fire treeStructureChanged
+		 */
+		
+		if(additions.size() > 0 || removals.size() > 0) {
+			fireTreeStructureChanged(new TreeModelEvent(this,new Object[]{new ExtendedCategory(Category.getRootCategory(),false)}));
 		}
-		for(TreeModelEvent e : additions) {
-			fireTreeNodesInserted(e);
-		}
-		for(TreeModelEvent e : changes) {
-			fireTreeNodesChanged(e);
+		else {
+			//Call on listeners
+			for(TreeModelEvent e : removals) {
+				System.out.println("Removing " + e.getChildIndices() + " in " + ((ExtendedCategory)e.getTreePath().getLastPathComponent()).category().toString());
+				fireTreeNodesRemoved(e);
+			}
+			for(TreeModelEvent e : additions) {
+				fireTreeNodesInserted(e);
+			}
+			for(TreeModelEvent e : changes) {
+				fireTreeNodesChanged(e);
+			}
 		}
 	}
 	
@@ -561,7 +574,7 @@ public class BilancialTreeModel implements TreeModel, JournalListener, ChangeLis
 
 	@Override
 	public Object getChild(Object c, int index) {
-		if(used.contains(c) && index >= 0 && index < directSubcategories.get(c).size()) {
+		if(used.contains(c) && index >= 0 &&  directSubcategories.get(c) != null && index < directSubcategories.get(c).size()) {
 			return directSubcategories.get(c).get(index);
 		}
 		else return null;

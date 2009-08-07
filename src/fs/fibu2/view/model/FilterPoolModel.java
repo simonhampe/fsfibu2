@@ -86,13 +86,15 @@ public class FilterPoolModel implements ComboBoxModel, YearSeparatorListener, Ch
 		}
 		//Now add filters
 		TreeSet<StackFilterTripel> tripels = new TreeSet<StackFilterTripel>(comparator);
-		HashSet<StackFilterTripel> exclude = new HashSet<StackFilterTripel>();
+		Vector<StackFilterTripel> finaltripels = new Vector<StackFilterTripel>();
 			tripels.addAll(FilterPool.getPool(associatedJournal).getListOfFilters());
 			if(excludeModule != null) {
-				for(StackFilterTripel t : tripels) if(t.module == excludeModule) exclude.add(t);
-				tripels.removeAll(exclude);
+				for(StackFilterTripel t : tripels) {
+					if(t.module != excludeModule) finaltripels.add(t);
+				}
 			}
-		data.addAll(tripels);
+			else finaltripels.addAll(tripels);
+		data.addAll(finaltripels);
 		//Set selected item
 		if(!data.contains(selectedItem)) selectedItem = data.size() > 0 ? data.get(0) : null;
 		//Notify

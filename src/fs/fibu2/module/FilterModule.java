@@ -91,7 +91,7 @@ public class FilterModule extends JPanel implements JournalModule, ResourceDepen
 						(HashSet<EntryFilter>) null));
 			}
 			if(item instanceof StackFilterTripel) {
-				addPanel(null, ((StackFilterTripel)item).filter);
+				addPanel(null, ((StackFilterTripel)item).filter.clone());
 			}
 		}
 	};
