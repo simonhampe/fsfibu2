@@ -101,6 +101,37 @@ public class BilancialTreeModel implements TreeModel, JournalListener, ChangeLis
 		filter = f;
 		if(filter != null) filter.addChangeListener(this);
 		
+		//Read out preferences
+		if(node != null) {
+			try {
+				//First read out invisibility
+				Preferences ivNode = node;
+				while(ivNode.nodeExists("invisible")) {
+					ivNode = ivNode.node("invisible");
+					if(!ivNode.nodeExists("category")) break;
+					Preferences categoryNode = ivNode.node("category");
+					Category c = Category.createFromPreferences(categoryNode);
+					boolean add = Boolean.parseBoolean(ivNode.get("additional", "false"));
+					ExtendedCategory ec = new ExtendedCategory(c,add);
+					invisibles.add(ec);
+				}
+				//Now read out masks
+				Preferences maskNode = node;
+				while(maskNode.nodeExists("masked")) {
+					maskNode = maskNode.node("masked");
+					if(!maskNode.nodeExists("category")) break;
+					Preferences categoryNode = maskNode.node("category");
+					Category c = Category.createFromPreferences(categoryNode);
+					boolean add = Boolean.parseBoolean(maskNode.get("additional", "false"));
+					ExtendedCategory ec = new ExtendedCategory(c,add);
+						String maskString = maskNode.get("mask", null);
+						if(maskString != null) mask.put(ec, maskString);
+				}
+			} catch (BackingStoreException e) {
+				//Just abort
+			}
+		}
+		
 		DataVector v = recalculateModel();
 			used = v.used;
 			directSubcategories = v.directSubcategories;
@@ -113,39 +144,14 @@ public class BilancialTreeModel implements TreeModel, JournalListener, ChangeLis
 			plusIndiv = v.plusIndiv;
 			minusIndiv = v.minusIndiv;
 		
-		//Read out preferences
-		if(node != null) {
-			try {
-				//First read out invisibility
-				Preferences ivNode = node;
-				while(ivNode.nodeExists("invisble")) {
-					ivNode = ivNode.node("invisible");
-					if(!ivNode.nodeExists("category")) break;
-					Preferences categoryNode = ivNode.node("category");
-					Category c = Category.createFromPreferences(categoryNode);
-					boolean add = Boolean.parseBoolean(ivNode.get("additional", "false"));
-					ExtendedCategory ec = new ExtendedCategory(c,add);
-					if(used.contains(ec)) invisibles.add(ec);
-				}
-				//Now read out masks
-				Preferences maskNode = node;
-				while(maskNode.nodeExists("masked")) {
-					maskNode = maskNode.node("masked");
-					if(!maskNode.nodeExists("category")) break;
-					Preferences categoryNode = maskNode.node("category");
-					Category c = Category.createFromPreferences(categoryNode);
-					boolean add = Boolean.parseBoolean(maskNode.get("additional", "false"));
-					ExtendedCategory ec = new ExtendedCategory(c,add);
-					if(used.contains(ec)) {
-						String maskString = maskNode.get("mask", null);
-						if(maskString != null) mask.put(ec, maskString);
-					}
-				}
-			} catch (BackingStoreException e) {
-				//Just abort
-			}
+		//Clean up invisibles and masked
+		for(ExtendedCategory ec : new HashSet<ExtendedCategory>(invisibles)) {
+			if(!used.contains(ec)) invisibles.remove(ec);
 		}
-		
+		for(ExtendedCategory ec : new HashSet<ExtendedCategory>(mask.keySet())) {
+			if(!used.contains(ec)) mask.remove(ec);
+		}
+			
 	}
 	
 	// RECALCULATION ***************
