@@ -46,8 +46,8 @@ public final class SplashScreenManager {
 	}
 	
 	/**
-	 * Inserts a text in the logging bar of the fsfibu2 splash screen (if it is visible)
-	 * @param data
+	 * Inserts a text in the logging bar of the fsfibu2 splash screen (if it is visible) and also prints the current version in
+	 * the upper left corner
 	 */
 	public static void setText(String data) {
 		SplashScreen splash = SplashScreen.getSplashScreen();
@@ -71,6 +71,10 @@ public final class SplashScreenManager {
 			}
 			//Display it
 			g.drawString(data, 10, 265);
+			//Draw version
+			g.setFont(g.getFont().deriveFont(Font.PLAIN));
+			g.setColor(Color.WHITE);
+			g.drawString(Fsfibu2.version, 5, g.getFont().getSize() + 5);
 			splash.update();
 		}
 
