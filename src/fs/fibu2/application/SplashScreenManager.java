@@ -12,7 +12,7 @@ import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.LoggingEvent;
 
 /**
- * This class manages the splash screen. It can be used as an {@link Appender} for logging while initializing fsfibu2.
+ * This class manages the splash screen. It can be used as an {@link Appender} for logging while initializing fsfibu2.  
  * @author Simon Hampe
  *
  */
