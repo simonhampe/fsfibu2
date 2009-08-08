@@ -31,9 +31,22 @@ public class JournalTable extends JTable {
 		if(model == null) throw new IllegalArgumentException("Cannot create table from null model");
 		internalModel = model;
 		setDefaultRenderer(Object.class, new JournalTableRenderer(model,Currency.getInstance("EUR")));
-		setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
 		setDragEnabled(false);
 		getTableHeader().setReorderingAllowed(false);
+		//Adapt column widths
+		setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+		columnModel.getColumn(0).setPreferredWidth(32);
+		columnModel.getColumn(1).setPreferredWidth(350);
+		columnModel.getColumn(2).setPreferredWidth(100);
+		columnModel.getColumn(3).setPreferredWidth(100);
+		columnModel.getColumn(4).setPreferredWidth(100);
+		columnModel.getColumn(5).setPreferredWidth(250);
+		columnModel.getColumn(6).setPreferredWidth(150);
+		columnModel.getColumn(7).setPreferredWidth(500);
+		
+		
+		
+		
 	}
 	
 	public JournalTableModel getJournalTableModel()  {
