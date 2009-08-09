@@ -10,11 +10,11 @@ import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.util.Arrays;
 
-import javax.print.PrintException;
 import javax.print.attribute.Attribute;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.Media;
+import javax.print.attribute.standard.MediaSizeName;
 import javax.print.attribute.standard.OrientationRequested;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -128,14 +128,15 @@ public class BilancialPrintDialog extends FrameworkDialog {
 	/**
 	 * Constructs a new dialog
 	 * @param model The model which should be printed. Must not be null
-	 * @throws PrintException - If the user cancels the initial page setup dialog 
 	 */
-	public BilancialPrintDialog(BilancialTreeModel model) throws PrintException {
+	public BilancialPrintDialog(BilancialTreeModel model) {
 		super(Fsfibu2DefaultReference.getDefaultReference(),Fsfibu2StringTableMgr.getLoader(),PolyglotStringTable.getGlobalLanguageID());
 		if(model == null) throw new NullPointerException("Cannot create Print dialog from null model");
 		this.model = model;
 
-		if(job.pageDialog(print) == null) throw new PrintException("print dialog cancelled");
+		print = new HashPrintRequestAttributeSet();
+		print.add(OrientationRequested.PORTRAIT);
+		print.add(MediaSizeName.ISO_A4);
 		
 		//Init GUI
 		setTitle(Fsfibu2StringTableMgr.getString(sgroup + ".dialogtitle"));

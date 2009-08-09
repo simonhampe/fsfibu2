@@ -10,7 +10,6 @@ import java.awt.event.ActionListener;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-import javax.print.PrintException;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -127,13 +126,8 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 	private ActionListener printListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			try {
-				BilancialPrintDialog diag = new BilancialPrintDialog(tree.getModel());
-				diag.setVisible(true);
-			}
-			catch(PrintException e1) {
-				//Ignore
-			}
+			BilancialPrintDialog diag = new BilancialPrintDialog(tree.getModel());
+			diag.setVisible(true);
 		}		
 	};
 	
