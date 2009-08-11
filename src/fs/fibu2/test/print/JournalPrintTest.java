@@ -52,7 +52,8 @@ public class JournalPrintTest {
 			job.printDialog(set);
 			PageFormat format = job.getPageFormat(set);	
 			
-			job.setPageable(new JournalPageable("Test","testest",model,format,10));
+			job.setPageable(new JournalPageable("Kassenbuch 10.4.08 - 11.4.09","Kassenwart: Sebastian Jung, Cornelia Rottner; Kassenprüfer: Stephan Oberfranz, Irgend Jemand",model,format,10,true	));
+			
 			job.print(set);
 		}
 		catch(Exception e){
