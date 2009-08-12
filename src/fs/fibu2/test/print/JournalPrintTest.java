@@ -1,29 +1,19 @@
 package fs.fibu2.test.print;
 
-import java.awt.MediaTracker;
-import java.awt.PageAttributes.MediaType;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
 import java.io.File;
 import java.util.Locale;
 
 import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.standard.Media;
-import javax.print.attribute.standard.MediaName;
-import javax.print.attribute.standard.MediaPrintableArea;
-import javax.print.attribute.standard.MediaSize;
-import javax.print.attribute.standard.MediaSizeName;
-import javax.print.attribute.standard.MediaTray;
 import javax.print.attribute.standard.OrientationRequested;
 
 import org.apache.log4j.BasicConfigurator;
 
 import fs.fibu2.data.format.Fsfibu1Converter;
-import fs.fibu2.data.model.Category;
 import fs.fibu2.data.model.Journal;
 import fs.fibu2.print.JournalPageable;
 import fs.fibu2.resource.Fsfibu2DefaultReference;
-import fs.fibu2.view.model.BilancialTreeModel;
 import fs.fibu2.view.model.JournalTableModel;
 import fs.xml.FsfwDefaultReference;
 import fs.xml.XMLToolbox;

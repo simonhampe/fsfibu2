@@ -184,7 +184,7 @@ public class JournalPageable implements Pageable {
 		int endUnit = 0;
 		while(linesToPrint > 0) {
 			//Create new printable:
-			int linesLeftOnPage = linesPerPage;
+			int linesLeftOnPage = linesPerPage -  (title == null? 0 : 4) - (subtitle == null? 0 : 1);
 			//The current unit
 			int currentUnit = startUnit;
 			//the current line in the current unit

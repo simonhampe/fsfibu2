@@ -1,6 +1,7 @@
 TODOS:
 
 - Print the journal!
+- Options
 - Reading point configuration!
 - CSV Export for BilancialView
 - General export: BackupModule and ExportDialog
