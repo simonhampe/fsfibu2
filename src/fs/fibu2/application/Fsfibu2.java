@@ -5,7 +5,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Locale;
-import java.util.prefs.Preferences;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -27,7 +26,7 @@ import fs.xml.PolyglotStringTable;
  * - loggerConfigurator: This file configurates logging. It is supposed to be in a format as specified by {@link PropertyConfigurator}. If it is not present, 
  * a basic configuration is used <br>
  * If there are any class files in the directories accounts/, filters/, modules/, the corresponding classes must be declared in the packages fs.fibu2.account, fs.fibu2.filter,
- * fs.fibu2.module, so that the class loader may <br> 
+ * fs.fibu2.module, so that the class loader can load them<br> 
  * All files should be located in the working directory.<br>
  * There is one single instance of this class for each VM.
  * @author Simon Hampe
@@ -80,11 +79,6 @@ public class Fsfibu2 {
 		catch(UnsupportedOperationException e) {
 			JOptionPane.showMessageDialog(null, "Could not find fsframework. fsfibu2 will not be started", "Error", JOptionPane.ERROR_MESSAGE);
 		}
-		
-		//Load language
-		logger.info("Probing for user language...");
-		String lang = Preferences.userRoot().node("fsfibu2").get("lang", "en");
-		PolyglotStringTable.setGlobalLanguageID(lang);
 		
 		//Now load all user classes
 		try {
@@ -159,6 +153,7 @@ public class Fsfibu2 {
 		}
 		
 		//Create MainFrame
+		System.out.println(PolyglotStringTable.getGlobalLanguageID());
 		frame = new MainFrame();
 		frame.pack();
 		frame.setVisible(true);

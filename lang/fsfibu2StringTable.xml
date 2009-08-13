@@ -23,8 +23,14 @@
   <polyglotstring id="fs.fibu2.MainFrame.button.redo" group="fs.fibu2.MainFrame.button">
     <variant lang="en">Redo</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.view.JournalTableBar.printtooltip" group="fs.fibu2.view.JournalTableBar">
+    <variant lang="en">Prints the current table without separators</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.print.BilancialPrintDialog.format" group="fs.fibu2.print.BilancialPrintDialog">
     <variant lang="en">Format:</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.OptionDialog.title" group="fs.fibu2.OptionDialog">
+    <variant lang="en">fsfibu2 options</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.MainFrame.button.undo" group="fs.fibu2.MainFrame.button">
     <variant lang="en">Undo</variant>
@@ -134,6 +140,9 @@
   <polyglotstring id="fs.fibu2.view.JournalTableBar.readingtooltip" group="fs.fibu2.view.JournalTableBar">
     <variant lang="en">Toggles visibility of reading points</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.print.JournalPrintDialog.size" group="fs.fibu2.print.JournalPrintDialog">
+    <variant lang="en">Font size:</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.model.BilancialTableModel.in" group="fs.fibu2.model.BilancialTableModel">
     <variant lang="en">Earnings</variant>
   </polyglotstring>
@@ -149,11 +158,14 @@
   <polyglotstring id="fs.fibu2.view.EntryDialog.value" group="fs.fibu2.view.EntryDialog">
     <variant lang="en">Value:</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.BankAccount.name" group="fs.fibu2.BankAccount">
+    <variant lang="en">Bank account</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.view.BilancialTreeRenderer.root" group="fs.fibu2.view.BilancialTreeRenderer">
     <variant lang="en">Overall</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.BankAccount.name" group="fs.fibu2.BankAccount">
-    <variant lang="en">Bank account</variant>
+  <polyglotstring id="fs.fibu2.print.JournalPrintDialog.config" group="fs.fibu2.print.JournalPrintDialog">
+    <variant lang="en">Configure...</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.MainFrame.cannotclear" group="fs.fibu2.MainFrame">
     <variant lang="en">Cannot clear user preferences about files last open</variant>
@@ -185,6 +197,9 @@
   <polyglotstring id="fs.fibu2.print.BilancialPrintDialog.noconstraint" group="fs.fibu2.print.BilancialPrintDialog">
     <variant lang="en">Do not preserve logical units</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.print.JournalPrintDialog.format" group="fs.fibu2.print.JournalPrintDialog">
+    <variant lang="en">Format:</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.view.BilancialPanel.to" group="fs.fibu2.view.BilancialPanel">
     <variant lang="en">To:</variant>
   </polyglotstring>
@@ -196,6 +211,12 @@
   </polyglotstring>
   <polyglotstring id="fs.fibu2.print.BilancialPrintDialog.printaccounts" group="fs.fibu2.print.BilancialPrintDialog">
     <variant lang="en">Print account bilancial</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.print.JournalPrintDialog.printer" group="fs.fibu2.print.JournalPrintDialog">
+    <variant lang="en">Printer:</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.print.JournalPrintDialog.needed" group="fs.fibu2.print.JournalPrintDialog">
+    <variant lang="en">Pages needed:</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.print.BilancialPrintDialog.noconstrainttip" group="fs.fibu2.print.BilancialPrintDialog">
     <variant lang="en">Will print a logical unit over several pages, if necessary</variant>
@@ -215,14 +236,14 @@
   <polyglotstring id="fs.fibu2.Entry.currency" group="fs.fibu2.Entry">
     <variant lang="en">Currency</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.print.JournalPrintDialog.invalid" group="fs.fibu2.print.JournalPrintDialog">
+    <variant lang="en">Invalid configuration</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.print.BilancialPageable.sumcaption" group="fs.fibu2.print.BilancialPageable">
     <variant lang="en">Sum</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.view.EntryDialog.name" group="fs.fibu2.view.EntryDialog">
     <variant lang="en">Name:</variant>
-  </polyglotstring>
-  <polyglotstring id="fs.fibu2.MainFrame.button.export" group="fs.fibu2.MainFrame.button">
-    <variant lang="en">Export journal...</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.view.BilancialPanel.accounttitle" group="fs.fibu2.view.BilancialPanel">
     <variant lang="en">Account bilancials</variant>
@@ -302,8 +323,14 @@
   <polyglotstring id="fs.fibu2.view.AccountTableModel.difference" group="fs.fibu2.view.AccountTableModel">
     <variant lang="en">Difference</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.print.JournalPrintDialog.dialogtitle" group="fs.fibu2.print.JournalPrintDialog">
+    <variant lang="en">Print journal</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.view.BilancialPanel.account" group="fs.fibu2.view.BilancialPanel">
     <variant lang="en">Account:</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.MainFrame.button.option" group="fs.fibu2.MainFrame.button">
+    <variant lang="en">Options</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.minusinfinity" group="fs.fibu2.filter">
     <variant lang="en">- infinity</variant>
@@ -325,6 +352,9 @@
   </polyglotstring>
   <polyglotstring id="fs.fibu2.view.CategoryEditor.basecategory" group="fs.fibu2.view.CategoryEditor">
     <variant lang="en">Base category:</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.print.JournalPrintDialog.orientation" group="fs.fibu2.print.JournalPrintDialog">
+    <variant lang="en">Orientation:</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.view.BilancialPanel.before" group="fs.fibu2.view.BilancialPanel">
     <variant lang="en">Before:</variant>
@@ -415,6 +445,12 @@
   </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.StackFilter.name" group="fs.fibu2.filter.StackFilter">
     <variant lang="en">Stack filter</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.print.JournalPrintDialog.preview" group="fs.fibu2.print.JournalPrintDialog">
+    <variant lang="en">Preview:</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.print.JournalPrintDialog.subtitle" group="fs.fibu2.print.JournalPrintDialog">
+    <variant lang="en">Subtitle:</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.print.BilancialPrintDialog.print" group="fs.fibu2.print.BilancialPrintDialog">
     <variant lang="en">Print</variant>
@@ -545,11 +581,14 @@
   <polyglotstring id="fs.fibu2.view.JournalTableBar.confirmdelete" group="fs.fibu2.view.JournalTableBar">
     <variant lang="en">Do you really want to delete the selected entries?</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.print.BilancialPrintDialog.config" group="fs.fibu2.print.BilancialPrintDialog">
-    <variant lang="en">Configure...</variant>
+  <polyglotstring id="fs.fibu2.print.JournalPrintDialog.print" group="fs.fibu2.print.JournalPrintDialog">
+    <variant lang="en">Print</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.view.CategoryEditor.emptycategory" group="fs.fibu2.view.CategoryEditor">
     <variant lang="en">The empty category is not allowed</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.print.BilancialPrintDialog.config" group="fs.fibu2.print.BilancialPrintDialog">
+    <variant lang="en">Configure...</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.MainFrame.journalfileerror" group="fs.fibu2.MainFrame">
     <variant lang="en">Could not load journal from file %s: %s</variant>
@@ -575,11 +614,11 @@
   <polyglotstring id="fs.fibu2.print.BilancialPrintDialog.printer" group="fs.fibu2.print.BilancialPrintDialog">
     <variant lang="en">Printer:</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2.view.JournalTableRenderer.accountreport" group="fs.fibu2.view.JournalTableRenderer">
-    <variant lang="en">Account information:</variant>
-  </polyglotstring>
   <polyglotstring id="fs.fibu2.view.EntryDialog.addinf" group="fs.fibu2.view.EntryDialog">
     <variant lang="en">Additional remark:</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.view.JournalTableRenderer.accountreport" group="fs.fibu2.view.JournalTableRenderer">
+    <variant lang="en">Account information:</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.AbstractAccount.invoicedescription" group="fs.fibu2.AbstractAccount">
     <variant lang="en">A registration number for the invoice associated to an entry</variant>
@@ -601,6 +640,9 @@
   </polyglotstring>
   <polyglotstring id="fs.fibu2.module.copyfilter" group="fs.fibu2.module">
     <variant lang="en">Copy:</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.OptionDialog.language" group="fs.fibu2.OptionDialog">
+    <variant lang="en">Choose language (requires restart):</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.CategoryFilter.level" group="fs.fibu2.filter.CategoryFilter">
     <variant lang="en">Level</variant>
@@ -634,6 +676,9 @@
   </polyglotstring>
   <polyglotstring id="fs.fibu2.print.BilancialPrintDialog.size" group="fs.fibu2.print.BilancialPrintDialog">
     <variant lang="en">Font size:</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.print.JournalPrintDialog.printremarks" group="fs.fibu2.print.JournalPrintDialog">
+    <variant lang="en">Print remarks</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.view.BilancialPanel.after" group="fs.fibu2.view.BilancialPanel">
     <variant lang="en">After:</variant>
@@ -716,6 +761,12 @@
   <polyglotstring id="fs.fibu2.undo.JournalStartEdit.presentation" group="fs.fibu2.undo.JournalStartEdit">
     <variant lang="en">Changes the start value of account %s in journal %s.</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.print.JournalPrintDialog.title" group="fs.fibu2.print.JournalPrintDialog">
+    <variant lang="en">Title:</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.init.generalprefs" group="fs.fibu2.init">
+    <variant lang="en">Extracting general preferences...</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.print.BilancialPageable.finalsum" group="fs.fibu2.print.BilancialPageable">
     <variant lang="en">Overall:</variant>
   </polyglotstring>
@@ -778,6 +829,9 @@
   </polyglotstring>
   <polyglotstring id="fs.fibu2.view.BilancialPanel.selectionempty" group="fs.fibu2.view.BilancialPanel">
     <variant lang="en">Empty</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.view.JournalTableBar.printjournal" group="fs.fibu2.view.JournalTableBar">
+    <variant lang="en">Print table...</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.MainFrame.logfibu1format" group="fs.fibu2.MainFrame">
     <variant lang="en">The document does not seem to be an fsfibu2 journal. Trying fsfibu1 format...</variant>

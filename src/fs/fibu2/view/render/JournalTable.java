@@ -35,7 +35,7 @@ public class JournalTable extends JTable {
 		getTableHeader().setReorderingAllowed(false);
 		//Adapt column widths
 		setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
-		columnModel.getColumn(0).setPreferredWidth(32);
+		columnModel.getColumn(0).setPreferredWidth(36);
 		columnModel.getColumn(1).setPreferredWidth(350);
 		columnModel.getColumn(2).setPreferredWidth(100);
 		columnModel.getColumn(3).setPreferredWidth(100);

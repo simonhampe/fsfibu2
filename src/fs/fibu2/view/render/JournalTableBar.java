@@ -31,6 +31,7 @@ import fs.fibu2.application.Fsfibu2;
 import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.Journal;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
+import fs.fibu2.print.JournalPrintDialog;
 import fs.fibu2.resource.Fsfibu2DefaultReference;
 import fs.fibu2.view.event.ProgressListener;
 import fs.fibu2.view.model.JournalTableModel;
@@ -68,6 +69,7 @@ public class JournalTableBar extends JToolBar implements ResourceDependent {
 	private JButton editButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".editentry"));
 	private JButton deleteButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".deleteentry"));
 	private JButton editSeparatorsButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".editseparator"));
+	private JButton printButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".printjournal"));
 	private JToggleButton showYearSeparatorButton = new JToggleButton(Fsfibu2StringTableMgr.getString(sgroup  + ".displayyear"));
 	private JToggleButton showReadingPointsButton = new JToggleButton(Fsfibu2StringTableMgr.getString(sgroup + ".displayreading"));
 	private JProgressBar progressBar = new JProgressBar();
@@ -136,6 +138,14 @@ public class JournalTableBar extends JToolBar implements ResourceDependent {
 			if(ans == JOptionPane.YES_OPTION) {
 				associatedJournal.removeAllEntriesUndoable(entriesToDelete);
 			}
+		}
+	};
+	
+	private ActionListener printJournalListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JournalPrintDialog diag = new JournalPrintDialog(table.getJournalTableModel());
+			diag.setVisible(true);
 		}
 	};
 	
@@ -225,7 +235,10 @@ public class JournalTableBar extends JToolBar implements ResourceDependent {
 		deleteButton.addActionListener(deleteListener);
 			deleteButton.setIcon(new ImageIcon(ref.getFullResourcePath(this, path + "/delete.png")));
 			deleteButton.setToolTipText(Fsfibu2StringTableMgr.getString(sgroup + ".deletetooltip"));
-		
+		printButton.addActionListener(printJournalListener);
+			printButton.setIcon(new ImageIcon(ref.getFullResourcePath(this, path + "/print.png")));
+			printButton.setToolTipText(Fsfibu2StringTableMgr.getString(sgroup + ".printtooltip"));
+			
 			editSeparatorsButton.setIcon(new ImageIcon(ref.getFullResourcePath(this,path + "/editsep.png")));
 			editSeparatorsButton.setToolTipText(Fsfibu2StringTableMgr.getString(sgroup + ".editseptooltip"));
 		
@@ -252,7 +265,7 @@ public class JournalTableBar extends JToolBar implements ResourceDependent {
 		setLayout(gbl);
 		
 		int col = 0;
-		for(JButton b : Arrays.asList(newButton,editButton,deleteButton)) {
+		for(JButton b : Arrays.asList(newButton,editButton,deleteButton,printButton)) {
 			GridBagConstraints gc = GUIToolbox.buildConstraints(col, 0, 1, 1);
 			gc.insets = new Insets(5,5,5,5);
 			gbl.setConstraints(b, gc);
@@ -319,6 +332,7 @@ public class JournalTableBar extends JToolBar implements ResourceDependent {
 		tree.addPath(path + "editsep.png");
 		tree.addPath(path + "year.png");
 		tree.addPath(path + "reading.png");
+		tree.addPath(path + ".print.png");
 		return tree;
 	}
 

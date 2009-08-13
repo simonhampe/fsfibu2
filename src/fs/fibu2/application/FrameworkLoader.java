@@ -50,7 +50,7 @@ public final class FrameworkLoader {
 
 	private static Logger logger = Logger.getLogger(FrameworkLoader.class);
 	
-	private final static String configuratorPath = "frameworkConfigurator.xml";
+	public final static String configuratorPath = "frameworkConfigurator.xml";
 	
 	/**
 	 * Tries to load Fsframework

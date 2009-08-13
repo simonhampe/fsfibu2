@@ -3,7 +3,6 @@ package fs.fibu2.application;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -60,7 +59,14 @@ public class MainFrame extends JFrame implements ResourceDependent {
 	// DATA ******************************************
 	// ***********************************************
 
+	/**
+	 * compiler-generated serial version uid
+	 */
+	private static final long serialVersionUID = -6895514864808121805L;
+
 	private Logger logger = Logger.getLogger(this.getClass());
+	
+	private OptionManager optionManager;
 
 	// List of open journals
 	private Vector<JournalVector> journalsOpen = new Vector<JournalVector>();
@@ -77,7 +83,7 @@ public class MainFrame extends JFrame implements ResourceDependent {
 		private JButton openButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".button.open"));
 		private JButton saveButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".button.save"));
 		private JButton saveAsButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".button.saveas"));
-		private JButton exportButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".button.export"));
+		private JButton optionButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".button.option"));
 		private JButton helpButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".button.help"));
 		private JButton exitButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".button.exit"));
 		private JButton undoButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".button.undo"));
@@ -118,7 +124,14 @@ public class MainFrame extends JFrame implements ResourceDependent {
 		}
 	};
 	
-	//TODO: Write export and help functionality
+	//TODO: Write  help functionality
+	
+	private ActionListener optionListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			optionManager.optionDialog();
+		}
+	};
 	
 	private ActionListener exitListener = new ActionListener() {
 		@Override
@@ -200,6 +213,14 @@ public class MainFrame extends JFrame implements ResourceDependent {
 
 		// Create file list from preferences
 		try {
+			logger.info(Fsfibu2StringTableMgr.getString("fs.fibu2.init.generalprefs"));
+			try {
+				Preferences optionNode = Preferences.userRoot().node("fsfibu2/general");
+				optionManager = new OptionManager(optionNode);
+			}
+			catch(Exception e) {
+				optionManager = new OptionManager(null);
+			}
 			logger.info(Fsfibu2StringTableMgr
 					.getString("fs.fibu2.init.prefjournals"));
 			Preferences openNode = Preferences.userRoot().node(
@@ -234,7 +255,7 @@ public class MainFrame extends JFrame implements ResourceDependent {
 		toolBar.setLayout(gbl);
 		
 		int col = 0;
-		for(JButton b : Arrays.asList(newButton, openButton, saveButton, saveAsButton,exportButton, helpButton, exitButton)) {
+		for(JButton b : Arrays.asList(newButton, openButton, saveButton, saveAsButton,optionButton, helpButton, exitButton)) {
 			GridBagConstraints gc = GUIToolbox.buildConstraints(col, 0, 1, 1);
 			gbl.setConstraints(b, gc);
 			toolBar.add(b);
@@ -263,7 +284,8 @@ public class MainFrame extends JFrame implements ResourceDependent {
 			saveButton.addActionListener(saveListener);
 		saveAsButton.setIcon(new ImageIcon(ref.getFullResourcePath(this, path + "save.png")));
 			saveAsButton.addActionListener(saveAsListener);
-		exportButton.setIcon(new ImageIcon(ref.getFullResourcePath(this, path + "export.png")));
+		optionButton.setIcon(new ImageIcon(ref.getFullResourcePath(this, path + "options.png")));
+			optionButton.addActionListener(optionListener);
 		helpButton.setIcon(new ImageIcon(ref.getFullResourcePath(this, path + "help.png")));
 		exitButton.setIcon(new ImageIcon(ref.getFullResourcePath(this, path + "exit.png")));
 			exitButton.addActionListener(exitListener);
@@ -311,7 +333,6 @@ public class MainFrame extends JFrame implements ResourceDependent {
 					.getString("fs.fibu2.MainFrame.nojournal"));
 			saveButton.setEnabled(false);
 			saveAsButton.setEnabled(false);
-			exportButton.setEnabled(false);
 			undoButton.setEnabled(false);
 			redoButton.setEnabled(false);
 		}
@@ -323,7 +344,6 @@ public class MainFrame extends JFrame implements ResourceDependent {
 				b.append("*");
 			saveButton.setEnabled(true);
 			saveAsButton.setEnabled(true);
-			exportButton.setEnabled(true);
 			for(int i = 0 ; i < journalsOpen.size(); i++) {
 				String name = journalsOpen.get(i).journal.getName();
 				if(name == null || name.trim().equals("")) name = Fsfibu2StringTableMgr.getString("fs.fibu2.MainFrame.unnamed");
@@ -542,6 +562,9 @@ public class MainFrame extends JFrame implements ResourceDependent {
 		}
 		//Now save preferences
 		logger.info(Fsfibu2StringTableMgr.getString("fs.fibu2.MainFrame.savingprefs"));
+		optionManager.saveLanguage();
+		Preferences optionNode = Preferences.userRoot().node("fsfibu2/general");
+		optionManager.insertPreferences(optionNode);
 		Preferences openNode = Preferences.userRoot().node("fsfibu2/session/openjournals");
 		if(selectedIndex >= 0) openNode.put("selected", Integer.toString(selectedIndex));
 		//First we clear all preferences
