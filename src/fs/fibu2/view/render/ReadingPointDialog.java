@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
@@ -175,6 +176,7 @@ public class ReadingPointDialog extends FrameworkDialog {
 		
 		editPanel.setBorder(BorderFactory.createEtchedBorder());
 		JPanel fillPanel = new JPanel();
+		JScrollPane listPane = new JScrollPane(pointList);
 		
 		// Validation
 		
@@ -212,19 +214,19 @@ public class ReadingPointDialog extends FrameworkDialog {
 		GridBagLayout gbl = new GridBagLayout();
 		setLayout(gbl);
 		
-		GridBagConstraints gcList 	= GUIToolbox.buildConstraints(0, 0, 1, 7);
+		GridBagConstraints gcList 	= GUIToolbox.buildConstraints(0, 0, 1, 6);
 		GridBagConstraints gcNew 	= GUIToolbox.buildConstraints(1, 0, 1, 1);
 		GridBagConstraints gcEdit 	= GUIToolbox.buildConstraints(1, 1, 1, 1);
 		GridBagConstraints gcDelete = GUIToolbox.buildConstraints(1, 2, 1, 1);
 		GridBagConstraints gcPanel 	= GUIToolbox.buildConstraints(2, 0, 3, 3);
-		GridBagConstraints gcClose 	= GUIToolbox.buildConstraints(1, 6, 1, 1);
+		GridBagConstraints gcClose 	= GUIToolbox.buildConstraints(1, 5, 1, 1); gcClose.fill = GridBagConstraints.HORIZONTAL; gcClose.anchor = GridBagConstraints.SOUTH;
 		GridBagConstraints gcFill   = GUIToolbox.buildConstraints(3, 0, 1, 1); gcFill.weightx = 100;
 		
 		for(GridBagConstraints gc : Arrays.asList(gcList,gcNew,gcEdit,gcDelete,gcPanel,gcClose)) {
 			gc.insets = new Insets(5,5,5,5);
 		}
 		
-		gbl.setConstraints(pointList, gcList);
+		gbl.setConstraints(listPane, gcList);
 		gbl.setConstraints(newButton, gcNew);
 		gbl.setConstraints(editButton, gcEdit);
 		gbl.setConstraints(deleteButton, gcDelete);
@@ -232,7 +234,7 @@ public class ReadingPointDialog extends FrameworkDialog {
 		gbl.setConstraints(closeButton, gcClose);
 		gbl.setConstraints(fillPanel, gcFill);
 		
-		add(pointList); add(newButton); add(editButton); add(deleteButton); add(editPanel); add(closeButton);add(fillPanel);
+		add(listPane); add(newButton); add(editButton); add(deleteButton); add(editPanel); add(closeButton);add(fillPanel);
 		
 		//Layout panel
 		GridBagLayout gbl2 = new GridBagLayout();

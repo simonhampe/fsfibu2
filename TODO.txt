@@ -2,9 +2,9 @@ TODOS:
 
 - Print the journal! //check.
 - Options  //check.
-- Reading point configuration!
-- CSV Export for BilancialView
-- General export: BackupModule and ExportDialog
+- Reading point configuration!  //check.
+- General export: Backup/ExportModule
 - Sort table
 - ChartModule (Maybe there should be a button to change the type of the chart)
 - More logging
+- CSV Export for BilancialView and JournalTable
