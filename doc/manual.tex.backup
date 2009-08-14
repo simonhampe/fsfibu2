@@ -1,0 +1,31 @@
+\documentclass[a4paper,10pt,halfparskip,oneside,smallheadings]{scrbook}
+
+\usepackage[german]{babel}
+\usepackage{ucs}
+\usepackage[utf8x]{inputenc}
+
+\title{fsfibu 2 - Das Handbuch}
+\author{Simon Hampe}
+
+\makeindex
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\chapter{Installation}
+
+\section{Was ist fsfibu 2?}
+fsfibu 2 ist ein Programm zur Verwaltung von Finanzen. Es ist kein klassisches Finanzbuchhaltungsprogramm, sondern
+relativ speziell auf die Bedürfnisse des Fachschaftsrats Mathematik zugeschnitten, für den es 2008/2009 von mir
+geschrieben wurde. Es erlaubt die tabellarische Verwaltung sogenannter 'Einträge', die für eine Ausgabe oder Einnahme stehen. Diese Einträge können kategorisiert, gefiltert und bilanziert werden. 
+
+Das Programm ist, wie der Name schon andeutet, die zweite, überarbeitete Version. Sie zeigt im Vergleich zu fsfibu 1 deutlich mehr Flexibilität und in unterschiedlicheren Kontexten verwendet werden.
+
+\section{}
+
+\chapter{Handbuch}
+
+\chapter{Erweiterungen}
+
+\end{document}
