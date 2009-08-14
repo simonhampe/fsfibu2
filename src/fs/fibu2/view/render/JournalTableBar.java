@@ -149,7 +149,13 @@ public class JournalTableBar extends JToolBar implements ResourceDependent {
 		}
 	};
 	
-	//TODO: Add separator editor
+	private ActionListener editPointListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			ReadingPointDialog diag = ReadingPointDialog.getInstance(associatedJournal);
+			diag.setVisible(true);
+		}
+	};
 	
 	private ActionListener showYearSeparatorListener = new ActionListener() {
 		@Override
@@ -239,6 +245,7 @@ public class JournalTableBar extends JToolBar implements ResourceDependent {
 			printButton.setIcon(new ImageIcon(ref.getFullResourcePath(this, path + "/print.png")));
 			printButton.setToolTipText(Fsfibu2StringTableMgr.getString(sgroup + ".printtooltip"));
 			
+		editSeparatorsButton.addActionListener(editPointListener);
 			editSeparatorsButton.setIcon(new ImageIcon(ref.getFullResourcePath(this,path + "/editsep.png")));
 			editSeparatorsButton.setToolTipText(Fsfibu2StringTableMgr.getString(sgroup + ".editseptooltip"));
 		

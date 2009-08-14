@@ -3,6 +3,8 @@ package fs.fibu2.view.render;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -14,7 +16,10 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.tree.DefaultTreeCellEditor.EditorContainer;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import org.dom4j.Document;
 
@@ -40,11 +45,18 @@ import fs.xml.XMLDirectoryTree;
  */
 public class ReadingPointDialog extends FrameworkDialog {
 
+	/**
+	 * compiler-generated serial version uid
+	 */
+	private static final long serialVersionUID = 8361938745150579880L;
+
 	private static HashMap<Journal, ReadingPointDialog> dialogMap = new HashMap<Journal, ReadingPointDialog>();
 	
 	private Journal associatedJournal;
 	
 	private final static String sgroup = "fs.fibu2.view.ReadingPointDialog";
+	
+	private ReadingPoint currentlyEdited = null;
 	
 	// COMPONENTS ************************
 	// ***********************************
@@ -66,23 +78,103 @@ public class ReadingPointDialog extends FrameworkDialog {
 	// LISTENERS *************************
 	// ***********************************
 	
+	private SingleButtonValidator okValidator = new SingleButtonValidator(okButton);
+	
+	private ActionListener newListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			setCurrentlyEdited(null);
+			editPanel.setVisible(true);
+		}
+	};
+	
+	private ActionListener editListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			setCurrentlyEdited((ReadingPoint)pointList.getSelectedValue());
+			editPanel.setVisible(true);
+		}
+	};
+	
+	private ActionListener deleteListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			associatedJournal.removeReadingPointUndoable((ReadingPoint)pointList.getSelectedValue());
+		}
+	};
+	
+	private ListSelectionListener selectionListener = new ListSelectionListener() {
+		@Override
+		public void valueChanged(ListSelectionEvent e) {
+			int[] sels = pointList.getSelectedIndices();
+			if(sels.length == 0) {
+				editButton.setEnabled(false);
+				deleteButton.setEnabled(false);
+			}
+			else {
+				editButton.setEnabled(true);
+				deleteButton.setEnabled(true);
+			}
+		}
+	};
+	
+	private ActionListener closeListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			dispose();
+		}
+	};
+	
+	private ActionListener cancelListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			editPanel.setVisible(false);
+		}
+	};
+	
+	private ActionListener okListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(currentlyEdited == null) {
+				try {
+					associatedJournal.addReadingPointUndoable(new ReadingPoint(nameField.getText(),Fsfibu2DateFormats.parseDateInputFormat(dateField.getText())));
+				} catch (ParseException e1) {
+					//Will not happen
+				}
+			}
+			else {
+				currentlyEdited.setName(nameField.getText());
+				try {
+					currentlyEdited.setReadingDay(Fsfibu2DateFormats.parseDateInputFormat(dateField.getText()));
+				} catch (ParseException e1) {
+					//Will not happen
+				}
+			}
+			editPanel.setVisible(false);
+		}
+	};
+	
 	// CONSTRUCTOR ***********************
 	// ***********************************
 	
 	protected ReadingPointDialog(Journal j) {
 		super(Fsfibu2DefaultReference.getDefaultReference(),Fsfibu2StringTableMgr.getLoader(),PolyglotStringTable.getGlobalLanguageID());
+		setTitle(Fsfibu2StringTableMgr.getString(sgroup + ".dialogtitle"));
 		associatedJournal = j;
 		
 		//Init GUI
 		pointList.setModel(new ReadingPointModel(associatedJournal));
 		pointList.setCellRenderer(new ReadingPointRenderer());
 		pointList.setBorder(BorderFactory.createTitledBorder(Fsfibu2StringTableMgr.getString(sgroup + ".readingpoints")));
+		pointList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
 		JLabel nameLabel = new JLabel(Fsfibu2StringTableMgr.getString(sgroup + ".name"));
 		SwitchIconLabel dateLabel = new SwitchIconLabel(Fsfibu2StringTableMgr.getString(sgroup + ".date"));
 			dateLabel.setIconReference(warnIcon);
+			dateLabel.setHorizontalTextPosition(SwingConstants.LEFT);
 		
 		editPanel.setBorder(BorderFactory.createEtchedBorder());
+		JPanel fillPanel = new JPanel();
 		
 		// Validation
 		
@@ -110,7 +202,6 @@ public class ReadingPointDialog extends FrameworkDialog {
 			}
 		};
 		dateValidator.addComponent(dateField, dateLabel);
-		SingleButtonValidator okValidator = new SingleButtonValidator(okButton);
 		okValidator.addValidator(dateValidator);
 		okValidator.validate();
 		
@@ -125,8 +216,9 @@ public class ReadingPointDialog extends FrameworkDialog {
 		GridBagConstraints gcNew 	= GUIToolbox.buildConstraints(1, 0, 1, 1);
 		GridBagConstraints gcEdit 	= GUIToolbox.buildConstraints(1, 1, 1, 1);
 		GridBagConstraints gcDelete = GUIToolbox.buildConstraints(1, 2, 1, 1);
-		GridBagConstraints gcPanel 	= GUIToolbox.buildConstraints(1, 3, 3, 3);
-		GridBagConstraints gcClose 	= GUIToolbox.buildConstraints(3, 6, 1, 1);
+		GridBagConstraints gcPanel 	= GUIToolbox.buildConstraints(2, 0, 3, 3);
+		GridBagConstraints gcClose 	= GUIToolbox.buildConstraints(1, 6, 1, 1);
+		GridBagConstraints gcFill   = GUIToolbox.buildConstraints(3, 0, 1, 1); gcFill.weightx = 100;
 		
 		for(GridBagConstraints gc : Arrays.asList(gcList,gcNew,gcEdit,gcDelete,gcPanel,gcClose)) {
 			gc.insets = new Insets(5,5,5,5);
@@ -138,8 +230,9 @@ public class ReadingPointDialog extends FrameworkDialog {
 		gbl.setConstraints(deleteButton, gcDelete);
 		gbl.setConstraints(editPanel, gcPanel);
 		gbl.setConstraints(closeButton, gcClose);
+		gbl.setConstraints(fillPanel, gcFill);
 		
-		add(pointList); add(newButton); add(editButton); add(deleteButton); add(editPanel); add(closeButton);
+		add(pointList); add(newButton); add(editButton); add(deleteButton); add(editPanel); add(closeButton);add(fillPanel);
 		
 		//Layout panel
 		GridBagLayout gbl2 = new GridBagLayout();
@@ -168,6 +261,18 @@ public class ReadingPointDialog extends FrameworkDialog {
 		
 		pack();
 		setResizable(false);
+		
+		editPanel.setVisible(false);
+		
+		//Listeners
+		pointList.addListSelectionListener(selectionListener);
+			selectionListener.valueChanged(null);
+		newButton.addActionListener(newListener);
+		editButton.addActionListener(editListener);
+		deleteButton.addActionListener(deleteListener);
+		closeButton.addActionListener(closeListener);
+		cancelButton.addActionListener(cancelListener);
+		okButton.addActionListener(okListener);
 	}
 	
 	/**
@@ -183,6 +288,23 @@ public class ReadingPointDialog extends FrameworkDialog {
 				dialogMap.put(j, diag);
 				return diag;
 			}
+		}
+	}
+	
+	// CONTROL METHODS *************************
+	// *****************************************
+	
+	private void setCurrentlyEdited(ReadingPoint p) {
+		currentlyEdited = p;
+		if(p == null) {
+			nameField.setText("");
+			dateField.setText("");
+			okValidator.validate();			
+		}
+		else {
+			nameField.setText(p.getName());
+			dateField.setText(Fsfibu2DateFormats.getEntryDateFormat().format(p.getReadingDay().getTime()));
+			okValidator.validate();
 		}
 	}
 	

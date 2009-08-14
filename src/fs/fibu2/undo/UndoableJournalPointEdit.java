@@ -59,7 +59,7 @@ public class UndoableJournalPointEdit extends AbstractUndoableEdit {
 	@Override
 	public String getUndoPresentationName() {
 		return Fsfibu2StringTableMgr.getString(sgroup + ".presentation",
-				!isAdded? "fs.fibu2.undo.add": "fs.fibu2.undo.remove",
+				!isAdded? Fsfibu2StringTableMgr.getString("fs.fibu2.undo.add") : Fsfibu2StringTableMgr.getString("fs.fibu2.undo.remove"),
 				point == null? "?" : point.getName(),
 				journal == null? "?" : journal.getName());
 	}
