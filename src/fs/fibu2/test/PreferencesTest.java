@@ -1,6 +1,5 @@
 package fs.fibu2.test;
 
-import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;

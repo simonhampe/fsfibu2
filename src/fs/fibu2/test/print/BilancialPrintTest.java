@@ -1,7 +1,5 @@
 package fs.fibu2.test.print;
 
-import java.awt.print.PageFormat;
-import java.awt.print.PrinterJob;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Currency;
@@ -9,14 +7,6 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Vector;
 
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.PrintRequestAttribute;
-import javax.print.attribute.standard.Destination;
-import javax.print.attribute.standard.Media;
-import javax.print.attribute.standard.MediaName;
-import javax.print.attribute.standard.MediaSizeName;
-import javax.print.attribute.standard.OrientationRequested;
-import javax.print.attribute.standard.OutputDeviceAssigned;
 import javax.swing.JDialog;
 
 import org.apache.log4j.BasicConfigurator;
@@ -25,10 +15,7 @@ import fs.fibu2.data.format.Fsfibu1Converter;
 import fs.fibu2.data.model.Category;
 import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.Journal;
-import fs.fibu2.print.BilancialPageable;
-import fs.fibu2.print.BilancialPrintConfiguration;
 import fs.fibu2.print.BilancialPrintDialog;
-import fs.fibu2.print.BilancialPrintConfiguration.PrintPolicy;
 import fs.fibu2.resource.Fsfibu2DefaultReference;
 import fs.fibu2.view.model.BilancialTreeModel;
 import fs.xml.FsfwDefaultReference;
