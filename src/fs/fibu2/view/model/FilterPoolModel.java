@@ -16,6 +16,7 @@ import fs.fibu2.data.model.ReadingPoint;
 import fs.fibu2.filter.FilterPool;
 import fs.fibu2.filter.FilterPool.StackFilterTripel;
 import fs.fibu2.view.event.YearSeparatorListener;
+import fs.fibu2.view.render.JournalModule;
 
 /**
  * This class represents the filters available in the {@link FilterPool} of a given {@link Journal}. Optionally, filters of a certain module

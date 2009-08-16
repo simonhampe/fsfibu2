@@ -22,10 +22,44 @@ geschrieben wurde. Es erlaubt die tabellarische Verwaltung sogenannter 'Einträg
 
 Das Programm ist, wie der Name schon andeutet, die zweite, überarbeitete Version. Sie zeigt im Vergleich zu fsfibu 1 deutlich mehr Flexibilität und in unterschiedlicheren Kontexten verwendet werden.
 
-\section{}
+\section{Wo kriege ich fsfibu 2 her?}
+Wenn du dieses Handbuch liest, hast du es wahrscheinlich schon. Wenn du ein Fachschaftsrat bist, dürfte es ohnehin
+bereits lauffähig installiert sein. Das Programmverzeichnis findet sich (Stand: August 2009) unter /home/fskasse/fsfibu2
+
+\section{Wie kriege ich fsfibu 2 zum Laufen?}
+Da fsfibu 2 in Java geschrieben wurde, brauchst du eine lauffähige Java VM. Allerdings nicht irgendeine, fsfibu 2 läuft mit bestimmten VMs nicht. So erkennt zum Beispiel die gcj VM (die Standard VM von Linux) einige speziellere
+Klassen nicht. Empfohlen ist eine möglichst aktuelle Version der VM von Sun selbst (Das Programm wurde geschrieben unter 1.6.\_014). Des Weiteren wird eine Version von fsframework benötigt, eine von mir geschriebene Bibliothek, die von fsfibu 2 extensiv verwendet wird. Für den Erwerb dieser Bibliothek gilt vorerst das Gleiche wie für fsfibu 2 selbst... :-)
+
+Eine Installation ist nicht notwendig. Um das Programm zu starten, musst du die Datei fsfibu2.jar ausführen. Unter Linux geht das bspw. mit dem Befehl \textit{java -jar fsfibu2.jar}.
+
+Wenn du fsfibu 2 das erste Mal startest (und damit meine ich das allererste Mal überhaupt auf deinem Rechner), wirst 
+du nach dem Pfad zu fsframework gefragt. Auf den Fachschaftrechnern sollte das /home/fskasse/fsframework sein. Danach sollte das Programm laufen.
 
 \chapter{Handbuch}
 
+\section{Das leere Programm}
+
 \chapter{Erweiterungen}
+
+fsfibu 2 ist von vornherein so geschrieben worden, dass sich mehrere Aspekte leicht erweitern lassen. 'Leicht' bedeutet in diesem Zusammenhang allerdings noch immer, dass man, um eine Erweiterung selbst zu erstellen, durchaus Java programmieren muss. Man braucht allerdings nicht jedes Mal den Quellcode des ganzen Projekts zu beschaffen und zu kompilieren. Trotz allem ist dieses Kapitel relativ technisch und ohne gewisse Grundkenntnisse in Java wahrscheinlich völlig uninteressant.
+
+Das Erweiterungskonzept funktioniert eigentlich immer auf die gleiche Weise: Man schreibt eine Klasse, die eine Erweiterung in einem bestimmten Bereich darstellen soll (beispielsweise einen Filter) und kopiert die .class - Datei, die beim Kompilieren entstand, in den zugehörigen Ordner im Hauptverzeichnis von fsfibu 2(in diesem Fall eben /filters). Beim nächsten Programmstart wird die Erweiterung automatisch geladen. Des Weiteren muss eine solche Klasse immer eine Methode implementieren, die eine eindeutige ID zurückgibt. Für jeden Typ von Erweiterungen gibt es eine entsprechende Konvention für diese ID, die allerdings nicht verbindlich ist. 
+
+\textbf{Hinweis:} Damit eine Erweiterung erkannt wird, ist immer ein Neustart des Programms notwendig.
+
+\section{Module}
+Die mächtigste und flexibelste Erweiterungsmöglichkeit stellen die Module dar. Ein Modul entspricht schlussendlich einem Tab links im fsfibu 2 Hauptfenster. Für jedes registrierte Modul kreiiert das Programm beim Laden eines Kassenbuchs automatisch einen Tab. Eine Modulklasse muss im Paket \textit{fs.fibu2.module} liegen und das Interface \textit{fs.fibu2.view.render.JournalModule} implementieren. Dieses Interface stellt neben dem Text und dem Icon für den Reiter auch eine Methode zur Verfügung, über die das Programm die eigentliche grafische Modulkomponente erhält. Die erstellte Klassendatei des Moduls kommt in das Verzeichnis (fsfibu2)/modules. Die Konvention für die ID eines Moduls lautet \textit{ff2module\_} + ein beschreibender Text, bspw. \textit{ff2module\_bilancial}.
+
+\section{Filter}
+Kassenbucheinträge können nach praktisch jeder ihrer Eigenschaften gefiltert werden. Trotzdem erhebt fsfibu 2 natürlich keinen Anspruch auf Vollständigkeit. Deshalb können problemlos weitere Filter hinzugefügt werden. Man schreibt einfach eine Klasse, die im Paket \textit{fs.fibu2.filter} liegt und das Interface \textit{fs.fibu2.filter.EntryFilter} implementiert. Die entsprechende Klassendatei kommt dann in das Verzeichnis (fsfibu2)/filters. Der neue Filter wird vom Program automatisch in die Liste der verfügbaren Filter im Filtereditor eingefügt. 
+
+Neben den eigentlichen Filtermethoden muss eine solche Klasse noch eine Methode implementieren, die eine Editorkomponente zurückgibt. Diese Editorkomponente muss dann die Klasse \textit{fs.fibu2.filter.EntryFilterEditor} beerben. Soll der Filter nicht editierbar sein (bspw. weil er auch gar keine variablen Parameter hat), sollte die Methode einfach \textit{null} zurückgeben.
+
+Die ID-Konvention für Filter lautet \textit{ff2filter_} + irgendwas.
+
+\section{Konten}
+fsfibu 2 unterstützt von Haus aus zwei Kontentypen: Bankkonto und Kasse. Das liegt daran, dass das genau die beiden Kontentypen waren, die wir in der Fachschaft benötigten. Das wird natürlich nicht für jeden Zweck ausreichen. Deshalb gibt es die Möglichkeit, sich eigene Kontoklassen zu schreiben. Die entsprechende Klasse muss im Paket \textit{fs.fibu2.account} liegen und das Interface \textit{fs.fibu2.data.model.Account} implementieren. 
+
+Jedes Konto hat eine Liste von Feldern, die bestimmte (notwendige) Informationen für einen Eintrag enthalten, bspw. eine Rechnungsnummer. 
 
 \end{document}

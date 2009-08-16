@@ -1,4 +1,4 @@
-package fs.fibu2.view.model;
+package fs.fibu2.view.render;
 
 import java.util.prefs.Preferences;
 

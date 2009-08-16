@@ -8,7 +8,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import fs.fibu2.data.model.Journal;
-import fs.fibu2.view.model.JournalModule;
+import fs.fibu2.view.render.JournalModule;
 
 /**
  * Several {@link JournalModule}s use {@link StackFilter}s for their views and sometimes it might be useful to copy an existing filter into another

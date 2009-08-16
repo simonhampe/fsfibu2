@@ -9,8 +9,8 @@ import org.apache.log4j.Logger;
 
 import fs.fibu2.data.model.Journal;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
-import fs.fibu2.view.model.JournalModule;
-import fs.fibu2.view.model.JournalModuleLoader;
+import fs.fibu2.view.render.JournalModule;
+import fs.fibu2.view.render.JournalModuleLoader;
 
 /**
  * This class implements the view associated to a journal. It consists of several tabs (located at the left side), one for each registered JournalModule.

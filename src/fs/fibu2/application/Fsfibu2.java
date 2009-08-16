@@ -16,7 +16,7 @@ import org.apache.log4j.PropertyConfigurator;
 import fs.fibu2.data.model.AccountLoader;
 import fs.fibu2.filter.FilterLoader;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
-import fs.fibu2.view.model.JournalModuleLoader;
+import fs.fibu2.view.render.JournalModuleLoader;
 import fs.xml.PolyglotStringTable;
 
 /**
