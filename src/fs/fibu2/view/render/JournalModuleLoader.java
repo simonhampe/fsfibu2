@@ -8,6 +8,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import fs.fibu2.module.BilancialModule;
+import fs.fibu2.module.ExportModule;
 import fs.fibu2.module.FilterModule;
 import fs.fibu2.module.OverviewModule;
 
@@ -33,6 +34,8 @@ public class JournalModuleLoader {
 			defaultModules.add("ff2module_filter");
 		setModule("ff2module_bilancial",BilancialModule.class);
 			defaultModules.add("ff2module_bilancial");
+		setModule("ff2module_export", ExportModule.class);
+			defaultModules.add("ff2module_export");
 	}
 	
 	/**

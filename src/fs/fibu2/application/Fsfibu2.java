@@ -13,11 +13,11 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
+import fs.fibu2.data.format.JournalExportLoader;
 import fs.fibu2.data.model.AccountLoader;
 import fs.fibu2.filter.FilterLoader;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
 import fs.fibu2.view.render.JournalModuleLoader;
-import fs.xml.PolyglotStringTable;
 
 /**
  * This class is responsible for initializing and starting fsfibu2. The expected initialization files (which are  all optional) are: <br>
@@ -25,8 +25,8 @@ import fs.xml.PolyglotStringTable;
  * give the appropriate directory. The application will not start, if the user does not give a valid directory.<br>
  * - loggerConfigurator: This file configurates logging. It is supposed to be in a format as specified by {@link PropertyConfigurator}. If it is not present, 
  * a basic configuration is used <br>
- * If there are any class files in the directories accounts/, filters/, modules/, the corresponding classes must be declared in the packages fs.fibu2.account, fs.fibu2.filter,
- * fs.fibu2.module, so that the class loader can load them<br> 
+ * If there are any class files in the directories accounts/, filters/, modules/, exports/, the corresponding classes must be declared in the packages fs.fibu2.account, fs.fibu2.filter,
+ * fs.fibu2.module, fs.fibu2.export so that the class loader can load them<br> 
  * All files should be located in the working directory.<br>
  * There is one single instance of this class for each VM.
  * @author Simon Hampe
@@ -88,6 +88,8 @@ public class Fsfibu2 {
 				URLClassLoader filterLoader = new URLClassLoader(filterURL);
 			URL[] moduleURL = {new URL("file://modules/")};
 				URLClassLoader moduleLoader = new URLClassLoader(moduleURL);
+			URL[] exportURL = {new URL("file://exports/")};
+				URLClassLoader exportLoader = new URLClassLoader(exportURL);
 			//Accounts
 			logger.info(Fsfibu2StringTableMgr.getString("fs.fibu2.init.loadingaccounts"));
 			File accountDir = new File("accounts/");
@@ -148,12 +150,32 @@ public class Fsfibu2 {
 					}
 				}
 			}
+			//Exports
+			logger.info(Fsfibu2StringTableMgr.getString("fs.fibu2.init.loadingexports"));
+			File exportDir = new File("exports/");
+			if(exportDir.exists()) {
+				for(File a : exportDir.listFiles()) {
+					String name = a.getName();
+					if(name.endsWith(".class")) {
+						String subname = name.substring(0, name.length()-6);
+						try {
+							Class<?> c = exportLoader.loadClass("fs.fibu2.export." + subname);
+							JournalExportLoader.loadExport(c);
+						}
+						catch (ClassNotFoundException e) {
+							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.classnotfound",name));
+						}
+						catch(UnsupportedOperationException e) {
+							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.exportnotloaded",subname,e.getMessage()));
+						}
+					}
+				}
+			}
 		} catch (MalformedURLException e) {
 			//Will not happen
 		}
 		
 		//Create MainFrame
-		System.out.println(PolyglotStringTable.getGlobalLanguageID());
 		frame = new MainFrame();
 		frame.pack();
 		frame.setVisible(true);
