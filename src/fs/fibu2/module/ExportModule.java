@@ -1,11 +1,12 @@
 package fs.fibu2.module;
 
-import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -59,6 +60,11 @@ public class ExportModule extends JPanel implements JournalModule, ResourceDepen
 	// DATA **********************************
 	// ***************************************
 	
+	/**
+	 * compiler-generated serial version uid
+	 */
+	private static final long serialVersionUID = -6927990773224321128L;
+
 	private final static String sgroup = "fs.fibu2.module.ExportModule";
 	
 	private Logger logger = Logger.getLogger(this.getClass());
@@ -105,17 +111,19 @@ public class ExportModule extends JPanel implements JournalModule, ResourceDepen
 		}
 	};
 	
-	private ChangeListener checkListener = new ChangeListener() {
+	private ItemListener checkListener = new ItemListener() {
 		@Override
-		public void stateChanged(ChangeEvent e) {
+		public void itemStateChanged(ItemEvent e) {
 			JournalExport export = (JournalExport)exportList.getSelectedValue();
 			if(backupCheck.isSelected()) {
-				
 				File f = null;
 				Integer min = (Integer)minuteSpinner.getValue();
 				if(fileNameLabel.getText().equals("")) {
 					f = getExportFile();
 					if(f != null) fileNameLabel.setText(f.getAbsolutePath());
+					else {
+						backupCheck.setSelected(false);
+					}
 				}
 				else f = new File(fileNameLabel.getText());
 				if(f != null) setBackup(export, min, f);
@@ -139,6 +147,24 @@ public class ExportModule extends JPanel implements JournalModule, ResourceDepen
 			} catch (IOException e1) {
 				JOptionPane.showMessageDialog(null, Fsfibu2StringTableMgr.getString(sgroup + ".backuperror",export.getName(), 
 						e1.getMessage()),Fsfibu2StringTableMgr.getString("fs.fibu2.global.error"),JOptionPane.ERROR_MESSAGE);
+			}
+		}
+	};
+	
+	private ChangeListener spinnerListener = new ChangeListener() {
+		@Override
+		public void stateChanged(ChangeEvent e) {
+			setBackup((JournalExport) exportList.getSelectedValue(), (Integer)minuteSpinner.getValue(), new File(fileNameLabel.getText()));
+		}
+	};
+	
+	private ActionListener fileNameListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			File f = getExportFile();
+			if(f != null) {
+				setBackup((JournalExport)exportList.getSelectedValue(), (Integer)minuteSpinner.getValue(), f);
+				fileNameLabel.setText(f.getAbsolutePath());
 			}
 		}
 	};
@@ -182,8 +208,10 @@ public class ExportModule extends JPanel implements JournalModule, ResourceDepen
 		descriptionArea.setWrapStyleWord(true);
 		descriptionArea.setBackground(rightPanel.getBackground());
 		
-		backupCheck.addChangeListener(checkListener);
+		backupCheck.addItemListener(checkListener);
 		exportButton.addActionListener(exportListener);
+		fileButton.addActionListener(fileNameListener);
+		minuteSpinner.addChangeListener(spinnerListener);
 		
 		JPanel fillPanel = new JPanel();
 		
@@ -313,14 +341,16 @@ public class ExportModule extends JPanel implements JournalModule, ResourceDepen
 			nameLabel.setText("<html><b>" + export.getName() + "</b></html>");
 			descriptionArea.setText(export.getDescription());
 			if(backupTimer.containsKey(export.getID())) {
-				backupCheck.setSelected(true);
-				minuteSpinner.setValue(backupTimer.get(export.getID()));
 				fileNameLabel.setText(fileNames.get(export.getID()));
+				minuteSpinner.setValue(backupTimer.get(export.getID()));
+				backupCheck.setSelected(true);
 			}
 			else {
 				backupCheck.setSelected(false);
+				minuteSpinner.setValue(new Integer(15));
+				fileNameLabel.setText("");
 			}
-			checkListener.stateChanged(null);
+			checkListener.itemStateChanged(null);
 		}
 	}
 	
@@ -341,16 +371,14 @@ public class ExportModule extends JPanel implements JournalModule, ResourceDepen
 	 * Sets the backup of the given export. If f == null, deletes the backup
 	 */
 	private void setBackup(final JournalExport export, Integer minute, final File f) {
-		if(f == null) {
-			if(timers.containsKey(export.getID())) {
-				timers.get(export.getID()).stop();
-				timers.remove(export.getID());
-			}
+		if(timers.containsKey(export.getID())) {
+			timers.get(export.getID()).stop();
+			timers.remove(export.getID());
 		}
-		else {
+		if(f != null){
 			backupTimer.put(export.getID(),minute);
 			fileNames.put(export.getID(), f.getAbsolutePath());
-			Timer t = new Timer(minute * 1000, new ActionListener() {
+			Timer t = new Timer(minute * 60000, new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try {
@@ -371,6 +399,7 @@ public class ExportModule extends JPanel implements JournalModule, ResourceDepen
 	 */
 	private void doExport(JournalExport e, File f)  throws IOException {
 		e.exportJournal(associatedJournal, f.getAbsolutePath());
+		logger.info(Fsfibu2StringTableMgr.getString(sgroup + ".successfulbackup",e.getName()));
 	}
 	
 	// RESOURCEDEPENDENT ******************************
