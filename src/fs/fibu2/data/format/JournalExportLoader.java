@@ -3,8 +3,10 @@ package fs.fibu2.data.format;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import fs.fibu2.export.CSVTableExport;
 import fs.fibu2.export.OldJournalExport;
 import fs.fibu2.export.StandardJournalExport;
+import fs.fibu2.export.VeryOldJournalExport;
 
 /**
  * This class provides access to {@link JournalExport}s via their ID. It also provides methods
@@ -21,7 +23,8 @@ public class JournalExportLoader {
 	static {
 		exportMap.put((new StandardJournalExport()).getID(), new StandardJournalExport());
 		exportMap.put((new OldJournalExport()).getID(), new OldJournalExport());
-		
+		exportMap.put((new VeryOldJournalExport()).getID(),new VeryOldJournalExport());
+		exportMap.put((new CSVTableExport()).getID(), new CSVTableExport());
 	}
 	
 	/**

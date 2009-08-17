@@ -107,6 +107,9 @@
   <polyglotstring id="fs.fibu2.view.JournalTableBar.displayreading" group="fs.fibu2.view.JournalTableBar">
     <variant lang="en">Display reading points</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.export.CSVTableExport.name" group="fs.fibu2.export.CSVTableExport">
+    <variant lang="en">CSV table format</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.module.ExportModule.tooltip" group="fs.fibu2.module.ExportModule">
     <variant lang="en">Exports and backups the journal</variant>
   </polyglotstring>
@@ -241,6 +244,9 @@
   </polyglotstring>
   <polyglotstring id="fs.fibu2.view.BilancialPanel.to" group="fs.fibu2.view.BilancialPanel">
     <variant lang="en">To:</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.export.CSVTableExport.description" group="fs.fibu2.export.CSVTableExport">
+    <variant lang="en">Exports the journal to a table-like csv format, which can be imported e.g. into Open Office or Excel.</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.view.EntryDialog.emptyname" group="fs.fibu2.view.EntryDialog">
     <variant lang="en">The name must not be empty</variant>
@@ -403,6 +409,9 @@
   </polyglotstring>
   <polyglotstring id="fs.fibu2.view.CategoryEditor.basecategory" group="fs.fibu2.view.CategoryEditor">
     <variant lang="en">Base category:</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.export.VeryOldJournalExport.description" group="fs.fibu2.export.VeryOldJournalExport">
+    <variant lang="en">Exports the journal to a csv format compatible with the original OpenOffice journal format.</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.print.JournalPrintDialog.orientation" group="fs.fibu2.print.JournalPrintDialog">
     <variant lang="en">Orientation:</variant>
@@ -592,6 +601,9 @@
   </polyglotstring>
   <polyglotstring id="fs.fibu2.model.BilancialTableModel.invisible" group="fs.fibu2.model.BilancialTableModel">
     <variant lang="en">Invisible?</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.export.VeryOldJournalExport.name" group="fs.fibu2.export.VeryOldJournalExport">
+    <variant lang="en">CSV Open Office format</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.AccountInformationFilter.numericalerror" group="fs.fibu2.filter.AccountInformationFilter">
     <variant lang="en">Min and/or Max are not valid numerical values. This filter would be useless.</variant>
