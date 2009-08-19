@@ -1,4 +1,4 @@
-package fs.fibu2.test.model;
+package fs.fibu2.module;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -31,8 +31,6 @@ import fs.fibu2.filter.FilterPool;
 import fs.fibu2.filter.StackFilter;
 import fs.fibu2.filter.FilterPool.StackFilterTripel;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
-import fs.fibu2.module.BilancialPane;
-import fs.fibu2.module.ChartPane;
 import fs.fibu2.resource.Fsfibu2DefaultReference;
 import fs.fibu2.view.model.FilterPoolModel;
 import fs.fibu2.view.render.FilterPoolRenderer;

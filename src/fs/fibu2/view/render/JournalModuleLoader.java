@@ -8,10 +8,10 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import fs.fibu2.module.BilancialModule;
+import fs.fibu2.module.ChartModule;
 import fs.fibu2.module.ExportModule;
 import fs.fibu2.module.FilterModule;
 import fs.fibu2.module.OverviewModule;
-import fs.fibu2.test.model.ChartModule;
 
 /**
  * This class handles loading of {@link JournalModule} objects by ID. It also supports dynamic loading of JournalModule classes.
