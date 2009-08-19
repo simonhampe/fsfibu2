@@ -3,9 +3,33 @@
 \contentsline {section}{\numberline {1.1}Was ist fsfibu 2?}{3}
 \contentsline {section}{\numberline {1.2}Wo kriege ich fsfibu 2 her?}{3}
 \contentsline {section}{\numberline {1.3}Wie kriege ich fsfibu 2 zum Laufen?}{3}
+\contentsline {section}{\numberline {1.4}Bibliotheken}{4}
 \contentsline {chapter}{\numberline {2}Handbuch}{5}
-\contentsline {section}{\numberline {2.1}Das leere Programm}{5}
-\contentsline {chapter}{\numberline {3}Erweiterungen}{6}
-\contentsline {section}{\numberline {3.1}Module}{6}
-\contentsline {section}{\numberline {3.2}Filter}{6}
-\contentsline {section}{\numberline {3.3}Konten}{7}
+\contentsline {section}{\numberline {2.1}Das Hauptmen\IeC {\"u}}{5}
+\contentsline {subsection}{\numberline {2.1.1}Dateiformate}{6}
+\contentsline {subsection}{\numberline {2.1.2}Sprache}{6}
+\contentsline {section}{\numberline {2.2}Die Module}{6}
+\contentsline {subsection}{\numberline {2.2.1}\IeC {\"U}bersicht}{7}
+\contentsline {subsubsection}{Die Tabelle}{7}
+\contentsline {subsubsection}{Eintr\IeC {\"a}ge erstellen / editieren}{7}
+\contentsline {subsubsection}{Die Werkzeugleiste}{8}
+\contentsline {subsubsection}{Die Bilanz}{8}
+\contentsline {subsection}{\numberline {2.2.2}Filter}{9}
+\contentsline {subsubsection}{Tabtitel}{9}
+\contentsline {subsubsection}{Der Filtereditor}{9}
+\contentsline {subsubsection}{Konteninformationsfilter}{10}
+\contentsline {subsubsection}{Kategorienfilter}{10}
+\contentsline {subsubsection}{Kontenfilter}{11}
+\contentsline {subsection}{\numberline {2.2.3}Bilanz}{11}
+\contentsline {subsection}{\numberline {2.2.4}Graphen}{11}
+\contentsline {subsection}{\numberline {2.2.5}Exportieren}{12}
+\contentsline {subsubsection}{Fsfibu 2 format}{12}
+\contentsline {subsubsection}{Fsfibu 1 format}{12}
+\contentsline {subsubsection}{CSV Tabellenformat}{12}
+\contentsline {subsubsection}{CSV OpenOffice Format}{13}
+\contentsline {chapter}{\numberline {3}Erweiterungen}{14}
+\contentsline {section}{\numberline {3.1}Module}{14}
+\contentsline {section}{\numberline {3.2}Filter}{15}
+\contentsline {section}{\numberline {3.3}Konten}{15}
+\contentsline {section}{\numberline {3.4}Export}{15}
+\contentsline {section}{\numberline {3.5}Sprache}{16}

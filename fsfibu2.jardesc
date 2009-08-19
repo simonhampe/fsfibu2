@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jardesc>
+    <jar path="fsfibu2/fsfibu2.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/fsfibu2/fsfibu2.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="true" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <manifest generateManifest="false" manifestLocation="/fsfibu2/manifest.mf" manifestVersion="1.0" reuseManifest="true" saveManifest="true" usesManifest="true">
+        <sealing sealJar="false">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
+        <javaElement handleIdentifier="=fsfibu2/src&lt;fs.fibu2.undo"/>
+        <javaElement handleIdentifier="=fsfibu2/src&lt;fs.fibu2.print"/>
+        <folder path="/fsfibu2/modules"/>
+        <folder path="/fsfibu2/lang"/>
+        <javaElement handleIdentifier="=fsfibu2/src&lt;fs.fibu2.account"/>
+        <javaElement handleIdentifier="=fsfibu2/src&lt;fs.fibu2.filter"/>
+        <javaElement handleIdentifier="=fsfibu2/src&lt;fs.fibu2.view.render"/>
+        <javaElement handleIdentifier="=fsfibu2/src&lt;fs.fibu2.data.model"/>
+        <javaElement handleIdentifier="=fsfibu2/src&lt;fs.fibu2.filter.event"/>
+        <folder path="/fsfibu2/libs"/>
+        <folder path="/fsfibu2/accounts"/>
+        <javaElement handleIdentifier="=fsfibu2/src&lt;fs.fibu2.application"/>
+        <javaElement handleIdentifier="=fsfibu2/src&lt;fs.fibu2.module"/>
+        <folder path="/fsfibu2/filters"/>
+        <javaElement handleIdentifier="=fsfibu2/src&lt;fs.fibu2.data"/>
+        <javaElement handleIdentifier="=fsfibu2/src&lt;fs.fibu2.export"/>
+        <folder path="/fsfibu2/graphics"/>
+        <folder path="/fsfibu2/examples"/>
+        <folder path="/fsfibu2/exports"/>
+        <javaElement handleIdentifier="=fsfibu2/src&lt;fs.fibu2.resource"/>
+        <javaElement handleIdentifier="=fsfibu2/src&lt;fs.fibu2.data.format"/>
+        <javaElement handleIdentifier="=fsfibu2/src&lt;fs.fibu2.view.model"/>
+        <folder path="/fsfibu2/schema"/>
+        <javaElement handleIdentifier="=fsfibu2/src&lt;fs.fibu2.data.error"/>
+        <javaElement handleIdentifier="=fsfibu2/src&lt;fs.fibu2.view.event"/>
+        <javaElement handleIdentifier="=fsfibu2/src&lt;fs.fibu2.lang"/>
+        <javaElement handleIdentifier="=fsfibu2/src&lt;fs.fibu2.data.event"/>
+    </selectedElements>
+    <fatjar builder="org.eclipse.jdt.ui.plain_jar_builder" launchConfig=""/>
+</jardesc>

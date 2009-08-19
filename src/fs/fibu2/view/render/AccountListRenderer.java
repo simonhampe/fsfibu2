@@ -27,6 +27,7 @@ public class AccountListRenderer extends DefaultListCellRenderer {
 				cellHasFocus);
 		try {
 			c.setText(((Account)value).getName());
+			c.setToolTipText(((Account)value).getDescription());
 		}
 		catch(Exception e) {
 			//Do nothing

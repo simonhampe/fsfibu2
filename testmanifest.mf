@@ -1,3 +1,0 @@
-Manifest-Version: 1.0
-Main-Class: fs.fibu2.application.Fsfibu2
-Class-Path: /home/talio/eclipse/libs/dom4j.jar /home/talio/eclipse/libs/jaxen.jar /home/talio/eclipse/libs/log4j-1.2.jar /home/talio/eclipse/libs/fsframework.jar
