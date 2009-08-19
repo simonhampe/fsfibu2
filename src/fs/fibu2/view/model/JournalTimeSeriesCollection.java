@@ -103,6 +103,7 @@ public class JournalTimeSeriesCollection extends TimeSeriesCollection implements
 			
 			for(Entry e : sortedSet) {
 				if(filter == null || filter.verifyEntry(e)) {
+					validEntryOccured = true;
 					//If the entry belongs to the same day, add its valus
 					if(comparator.compare(e.getDate(), currentDay) == 0) {
 						currentValue += e.getValue();
