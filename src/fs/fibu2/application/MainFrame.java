@@ -419,6 +419,7 @@ public class MainFrame extends JFrame implements ResourceDependent {
 		//Any converted journal is considered changed and unsaved
 		if(converted) vector.flag.setChangeFlag(true);
 		addVector(vector);
+		logger.info(Fsfibu2StringTableMgr.getString(f == null? "fs.fibu2.MainFrame.openednewjournal" : "fs.fibu2.MainFrame.openedjournal",vector.journal.getName()));
 	}
 	
 	/**

@@ -8,11 +8,15 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.HashSet;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -24,12 +28,18 @@ import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import org.apache.log4j.Logger;
 import org.dom4j.Document;
 
 import fs.event.DataRetrievalListener;
 import fs.fibu2.application.Fsfibu2;
+import fs.fibu2.data.Fsfibu2Constants;
+import fs.fibu2.data.format.DefaultCurrencyFormat;
+import fs.fibu2.data.format.Fsfibu2DateFormats;
 import fs.fibu2.data.model.Entry;
+import fs.fibu2.data.model.EntrySeparator;
 import fs.fibu2.data.model.Journal;
+import fs.fibu2.data.model.ReadingPoint;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
 import fs.fibu2.print.JournalPrintDialog;
 import fs.fibu2.resource.Fsfibu2DefaultReference;
@@ -62,14 +72,17 @@ public class JournalTableBar extends JToolBar implements ResourceDependent {
 	
 	private final static String sgroup = "fs.fibu2.view.JournalTableBar";
 	
+	private Logger logger = Logger.getLogger(this.getClass());
+	
 	// COMPONENTS ***********************************
 	// **********************************************
 	
-	private JButton newButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".newentry"));
-	private JButton editButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".editentry"));
-	private JButton deleteButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".deleteentry"));
+	private JButton newButton = new JButton();//Fsfibu2StringTableMgr.getString(sgroup + ".newentry"));
+	private JButton editButton = new JButton();//Fsfibu2StringTableMgr.getString(sgroup + ".editentry"));
+	private JButton deleteButton = new JButton();//Fsfibu2StringTableMgr.getString(sgroup + ".deleteentry"));
+	private JButton csvButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".exportcsv"));
 	private JButton editSeparatorsButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".editseparator"));
-	private JButton printButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".printjournal"));
+	private JButton printButton = new JButton();//Fsfibu2StringTableMgr.getString(sgroup + ".printjournal"));
 	private JToggleButton showYearSeparatorButton = new JToggleButton(Fsfibu2StringTableMgr.getString(sgroup  + ".displayyear"));
 	private JToggleButton showReadingPointsButton = new JToggleButton(Fsfibu2StringTableMgr.getString(sgroup + ".displayreading"));
 	private JProgressBar progressBar = new JProgressBar();
@@ -137,6 +150,17 @@ public class JournalTableBar extends JToolBar implements ResourceDependent {
 					Fsfibu2StringTableMgr.getString(sgroup + ".confirmdeletetitle"), JOptionPane.YES_NO_OPTION);
 			if(ans == JOptionPane.YES_OPTION) {
 				associatedJournal.removeAllEntriesUndoable(entriesToDelete);
+			}
+		}
+	};
+	
+	private ActionListener csvListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			try {
+				exportAsCsv();
+			} catch (IOException e1) {
+				logger.error(Fsfibu2StringTableMgr.getString(sgroup + ".csverror",e1.getMessage()));
 			}
 		}
 	};
@@ -230,6 +254,7 @@ public class JournalTableBar extends JToolBar implements ResourceDependent {
 		table.addMouseListener(mouseListener);
 		
 		//Init buttons
+				
 		String path = "graphics/JournalTableBar";
 		Fsfibu2DefaultReference ref = Fsfibu2DefaultReference.getDefaultReference();
 		newButton.addActionListener(newListener);
@@ -241,6 +266,9 @@ public class JournalTableBar extends JToolBar implements ResourceDependent {
 		deleteButton.addActionListener(deleteListener);
 			deleteButton.setIcon(new ImageIcon(ref.getFullResourcePath(this, path + "/delete.png")));
 			deleteButton.setToolTipText(Fsfibu2StringTableMgr.getString(sgroup + ".deletetooltip"));
+		csvButton.addActionListener(csvListener);
+			csvButton.setIcon(new ImageIcon(ref.getFullResourcePath(this, path + "/csv.png")));
+			csvButton.setToolTipText(Fsfibu2StringTableMgr.getString(sgroup + ".csvtooltip"));
 		printButton.addActionListener(printJournalListener);
 			printButton.setIcon(new ImageIcon(ref.getFullResourcePath(this, path + "/print.png")));
 			printButton.setToolTipText(Fsfibu2StringTableMgr.getString(sgroup + ".printtooltip"));
@@ -272,7 +300,7 @@ public class JournalTableBar extends JToolBar implements ResourceDependent {
 		setLayout(gbl);
 		
 		int col = 0;
-		for(JButton b : Arrays.asList(newButton,editButton,deleteButton,printButton)) {
+		for(JButton b : Arrays.asList(newButton,editButton,deleteButton,printButton,csvButton)) {
 			GridBagConstraints gc = GUIToolbox.buildConstraints(col, 0, 1, 1);
 			gc.insets = new Insets(5,5,5,5);
 			gbl.setConstraints(b, gc);
@@ -321,6 +349,58 @@ public class JournalTableBar extends JToolBar implements ResourceDependent {
 			
 	}
 	
+	// CONTROL METHODS *********************************
+	// *************************************************
+	
+	/**
+	 * Opens up a file choosing dialog and exports the current table to the chosen file as .csv file 
+	 */
+	public void exportAsCsv() throws IOException {
+		JFileChooser chooser = new JFileChooser();
+		int ans = chooser.showSaveDialog(this);
+		if(ans == JFileChooser.APPROVE_OPTION) {
+			PrintWriter out = new PrintWriter(new FileWriter(chooser.getSelectedFile().getAbsolutePath()));
+			
+			//Write column headers
+			String mgroup = "fs.fibu2.model.JournalTableModel";
+			out.print(Fsfibu2StringTableMgr.getString(mgroup + ".columnName") + ";");
+			out.print(Fsfibu2StringTableMgr.getString(mgroup + ".columnDate") + ";");
+			out.print(Fsfibu2StringTableMgr.getString(mgroup + ".columnValue") + ";");
+			out.print(Fsfibu2StringTableMgr.getString(mgroup + ".columnAccount") + ";");
+			out.print(Fsfibu2StringTableMgr.getString(mgroup + ".columnCategory") + ";");
+			out.print(Fsfibu2StringTableMgr.getString(mgroup + ".columnAccInfo") + ";");
+			out.print(Fsfibu2StringTableMgr.getString(mgroup + ".columnAddInfo"));
+			out.println();
+			
+			for(Object o : table.getJournalTableModel().getData()) {
+				if(o instanceof Entry) {
+					Entry e = (Entry)o;
+					out.print(e.getName() + ";");
+					out.print(Fsfibu2DateFormats.getEntryDateFormat().format(e.getDate().getTime()) + ";");
+					out.print(DefaultCurrencyFormat.getFormat(Fsfibu2Constants.defaultCurrency).format(e.getValue()) + ";");
+					out.print(e.getAccount().getName() + ";");
+					out.print(e.getCategory().toString() + ";");
+					StringBuilder accinf = new StringBuilder();
+						for(String id : e.getAccountInformation().keySet()) {
+							accinf.append(e.getAccount().getFieldNames().get(id) + ": " + e.getAccountInformation().get(id) + " ");
+						}
+					out.print(accinf + ";");
+					out.print(e.getAdditionalInformation());
+				}
+				if(o instanceof EntrySeparator) {
+					EntrySeparator sep = (EntrySeparator)o;
+					out.print(sep.getName()+ ";");
+					out.print(sep instanceof ReadingPoint ? Fsfibu2DateFormats.getEntryDateFormat().format(((ReadingPoint)sep).getReadingDay().getTime())  + ";": ";");
+					out.print(DefaultCurrencyFormat.getFormat(Fsfibu2Constants.defaultCurrency).format(
+							table.getJournalTableModel().getBilancialMapping(sep).getMostRecent().information().getOverallSum()));
+				}
+				out.println();
+			}
+			
+			out.close();
+		}
+	}
+	
 	// RESOURCEDEPENDENT METHODS ***********************
 	// *************************************************
 	
@@ -336,10 +416,11 @@ public class JournalTableBar extends JToolBar implements ResourceDependent {
 		tree.addPath(path + "new.png");
 		tree.addPath(path + "edit.png");
 		tree.addPath(path + "delete.png");
+		tree.addPath(path + "csv.png");
 		tree.addPath(path + "editsep.png");
 		tree.addPath(path + "year.png");
 		tree.addPath(path + "reading.png");
-		tree.addPath(path + ".print.png");
+		tree.addPath(path + "print.png");
 		return tree;
 	}
 

@@ -3,16 +3,22 @@ package fs.fibu2.module;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.text.NumberFormat;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -28,9 +34,11 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeSelectionModel;
 
+import org.apache.log4j.Logger;
 import org.dom4j.Document;
 
 import fs.fibu2.data.Fsfibu2Constants;
+import fs.fibu2.data.format.DefaultCurrencyFormat;
 import fs.fibu2.data.model.Journal;
 import fs.fibu2.filter.EntryFilterEditor;
 import fs.fibu2.filter.StackFilter;
@@ -41,6 +49,7 @@ import fs.fibu2.view.event.ProgressListener;
 import fs.fibu2.view.model.BilancialAccountModel;
 import fs.fibu2.view.model.BilancialTableModel;
 import fs.fibu2.view.model.BilancialTreeModel;
+import fs.fibu2.view.model.BilancialTreeModel.ExtendedCategory;
 import fs.fibu2.view.render.BilancialTableRenderer;
 import fs.fibu2.view.render.BilancialTree;
 import fs.fibu2.view.render.MoneyCellRenderer;
@@ -73,6 +82,7 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 	private JToolBar bar;
 	
 	private JButton printButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".print"));
+	private JButton csvButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".csvexport"));
 	private JToggleButton filterButton = new JToggleButton();
 	
 	private ImageIcon filterIcon = new ImageIcon(Fsfibu2DefaultReference.getDefaultReference().getFullResourcePath(this, "graphics/BilancialPane/filter.png"));
@@ -87,6 +97,8 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 	
 	private StackFilter filter;
 	private Journal associatedJournal;
+	
+	private Logger logger = Logger.getLogger(this.getClass());
 	
 	// LISTENERS **************************
 	// ************************************
@@ -146,6 +158,17 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 		public void taskFinished(SwingWorker<Object, Object> source) {
 			progressPanel.setVisible(false);
 			progressBar.setIndeterminate(false);
+		}
+	};
+	
+	private ActionListener csvListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			try {
+				exportToCsv();
+			} catch (IOException e1) {
+				logger.error(Fsfibu2StringTableMgr.getString(sgroup + ".csverror",e1.getMessage()));
+			}
 		}
 	};
 	
@@ -214,6 +237,9 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 			printButton.setEnabled(true);
 			printButton.addActionListener(printListener);
 			printButton.setIcon(printIcon);
+		csvButton.setToolTipText(Fsfibu2StringTableMgr.getString(sgroup + ".csvtooltip"));
+			csvButton.addActionListener(csvListener);
+			csvButton.setIcon(new ImageIcon(Fsfibu2DefaultReference.getDefaultReference().getFullResourcePath(this, "graphics/BilancialPane/csv.png")));
 		
 		
 		JPanel treePanel = new JPanel();
@@ -233,7 +259,10 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 		//Layout
 		//Toolbar
 		bar.setLayout(new BorderLayout());
-		bar.add(printButton, BorderLayout.WEST);
+			JPanel barPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+			barPanel.add(printButton);
+			barPanel.add(csvButton);
+		bar.add(barPanel, BorderLayout.WEST);
 		bar.add(progressPanel, BorderLayout.EAST);
 			
 			
@@ -268,7 +297,7 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 		GridBagConstraints gcBar = GUIToolbox.buildConstraints(0,0,1,1); gcBar.weightx = 100;
 		GridBagConstraints gcButton = GUIToolbox.buildConstraints(1, 0, 1, 1);
 		GridBagConstraints gcTree = GUIToolbox.buildConstraints(0, 1, 2, 1); gcTree.weightx = gcTree.weighty = 100;
-		GridBagConstraints gcAccount = GUIToolbox.buildConstraints(0, 2, 2, 1);
+		GridBagConstraints gcAccount = GUIToolbox.buildConstraints(0, 2, 2, 1); gcAccount.ipady = 25;
 		GridBagConstraints gcFilter = GUIToolbox.buildConstraints(2, 0, 1, 3);
 		gbl.setConstraints(bar, gcBar);
 		gbl.setConstraints(filterButton, gcButton);
@@ -301,6 +330,53 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 		return filter;
 	}
 	
+	/**
+	 * Opens up a file choosing dialog and saves the current table as a csv file
+	 * @throws IOException
+	 */
+	public void exportToCsv() throws IOException {
+		JFileChooser chooser = new JFileChooser();
+		int ans = chooser.showSaveDialog(this);
+		if(ans == JFileChooser.APPROVE_OPTION) {
+			PrintWriter out = new PrintWriter(new FileWriter(chooser.getSelectedFile().getAbsolutePath()));
+			
+			//Write column headers
+			String mgroup = "fs.fibu2.model.BilancialTableModel";
+			out.print(Fsfibu2StringTableMgr.getString("fs.fibu2.Entry.category") + ";");
+			out.print(Fsfibu2StringTableMgr.getString(mgroup + ".in") + ";");
+			out.print(Fsfibu2StringTableMgr.getString(mgroup + ".out") + ";");
+			out.println(Fsfibu2StringTableMgr.getString(mgroup + ".sum"));
+			
+			ExtendedCategory root = (ExtendedCategory) tree.getModel().getRoot();
+			printNodeAndSubNodes(root, out);
+			
+			out.close();
+		}
+	}
+	
+	/**
+	 * Prints the node itself and recursivela all its subnodes (if they are visible)
+	 */
+	private void printNodeAndSubNodes(ExtendedCategory node, PrintWriter out) {
+		String tail = tree.getModel().getMask(node);
+			if(tail == null) tail = node.category().tail;
+			if(tail == null) tail = Fsfibu2StringTableMgr.getString("fs.fibu2.view.BilancialTreeRenderer.root");
+		out.print(tail + ";");
+		float plus = node.isAdditional()? tree.getModel().getIndividualPlus(node.category()) : tree.getModel().getCategoryPlus(node.category());
+		float minus = node.isAdditional()? tree.getModel().getIndividualMinus(node.category()) : tree.getModel().getCategoryMinus(node.category());
+		float sum = node.isAdditional()? tree.getModel().getIndividualSum(node.category()) : tree.getModel().getCategorySum(node.category());
+		NumberFormat format = DefaultCurrencyFormat.getFormat(Fsfibu2Constants.defaultCurrency);
+		out.print(format.format(plus) + ";");
+		out.print(format.format(minus) + ";");
+		out.println(format.format(sum) );
+		if(tree.getModel().getChildCount(node) > 0) {
+			for(int i = 0; i < tree.getModel().getChildCount(node); i++) {
+				ExtendedCategory c = (ExtendedCategory)tree.getModel().getChild(node, i);
+				if(tree.getModel().isVisible(c)) printNodeAndSubNodes(c, out);
+			}
+		}
+	}
+	
 	// RESOURCEDEPENDENT ******************
 	// ************************************
 	
@@ -313,6 +389,8 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 	public Document getExpectedResourceStructure() {
 		XMLDirectoryTree tree = new XMLDirectoryTree();
 			tree.addPath("graphics/BilancialPane/filter.png");
+			tree.addPath("graphics/BilancialPane/print.png");
+			tree.addPath("graphics/BilancialPane/csv.png");
 		return tree;
 	}
 

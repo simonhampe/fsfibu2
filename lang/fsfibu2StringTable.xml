@@ -35,6 +35,9 @@
   <polyglotstring id="fs.fibu2.print.BilancialPrintDialog.format" group="fs.fibu2.print.BilancialPrintDialog">
     <variant lang="en">Format:</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.MainFrame.openedjournal" group="fs.fibu2.MainFrame">
+    <variant lang="en">Successfully opened journal '%s'</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.module.ExportModule.backuperror" group="fs.fibu2.module.ExportModule">
     <variant lang="en">Could not export to format %s: %s</variant>
   </polyglotstring>
@@ -53,11 +56,17 @@
   <polyglotstring id="fs.fibu2.filter.NameFilter.name" group="fs.fibu2.filter.NameFilter">
     <variant lang="en">Name filter</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.view.JournalTableBar.csvtooltip" group="fs.fibu2.view.JournalTableBar">
+    <variant lang="en">Exports the current table as a csv file</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.filter.StandardFilterComponent.mintooltip" group="fs.fibu2.filter.StandardFilterComponent">
     <variant lang="en">Empty content means: No lower bound</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.view.EntryDialog.wrongvalue" group="fs.fibu2.view.EntryDialog">
     <variant lang="en">This is not a valid value</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.view.JournalTableBar.exportcsv" group="fs.fibu2.view.JournalTableBar">
+    <variant lang="en">Export as .csv...</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.export.OldJournalExport.name" group="fs.fibu2.export.OldJournalExport">
     <variant lang="en">Fsfibu 1 format</variant>
@@ -311,6 +320,9 @@
   <polyglotstring id="fs.fibu2.view.BilancialPanel.overalltitle" group="fs.fibu2.view.BilancialPanel">
     <variant lang="en">Category / Overall bilancial</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.module.BilancialPane.csvtooltip" group="fs.fibu2.module.BilancialPane">
+    <variant lang="en">Exports the table to a csv file</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.module.ChartModule.tooltip" group="fs.fibu2.module.ChartModule">
     <variant lang="en">Displays bilancial charts for given filters</variant>
   </polyglotstring>
@@ -370,6 +382,9 @@
   </polyglotstring>
   <polyglotstring id="fs.fibu2.module.ExportModule.filename" group="fs.fibu2.module.ExportModule">
     <variant lang="en">File name:</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.view.JournalTableBar.csverror" group="fs.fibu2.view.JournalTableBar">
+    <variant lang="en">Could not export to csv file: %s</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.print.BilancialPageable.incaption" group="fs.fibu2.print.BilancialPageable">
     <variant lang="en">Earnings</variant>
@@ -460,6 +475,9 @@
   </polyglotstring>
   <polyglotstring id="fs.fibu2.view.EntryDialog.wrongaccinf" group="fs.fibu2.view.EntryDialog">
     <variant lang="en">One or more of the values below are invalid</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.module.BilancialPane.csverror" group="fs.fibu2.module.BilancialPane">
+    <variant lang="en">Could not export to csv file: %s</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.view.BilancialPanel.selectionrange" group="fs.fibu2.view.BilancialPanel">
     <variant lang="en">Bilancial of selected range</variant>
@@ -878,8 +896,14 @@
   <polyglotstring id="fs.fibu2.print.JournalPrintDialog.title" group="fs.fibu2.print.JournalPrintDialog">
     <variant lang="en">Title:</variant>
   </polyglotstring>
+  <polyglotstring id="fs.fibu2.module.BilancialPane.csvexport" group="fs.fibu2.module.BilancialPane">
+    <variant lang="en">Export to csv...</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2.init.generalprefs" group="fs.fibu2.init">
     <variant lang="en">Extracting general preferences...</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2.MainFrame.openednewjournal" group="fs.fibu2.MainFrame">
+    <variant lang="en">Successfully created new journal</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2.view.EntryDialog.previnvalid" group="fs.fibu2.view.EntryDialog">
     <variant lang="en">&lt;html&gt;&lt;i&gt;(invalid)&lt;/i&gt;&lt;/html&gt;</variant>

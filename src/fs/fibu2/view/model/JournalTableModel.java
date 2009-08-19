@@ -165,6 +165,13 @@ public class JournalTableModel implements TableModel, JournalListener, YearSepar
 	}
 	
 	/**
+	 * @return A vector consisting of all displayed data, i.e. Entries and EntrySeparators
+	 */
+	public Vector<Object> getData() {
+		return new Vector<Object>(displayedData);
+	}
+	
+	/**
 	 * @return The index of o in the visible model or -1 if it is not contained
 	 */
 	public int indexOf(Object o) {

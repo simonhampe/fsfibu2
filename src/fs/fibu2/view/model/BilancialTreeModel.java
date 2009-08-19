@@ -129,6 +129,7 @@ public class BilancialTreeModel implements TreeModel, JournalListener, ChangeLis
 				}
 			} catch (BackingStoreException e) {
 				//Just abort
+				e.printStackTrace();
 			}
 		}
 		
@@ -547,7 +548,7 @@ public class BilancialTreeModel implements TreeModel, JournalListener, ChangeLis
 			//Save mask status
 			Preferences maskNode = node;
 			for(ExtendedCategory ec : mask.keySet()) {
-				maskNode = node.node("masked");
+				maskNode = maskNode.node("masked");
 				Preferences categoryNode = maskNode.node("category");
 				ec.category().insertMyPreferences(categoryNode);
 				maskNode.put("additional",Boolean.toString(ec.isAdditional()));
