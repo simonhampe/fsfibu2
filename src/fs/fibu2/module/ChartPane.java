@@ -12,7 +12,6 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -36,7 +35,6 @@ import fs.fibu2.lang.Fsfibu2StringTableMgr;
 import fs.fibu2.resource.Fsfibu2DefaultReference;
 import fs.fibu2.view.event.ProgressListener;
 import fs.fibu2.view.model.JournalTimeSeriesCollection;
-import fs.fibu2.view.render.JournalTableBar;
 import fs.gui.GUIToolbox;
 import fs.xml.ResourceDependent;
 import fs.xml.ResourceReference;
@@ -53,6 +51,11 @@ public class ChartPane extends JPanel implements ResourceDependent {
 	// DATA ************************************
 	// *****************************************
 	
+	/**
+	 * compiler-generated serial version uid
+	 */
+	private static final long serialVersionUID = 814608917938426941L;
+	 
 	private JournalTimeSeriesCollection series;
 	private StackFilter filter;	
 	
@@ -63,6 +66,7 @@ public class ChartPane extends JPanel implements ResourceDependent {
 	
 	private JCheckBox displayButton = new JCheckBox(Fsfibu2StringTableMgr.getString(sgroup + ".display"));
 	private JSlider displaySlider = new JSlider(1,120,30);
+	private JLabel sliderIndicator = new JLabel();
 	
 	private JToggleButton filterButton = new JToggleButton();
 	
@@ -88,6 +92,7 @@ public class ChartPane extends JPanel implements ResourceDependent {
 		@Override
 		public void stateChanged(ChangeEvent e) {
 			series.setMovingAveragePeriod(displaySlider.getValue());
+			sliderIndicator.setText(Integer.toString(displaySlider.getValue()));
 		}
 	};
 	
@@ -133,7 +138,7 @@ public class ChartPane extends JPanel implements ResourceDependent {
 					averagePeriod = Integer.parseInt(node.node("config").get("period", "30"));
 				}
 				if(node.nodeExists("filter")) {
-					filter = (StackFilter)f.createMeFromPreferences(node.node("filter")); 
+					filter = (StackFilter)filter.createMeFromPreferences(node.node("filter")); 
 				}
 			} catch (BackingStoreException e) {
 				//ignore
@@ -151,6 +156,7 @@ public class ChartPane extends JPanel implements ResourceDependent {
 			barPanel.add(displayButton);
 			barPanel.add(sliderLabel);
 			barPanel.add(displaySlider);
+			barPanel.add(sliderIndicator);
 		chart = ChartFactory.createTimeSeriesChart(title == null? "" : title, Fsfibu2StringTableMgr.getString(sgroup + ".xaxis"), 
 					Fsfibu2StringTableMgr.getString(sgroup + ".yaxis"), series, true, true, false);
 		ChartPanel chartPane = new ChartPanel(chart);
@@ -167,8 +173,11 @@ public class ChartPane extends JPanel implements ResourceDependent {
 		progressPanel.add(progressBar);
 		series.addProgressListener(progressListener);
 		
-		displayButton.addItemListener(displayListener);
-		displaySlider.addChangeListener(periodListener);
+		displayButton.setSelected(displayAverage);
+			displayButton.addItemListener(displayListener);
+		displaySlider.setValue(averagePeriod);
+			displaySlider.addChangeListener(periodListener);
+		sliderIndicator.setText(Integer.toString(averagePeriod));
 		
 		//Layout
 		//Toolbar
@@ -181,14 +190,16 @@ public class ChartPane extends JPanel implements ResourceDependent {
 		setLayout(gbl);
 		
 		GridBagConstraints gcBar = GUIToolbox.buildConstraints(0, 0, 1, 1); gcBar.weightx = 100;
-		GridBagConstraints gcChart = GUIToolbox.buildConstraints(0, 1, 1, 1); gcChart.weighty = 100;
-		GridBagConstraints gcFilter = GUIToolbox.buildConstraints(1, 0, 1, 2); gcFilter.weighty = 100;
+		GridBagConstraints gcButton = GUIToolbox.buildConstraints(1, 0, 1, 1);
+		GridBagConstraints gcChart = GUIToolbox.buildConstraints(0, 1, 2, 1); gcChart.weighty = 100;
+		GridBagConstraints gcFilter = GUIToolbox.buildConstraints(2, 0, 1, 2); gcFilter.weighty = 100;
 		
 		gbl.setConstraints(bar, gcBar);
+		gbl.setConstraints(filterButton, gcButton);
 		gbl.setConstraints(chartPane, gcChart);
 		gbl.setConstraints(editor, gcFilter);
 		
-		add(bar); add(chartPane); add(editor);
+		add(bar); add(filterButton);add(chartPane); add(editor);
 		
 		
 	}
@@ -198,6 +209,14 @@ public class ChartPane extends JPanel implements ResourceDependent {
 	
 	public void insertPreferences(Preferences node) {
 		if(node != null) {
+			node.node("config").put("display", Boolean.toString(series.doesDisplayMovingAverage()));
+			node.node("config").put("period", Integer.toString(series.getMovingAveragePeriod()));
+			try {
+				if(node.nodeExists("filter")) node.node("filter").removeNode();
+				filter.insertMyPreferences(node);
+			} catch (BackingStoreException e) {
+				//Ignore
+			}
 			
 		}
 	}
@@ -207,6 +226,13 @@ public class ChartPane extends JPanel implements ResourceDependent {
 	 */
 	public void setTitle(String title) {
 		chart.setTitle(title == null? "" : title);
+	}
+	
+	/**
+	 * @return The stack filter used
+	 */
+	public StackFilter getFilter() {
+		return filter;
 	}
 	
 	// RESOURCEDEPENDENT ***********************

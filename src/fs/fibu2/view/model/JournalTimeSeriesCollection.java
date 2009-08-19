@@ -103,17 +103,17 @@ public class JournalTimeSeriesCollection extends TimeSeriesCollection implements
 			
 			for(Entry e : sortedSet) {
 				if(filter == null || filter.verifyEntry(e)) {
-					validEntryOccured = true;
 					//If the entry belongs to the same day, add its valus
 					if(comparator.compare(e.getDate(), currentDay) == 0) {
 						currentValue += e.getValue();
 					}
-					//Otherwise add a time series value
+					//Otherwise add a time series value (if this is NOT the first entry, which might occur when using  a filter)
 					else {
-						data.add(new Day(currentDay.getTime()), currentValue);
+						if(validEntryOccured)data.add(new Day(currentDay.getTime()), currentValue);
 						currentDay = e.getDate();
-						currentValue = e.getValue();
+						currentValue += e.getValue();						
 					}
+					validEntryOccured = true;
 				}
 			}
 			//A last chunk of entries is left after the last entry was processed - but only if any valid entry occured
@@ -167,6 +167,20 @@ public class JournalTimeSeriesCollection extends TimeSeriesCollection implements
 		if(displayAvg) removeSeries(averageData);
 		averageData = MovingAverage.createMovingAverage(entryData, Fsfibu2StringTableMgr.getString(sgroup + ".average",avgPeriod), avgPeriod, 0);
 		if(displayAvg) addSeries(averageData);
+	}
+	
+	/**
+	 * @return The period in days for the moving average
+	 */
+	public int getMovingAveragePeriod() {
+		return avgPeriod;
+	}
+	
+	/**
+	 * @return Whether a moving average is displayed
+	 */
+	public boolean doesDisplayMovingAverage() {
+		return displayAvg;
 	}
 	
 	// LISTENING ***********************************

@@ -247,6 +247,7 @@ public class MainFrame extends JFrame implements ResourceDependent {
 		} catch (Exception e) {
 			logger.warn(Fsfibu2StringTableMgr.getString(
 					"fs.fibu2.init.prefjournalserror", e.getMessage()));
+			e.printStackTrace();
 		}
 		updateTitleAndButtons();
 		

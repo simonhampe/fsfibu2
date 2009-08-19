@@ -11,6 +11,7 @@ import fs.fibu2.module.BilancialModule;
 import fs.fibu2.module.ExportModule;
 import fs.fibu2.module.FilterModule;
 import fs.fibu2.module.OverviewModule;
+import fs.fibu2.test.model.ChartModule;
 
 /**
  * This class handles loading of {@link JournalModule} objects by ID. It also supports dynamic loading of JournalModule classes.
@@ -34,6 +35,8 @@ public class JournalModuleLoader {
 			defaultModules.add("ff2module_filter");
 		setModule("ff2module_bilancial",BilancialModule.class);
 			defaultModules.add("ff2module_bilancial");
+		setModule("ff2module_chart", ChartModule.class);
+			defaultModules.add("ff2module_chart");
 		setModule("ff2module_export", ExportModule.class);
 			defaultModules.add("ff2module_export");
 	}
