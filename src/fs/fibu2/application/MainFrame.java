@@ -1,6 +1,7 @@
 package fs.fibu2.application;
 
 import java.awt.BorderLayout;
+import java.awt.Desktop;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -124,7 +125,18 @@ public class MainFrame extends JFrame implements ResourceDependent {
 		}
 	};
 	
-	//TODO: Write  help functionality
+	private ActionListener helpListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			try {
+				Desktop.getDesktop().open(new File("doc/manual.pdf"));
+			} catch (Exception e1) {
+				String msg = Fsfibu2StringTableMgr.getString(sgroup + ".helperror");
+				logger.error(msg);
+				JOptionPane.showMessageDialog(null,msg, Fsfibu2StringTableMgr.getString("fs.fibu2.global.error"),JOptionPane.ERROR_MESSAGE);
+			}
+		}
+	};
 	
 	private ActionListener optionListener = new ActionListener() {
 		@Override
@@ -288,6 +300,7 @@ public class MainFrame extends JFrame implements ResourceDependent {
 		optionButton.setIcon(new ImageIcon(ref.getFullResourcePath(this, path + "options.png")));
 			optionButton.addActionListener(optionListener);
 		helpButton.setIcon(new ImageIcon(ref.getFullResourcePath(this, path + "help.png")));
+			helpButton.addActionListener(helpListener);
 		exitButton.setIcon(new ImageIcon(ref.getFullResourcePath(this, path + "exit.png")));
 			exitButton.addActionListener(exitListener);
 			addWindowListener(new WindowAdapter() {
