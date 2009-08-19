@@ -222,7 +222,8 @@ public class MainFrame extends JFrame implements ResourceDependent {
 	public MainFrame() {
 		super();
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-
+		setIconImage(new ImageIcon(Fsfibu2DefaultReference.getDefaultReference().getFullResourcePath(this, "graphics/MainFrame/main.png")).getImage());
+		
 		// Create file list from preferences
 		try {
 			logger.info(Fsfibu2StringTableMgr.getString("fs.fibu2.init.generalprefs"));
@@ -627,6 +628,7 @@ public class MainFrame extends JFrame implements ResourceDependent {
 			tree.addPath(path + "export.png");
 			tree.addPath(path + "help.png");
 			tree.addPath(path + "exit.png");
+			tree.addPath(path + "main.png");
 		return tree;
 	}
 

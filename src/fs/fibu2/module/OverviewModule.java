@@ -46,6 +46,7 @@ import fs.fibu2.view.render.CategoryListRenderer;
 import fs.fibu2.view.render.JournalModule;
 import fs.fibu2.view.render.JournalTable;
 import fs.fibu2.view.render.JournalTableBar;
+import fs.fibu2.view.render.StartValueDialog;
 import fs.fibu2.view.render.YearListRenderer;
 import fs.gui.GUIToolbox;
 import fs.xml.ResourceDependent;
@@ -72,6 +73,8 @@ public class OverviewModule extends JPanel implements JournalModule, ResourceDep
 	
 	private final static String sgroup = "fs.fibu2.module.OverviewModule";
 	
+	private Journal associatedJournal;
+	
 	// COMPONENTS ************************
 	// ***********************************
 	
@@ -84,6 +87,7 @@ public class OverviewModule extends JPanel implements JournalModule, ResourceDep
 	private JComboBox categoryBox = new JComboBox();
 	private BilancialPanel bilancialPanel;
 	private JToggleButton nameButton = new JToggleButton(Fsfibu2StringTableMgr.getString(sgroup + ".namepanel"));
+	private JButton startValueButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".startvalues"));
 	private JPanel namePanel = new JPanel();
 		private JTextField nameField = new JTextField();
 		private JTextArea descriptionArea = new JTextArea();
@@ -142,6 +146,13 @@ public class OverviewModule extends JPanel implements JournalModule, ResourceDep
 		}
 	};
 	
+	private ActionListener startValueListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			StartValueDialog.getInstance(associatedJournal).setVisible(true);
+		}
+	};
+	
 	// CONSTRUCTOR ***********************
 	// ***********************************
 	
@@ -157,6 +168,8 @@ public class OverviewModule extends JPanel implements JournalModule, ResourceDep
 		super();
 		GridBagLayout gbl = new GridBagLayout();
 		setLayout(gbl);
+		
+		associatedJournal = j == null? new Journal() : j;
 		
 		table = new JournalTable(new JournalTableModel(j,null,true,true));
 		categoryBox.setModel(new CategoryListModel(j,true));
@@ -205,10 +218,12 @@ public class OverviewModule extends JPanel implements JournalModule, ResourceDep
 		comboBar.add(new JLabel(Fsfibu2StringTableMgr.getString(sgroup + ".categorylabel")));
 		comboBar.add(categoryBox);
 		comboBar.add(nameButton);
+		comboBar.add(startValueButton);
 		
 		nameButton.addActionListener(toggleNamePanelListener);
 		applyButton.addActionListener(applyListener);
 		restoreButton.addActionListener(restoreListener);
+		startValueButton.addActionListener(startValueListener);
 		
 		nameField.setText(table.getJournalTableModel().getAssociatedJournal().getName());
 		descriptionArea.setText(table.getJournalTableModel().getAssociatedJournal().getDescription());
