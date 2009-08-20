@@ -8,10 +8,13 @@ import java.util.Locale;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+
+import com.birosoft.liquid.LiquidLookAndFeel;
 
 import fs.fibu2.data.format.JournalExportLoader;
 import fs.fibu2.data.model.AccountLoader;
@@ -47,6 +50,15 @@ public class Fsfibu2 {
 	 */
 	public static void main(String[] args) {
 		Locale.setDefault(Locale.GERMANY);
+		try {
+			UIManager.setLookAndFeel("com.birosoft.liquid.LiquidLookAndFeel");
+			LiquidLookAndFeel.setStipples(false);
+			LiquidLookAndFeel.setShowTableGrids(true);
+			LiquidLookAndFeel.setToolbarFlattedButtons(false);
+			LiquidLookAndFeel.setDefaultRowBackgroundMode(false);
+		} catch (Exception e) {
+			logger.error("Could not set look and feel. Resetting to default");
+		}
 		if(global_instance == null) {
 			global_instance = new Fsfibu2();
 			global_instance.init();
