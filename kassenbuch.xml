@@ -4,63 +4,61 @@
   <name>My test journal</name>
   <description>This is a test journal, used for testing the newly created fsfibu2. It is filled with (partially) real values from our old Kassenbuch</description>
   <startvalues>
-    <cash_box>83.81</cash_box>
     <bank_account>8556.27</bank_account>
+    <cash_box>83.81</cash_box>
   </startvalues>
   <readingpoint>
     <name>test</name>
     <readingday>01.06.2008</readingday>
   </readingpoint>
   <readingpoint>
-    <name>Kassenprüfung</name>
-    <readingday>03.04.2008</readingday>
-  </readingpoint>
-  <readingpoint>
     <name>sebb</name>
     <readingday>23.08.2008</readingday>
   </readingpoint>
+  <readingpoint>
+    <name>Kassenprüfung</name>
+    <readingday>03.04.2008</readingday>
+  </readingpoint>
   <entry>
-    <name>T-Shirts</name>
-    <value>130.0</value>
+    <name>Getränkeeinnahmen</name>
+    <value>50.0</value>
     <currency>EUR</currency>
-    <date>11.09.2008</date>
+    <date>28.10.2008</date>
     <category>
-      <tail>Fachschaft</tail>
-      <tail>T-Shirts</tail>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Einnahmen S/G</tail>
     </category>
     <account>cash_box</account>
     <accountinformation/>
     <additionalinformation></additionalinformation>
   </entry>
   <entry>
-    <name>Handgeld Mathefete</name>
-    <value>-500.0</value>
+    <name>MiB</name>
+    <value>-27.06</value>
     <currency>EUR</currency>
-    <date>05.06.2008</date>
+    <date>26.11.2008</date>
     <category>
       <tail>Veranstaltungen</tail>
-      <tail>Mathefete 2008</tail>
+      <tail>MiB</tail>
     </category>
-    <account>bank_account</account>
+    <account>cash_box</account>
     <accountinformation>
-      <statement>10</statement>
-      <invoice>F 44</invoice>
+      <invoice>F 59</invoice>
     </accountinformation>
     <additionalinformation></additionalinformation>
   </entry>
   <entry>
-    <name>Getränkerechnung</name>
-    <value>-155.9</value>
+    <name>Rückgeld E-Wochen WS 08/09</name>
+    <value>185.95</value>
     <currency>EUR</currency>
-    <date>24.06.2008</date>
+    <date>11.11.2008</date>
     <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Getränke</tail>
+      <tail>Veranstaltungen</tail>
+      <tail>E-Wochen WS 08 / 09</tail>
     </category>
-    <account>bank_account</account>
+    <account>cash_box</account>
     <accountinformation>
-      <statement>12</statement>
-      <invoice>F 36</invoice>
+      <invoice>F 56</invoice>
     </accountinformation>
     <additionalinformation></additionalinformation>
   </entry>
@@ -80,278 +78,10 @@
     <additionalinformation></additionalinformation>
   </entry>
   <entry>
-    <name>Getränkeeinnahmen</name>
-    <value>237.5</value>
+    <name>Abrechnung Wfeier</name>
+    <value>208.09</value>
     <currency>EUR</currency>
-    <date>20.01.2009</date>
-    <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Einnahmen S/G</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>2</statement>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Getränkerechnung</name>
-    <value>-142.87</value>
-    <currency>EUR</currency>
-    <date>27.05.2008</date>
-    <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Getränke</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>9</statement>
-      <invoice>F 22</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Umbuchung</name>
-    <value>-50.0</value>
-    <currency>EUR</currency>
-    <date>02.10.2008</date>
-    <category>
-      <tail>Fachschaft</tail>
-      <tail>Umbuchung</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation/>
-    <additionalinformation>Es wurden 50 € Hartgeld aus der weißen Kasse auf der Bank eingezahlt. Die Umbuchung taucht auf Kontoauszug Nr. 16 unter den 326,50 € Barumsatz (Rest: 276,50 € Getränkeeinnahmen) auf.</additionalinformation>
-  </entry>
-  <entry>
-    <name>Lampenschirme</name>
-    <value>-19.0</value>
-    <currency>EUR</currency>
-    <date>16.04.2008</date>
-    <category>
-      <tail>Fachschaft</tail>
-      <tail>Lampenschirme</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation>
-      <invoice>F 11</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Thermobindung</name>
-    <value>10.0</value>
-    <currency>EUR</currency>
-    <date>18.01.2008</date>
-    <category>
-      <tail>Fachschaft</tail>
-      <tail>Thermobindung</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation/>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Getränkerechnung</name>
-    <value>-232.52</value>
-    <currency>EUR</currency>
-    <date>03.11.2008</date>
-    <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Getränke</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>20</statement>
-      <invoice>F 55</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Umbuchung</name>
-    <value>-530.0</value>
-    <currency>EUR</currency>
-    <date>10.06.2008</date>
-    <category>
-      <tail>Fachschaft</tail>
-      <tail>Umbuchung</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>10</statement>
-    </accountinformation>
-    <additionalinformation>Entspricht der Kasseneinzahlung vom selben Tag mit dem gleichen Betrag</additionalinformation>
-  </entry>
-  <entry>
-    <name>E-Wochen WS07/08 AStA Rückerstattung</name>
-    <value>302.65</value>
-    <currency>EUR</currency>
-    <date>17.01.2008</date>
-    <category>
-      <tail>Veranstaltungen</tail>
-      <tail>E-Wochen WS07/08</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>2</statement>
-      <invoice>E 80</invoice>
-    </accountinformation>
-    <additionalinformation>Auf dem Kontoauszug ist die Überweisung nicht explizit aufgeführt, da das Geld sowohl für den Putztag als auch für die E-Wochen fälschlicherweise an die Maschbauer überwiesen wurden. Die haben dann beide Beträge zusammen überwiesen.</additionalinformation>
-  </entry>
-  <entry>
-    <name>Getränkeeinnahmen</name>
-    <value>207.0</value>
-    <currency>EUR</currency>
-    <date>25.03.2008</date>
-    <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Einnahmen S/G</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>5</statement>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Süßigkeiten</name>
-    <value>-231.01</value>
-    <currency>EUR</currency>
-    <date>02.10.2008</date>
-    <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Süßigkeiten</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation>
-      <invoice>F 50</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Ringvorlesung</name>
-    <value>-11.98</value>
-    <currency>EUR</currency>
-    <date>08.05.2008</date>
-    <category>
-      <tail>Veranstaltungen</tail>
-      <tail>Ringvorlesung</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation>
-      <invoice>F 17</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>FB-Grillen Einnahmen</name>
-    <value>263.84</value>
-    <currency>EUR</currency>
-    <date>11.07.2008</date>
-    <category>
-      <tail>Veranstaltungen</tail>
-      <tail>FB-Grillen 2008</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation/>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>E-Wochen SS 08 Handgeld</name>
-    <value>-400.0</value>
-    <currency>EUR</currency>
-    <date>16.04.2008</date>
-    <category>
-      <tail>Veranstaltungen</tail>
-      <tail>E-Wochen SS08</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>7</statement>
-      <invoice>F 21</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Putzzeug</name>
-    <value>-8.56</value>
-    <currency>EUR</currency>
-    <date>08.05.2008</date>
-    <category>
-      <tail>Fachschaft</tail>
-      <tail>Putzzeug</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation>
-      <invoice>F 18</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Lehramtlerkaffee</name>
-    <value>-13.83</value>
-    <currency>EUR</currency>
-    <date>13.06.2008</date>
-    <category>
-      <tail>Veranstaltungen</tail>
-      <tail>Lehramtlerkaffee</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation>
-      <invoice>F 30</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>MiB</name>
-    <value>-12.98</value>
-    <currency>EUR</currency>
-    <date>29.04.2008</date>
-    <category>
-      <tail>Veranstaltungen</tail>
-      <tail>MiB</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation>
-      <invoice>F 15</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Erstattung AAA Weihnachtsfeier 08</name>
-    <value>183.86</value>
-    <currency>EUR</currency>
-    <date>08.01.2009</date>
-    <category>
-      <tail>Veranstaltungen</tail>
-      <tail>Weihnachtsfeier 2008</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>1</statement>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Getränkeeinnahmen</name>
-    <value>612.5</value>
-    <currency>EUR</currency>
-    <date>22.08.2008</date>
-    <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Einnahmen S/G</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>14</statement>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Handgeld Weihnachtsfeier 2008</name>
-    <value>-350.0</value>
-    <currency>EUR</currency>
-    <date>01.12.2008</date>
+    <date>30.01.2009</date>
     <category>
       <tail>Veranstaltungen</tail>
       <tail>Weihnachtsfeier 2008</tail>
@@ -363,44 +93,63 @@
     <additionalinformation></additionalinformation>
   </entry>
   <entry>
-    <name>Sofakauf 2 für den KOMraum</name>
-    <value>-8.1</value>
+    <name>Süßigkeiten</name>
+    <value>-274.62</value>
     <currency>EUR</currency>
-    <date>03.12.2008</date>
+    <date>27.01.2009</date>
     <category>
-      <tail>Fachschaft</tail>
-      <tail>KOM-Raum</tail>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Süßigkeiten</tail>
     </category>
     <account>cash_box</account>
     <accountinformation>
-      <invoice>F 61</invoice>
+      <invoice>G3</invoice>
     </accountinformation>
     <additionalinformation></additionalinformation>
   </entry>
   <entry>
-    <name>Thermobindung</name>
-    <value>33.0</value>
+    <name>Test</name>
+    <value>-53.0</value>
     <currency>EUR</currency>
-    <date>13.06.2008</date>
+    <date>01.01.2009</date>
     <category>
       <tail>Fachschaft</tail>
-      <tail>Thermobindung</tail>
+      <tail>Frauennotfallkoffer</tail>
     </category>
     <account>cash_box</account>
-    <accountinformation/>
+    <accountinformation>
+      <invoice>F 3</invoice>
+    </accountinformation>
     <additionalinformation></additionalinformation>
   </entry>
   <entry>
     <name>Getränkeeinnahmen</name>
-    <value>100.0</value>
+    <value>344.0</value>
     <currency>EUR</currency>
-    <date>12.11.2008</date>
+    <date>22.10.2008</date>
     <category>
       <tail>Süßigkeiten / Getränke</tail>
       <tail>Einnahmen S/G</tail>
     </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>17</statement>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Süßigkeiten</name>
+    <value>-174.98</value>
+    <currency>EUR</currency>
+    <date>27.02.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Süßigkeiten</tail>
+    </category>
     <account>cash_box</account>
-    <accountinformation/>
+    <accountinformation>
+      <invoice>F 6</invoice>
+    </accountinformation>
     <additionalinformation></additionalinformation>
   </entry>
   <entry>
@@ -420,316 +169,48 @@
     <additionalinformation></additionalinformation>
   </entry>
   <entry>
-    <name>Zinsen</name>
-    <value>21.45</value>
+    <name>Pflaster für FNK</name>
+    <value>-6.9</value>
     <currency>EUR</currency>
-    <date>03.04.2008</date>
+    <date>23.07.2008</date>
     <category>
       <tail>Fachschaft</tail>
-      <tail>Zinsen</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>6</statement>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Getränkeeinnahmen</name>
-    <value>380.0</value>
-    <currency>EUR</currency>
-    <date>07.05.2008</date>
-    <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Einnahmen S/G</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation/>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Getränkeeinnahmen</name>
-    <value>145.0</value>
-    <currency>EUR</currency>
-    <date>08.01.2009</date>
-    <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Einnahmen S/G</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation/>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Süßigkeiten</name>
-    <value>-263.0</value>
-    <currency>EUR</currency>
-    <date>28.10.2008</date>
-    <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Süßigkeiten</tail>
+      <tail>Frauennotfallkoffer</tail>
     </category>
     <account>cash_box</account>
     <accountinformation>
-      <invoice>F 52</invoice>
+      <invoice>F 41</invoice>
     </accountinformation>
-    <additionalinformation></additionalinformation>
+    <additionalinformation>Die Rechnung lautet auf 12.90, da aber nur 6.90 beantragt wurden (die restlichen 6 Euro wurden aus dem FNK bezahlt), lautet der Betrag entsprechend</additionalinformation>
   </entry>
   <entry>
-    <name>Sofakauf 1 für den KOMraum</name>
-    <value>-15.5</value>
-    <currency>EUR</currency>
-    <date>02.12.2008</date>
-    <category>
-      <tail>Fachschaft</tail>
-      <tail>KOM-Raum</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>23</statement>
-      <invoice>F 60</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Umbuchung</name>
-    <value>530.0</value>
-    <currency>EUR</currency>
-    <date>10.06.2008</date>
-    <category>
-      <tail>Fachschaft</tail>
-      <tail>Umbuchung</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation/>
-    <additionalinformation>Entspricht der Abhebung vom selben Tag mit dem gleichen Betrag</additionalinformation>
-  </entry>
-  <entry>
-    <name>Helferfete 2008</name>
-    <value>-160.9</value>
-    <currency>EUR</currency>
-    <date>24.07.2008</date>
-    <category>
-      <tail>Veranstaltungen</tail>
-      <tail>Mathefete 2008</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation>
-      <invoice>F 43</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>FB-Grillen Platzreservierung</name>
-    <value>-35.0</value>
-    <currency>EUR</currency>
-    <date>31.03.2008</date>
-    <category>
-      <tail>Veranstaltungen</tail>
-      <tail>FB-Grillen 2008</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>6</statement>
-      <invoice>F 8</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Zinsen</name>
-    <value>20.86</value>
-    <currency>EUR</currency>
-    <date>01.10.2008</date>
-    <category>
-      <tail>Fachschaft</tail>
-      <tail>Zinsen</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>16</statement>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Putzaktion AStA Rückerstattung</name>
-    <value>20.69</value>
-    <currency>EUR</currency>
-    <date>17.01.2008</date>
-    <category>
-      <tail>Fachschaft</tail>
-      <tail>Putzaktion</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>2</statement>
-      <invoice>E 80</invoice>
-    </accountinformation>
-    <additionalinformation>Auf dem Kontoauszug ist die Überweisung nicht explizit aufgeführt, da das Geld sowohl für den Putztag als auch für die E-Wochen fälschlicherweise an die Maschbauer überwiesen wurden. Die haben dann beide Beträge zusammen überwiesen.</additionalinformation>
-  </entry>
-  <entry>
-    <name>Süßigkeiten</name>
-    <value>-43.75</value>
-    <currency>EUR</currency>
-    <date>27.01.2009</date>
-    <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Süßigkeiten</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation>
-      <invoice>G4</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Getränkeeinnahmen</name>
-    <value>394.5</value>
-    <currency>EUR</currency>
-    <date>03.07.2008</date>
-    <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Einnahmen S/G</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>13</statement>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>MiB</name>
-    <value>-27.06</value>
-    <currency>EUR</currency>
-    <date>26.11.2008</date>
-    <category>
-      <tail>Veranstaltungen</tail>
-      <tail>MiB</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation>
-      <invoice>F 59</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Getränkerechnung</name>
-    <value>-340.68</value>
+    <name>Mathefete 2008 (Getränke)</name>
+    <value>-435.42</value>
     <currency>EUR</currency>
     <date>07.07.2008</date>
     <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Getränke</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>14</statement>
-      <invoice>F 37</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Mathefete 2008 (Sicherheitsdienst)</name>
-    <value>-338.02</value>
-    <currency>EUR</currency>
-    <date>01.08.2008</date>
-    <category>
       <tail>Veranstaltungen</tail>
       <tail>Mathefete 2008</tail>
     </category>
     <account>bank_account</account>
     <accountinformation>
       <statement>14</statement>
-      <invoice>F44.27</invoice>
+      <invoice>F44.24</invoice>
     </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Getränkerechnung</name>
-    <value>-346.88</value>
-    <currency>EUR</currency>
-    <date>29.04.2008</date>
-    <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Getränke</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>8</statement>
-      <invoice>F 13</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Getränkeeinnahmen</name>
-    <value>276.5</value>
-    <currency>EUR</currency>
-    <date>02.10.2008</date>
-    <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Einnahmen S/G</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>16</statement>
-    </accountinformation>
-    <additionalinformation>Die Getränkeeinnahmen tauchen auf Kontoauszug Nr. 16 unter den 326,50 € Barumsatz (Rest: Umbuchung) auf.</additionalinformation>
-  </entry>
-  <entry>
-    <name>Getränkeeinnahmen</name>
-    <value>200.0</value>
-    <currency>EUR</currency>
-    <date>21.11.2008</date>
-    <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Einnahmen S/G</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation/>
     <additionalinformation></additionalinformation>
   </entry>
   <entry>
     <name>Zinsen</name>
-    <value>20.09</value>
+    <value>19.57</value>
     <currency>EUR</currency>
-    <date>03.07.2008</date>
+    <date>30.12.2008</date>
     <category>
       <tail>Fachschaft</tail>
       <tail>Zinsen</tail>
     </category>
     <account>bank_account</account>
     <accountinformation>
-      <statement>13</statement>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>MiB Geschenk f. den Dozenten</name>
-    <value>-10.25</value>
-    <currency>EUR</currency>
-    <date>06.05.2008</date>
-    <category>
-      <tail>Veranstaltungen</tail>
-      <tail>MiB</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation>
-      <invoice>F 16</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>ZEIT-Abo</name>
-    <value>-103.09</value>
-    <currency>EUR</currency>
-    <date>29.10.2008</date>
-    <category>
-      <tail>Fachschaft</tail>
-      <tail>ZEIT-Abo</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>19</statement>
-      <invoice>F 53</invoice>
+      <statement>24</statement>
     </accountinformation>
     <additionalinformation></additionalinformation>
   </entry>
@@ -750,121 +231,32 @@
     <additionalinformation></additionalinformation>
   </entry>
   <entry>
-    <name>Wechselgeld und Einnahmen Mathefete</name>
-    <value>4415.0</value>
+    <name>Umbuchung</name>
+    <value>-250.0</value>
     <currency>EUR</currency>
-    <date>20.06.2008</date>
-    <category>
-      <tail>Veranstaltungen</tail>
-      <tail>Mathefete 2008</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>11</statement>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>AStA- Zuweisung WS0809</name>
-    <value>500.0</value>
-    <currency>EUR</currency>
-    <date>16.12.2008</date>
+    <date>27.01.2009</date>
     <category>
       <tail>Fachschaft</tail>
-      <tail>AStA- Zuweisung</tail>
+      <tail>Umbuchung</tail>
     </category>
     <account>bank_account</account>
     <accountinformation>
-      <statement>24</statement>
+      <statement>3</statement>
     </accountinformation>
     <additionalinformation></additionalinformation>
   </entry>
   <entry>
-    <name>Wechselgeld Mathefete</name>
-    <value>-1500.0</value>
+    <name>Umbuchung</name>
+    <value>530.0</value>
     <currency>EUR</currency>
-    <date>19.06.2008</date>
-    <category>
-      <tail>Veranstaltungen</tail>
-      <tail>Mathefete 2008</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>10</statement>
-      <invoice>F 44</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Einnahmen Mathefete / Kleingeld</name>
-    <value>84.66</value>
-    <currency>EUR</currency>
-    <date>20.06.2008</date>
-    <category>
-      <tail>Veranstaltungen</tail>
-      <tail>Mathefete 2008</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation/>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Getränkeeinnahmen</name>
-    <value>200.0</value>
-    <currency>EUR</currency>
-    <date>04.02.2008</date>
-    <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Einnahmen S/G</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation/>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>E-Wochen WS 08/09 AStA Rückerstattung</name>
-    <value>314.5</value>
-    <currency>EUR</currency>
-    <date>18.11.2008</date>
-    <category>
-      <tail>Veranstaltungen</tail>
-      <tail>E-Wochen WS 08 / 09</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>22</statement>
-      <invoice>F 56</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Mathefete 2008 (Fleisch)</name>
-    <value>-423.69</value>
-    <currency>EUR</currency>
-    <date>07.07.2008</date>
-    <category>
-      <tail>Veranstaltungen</tail>
-      <tail>Mathefete 2008</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>14</statement>
-      <invoice>F44.23</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Thermobindungen</name>
-    <value>20.0</value>
-    <currency>EUR</currency>
-    <date>20.01.2009</date>
+    <date>10.06.2008</date>
     <category>
       <tail>Fachschaft</tail>
-      <tail>Thermobindung</tail>
+      <tail>Umbuchung</tail>
     </category>
     <account>cash_box</account>
     <accountinformation/>
-    <additionalinformation></additionalinformation>
+    <additionalinformation>Entspricht der Abhebung vom selben Tag mit dem gleichen Betrag</additionalinformation>
   </entry>
   <entry>
     <name>Thermobindemappen</name>
@@ -884,176 +276,9 @@
   </entry>
   <entry>
     <name>Getränkeeinnahmen</name>
-    <value>515.5</value>
+    <value>60.0</value>
     <currency>EUR</currency>
-    <date>19.06.2008</date>
-    <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Einnahmen S/G</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>10</statement>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Sofakauf 3 für den KOM-Raum</name>
-    <value>-1.5</value>
-    <currency>EUR</currency>
-    <date>08.12.2008</date>
-    <category>
-      <tail>Fachschaft</tail>
-      <tail>KOM-Raum</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation>
-      <invoice>F 62</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>T-Shirts Tag der Mathematik</name>
-    <value>609.0</value>
-    <currency>EUR</currency>
-    <date>04.11.2008</date>
-    <category>
-      <tail>Fachschaft</tail>
-      <tail>T-Shirts</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>20</statement>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Tabasco Spieleabend</name>
-    <value>-11.49</value>
-    <currency>EUR</currency>
-    <date>16.01.2009</date>
-    <category>
-      <tail>Veranstaltungen</tail>
-      <tail>Spieleabend</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation>
-      <invoice>G 1</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Getränkeeinnahmen</name>
-    <value>207.0</value>
-    <currency>EUR</currency>
-    <date>23.05.2008</date>
-    <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Einnahmen S/G</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>8</statement>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Ringvorlesung</name>
-    <value>-15.0</value>
-    <currency>EUR</currency>
-    <date>10.07.2008</date>
-    <category>
-      <tail>Veranstaltungen</tail>
-      <tail>Ringvorlesung</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation>
-      <invoice>F 39</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>MiB</name>
-    <value>-24.54</value>
-    <currency>EUR</currency>
-    <date>15.01.2008</date>
-    <category>
-      <tail>Veranstaltungen</tail>
-      <tail>MiB</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation>
-      <invoice>F 1</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Getränkerechnung</name>
-    <value>-295.46</value>
-    <currency>EUR</currency>
-    <date>19.11.2008</date>
-    <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Getränke</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>22</statement>
-      <invoice>F 57</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Hangschloss</name>
-    <value>-3.85</value>
-    <currency>EUR</currency>
-    <date>16.09.2008</date>
-    <category>
-      <tail>Fachschaft</tail>
-      <tail>KOM-Raum</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation>
-      <invoice>F 49</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Getränkerechnung</name>
-    <value>-251.1</value>
-    <currency>EUR</currency>
-    <date>25.03.2008</date>
-    <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Getränke</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>5</statement>
-      <invoice>F 7</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Abrechnung Wfeier</name>
-    <value>208.09</value>
-    <currency>EUR</currency>
-    <date>30.01.2009</date>
-    <category>
-      <tail>Veranstaltungen</tail>
-      <tail>Weihnachtsfeier 2008</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation>
-      <invoice>G 5</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Getränkeeinnahmen</name>
-    <value>350.0</value>
-    <currency>EUR</currency>
-    <date>08.04.2008</date>
+    <date>16.12.2008</date>
     <category>
       <tail>Süßigkeiten / Getränke</tail>
       <tail>Einnahmen S/G</tail>
@@ -1064,89 +289,16 @@
   </entry>
   <entry>
     <name>Getränkeeinnahmen</name>
-    <value>230.0</value>
-    <currency>EUR</currency>
-    <date>18.01.2008</date>
-    <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Einnahmen S/G</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation/>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Umbuchung</name>
     <value>150.0</value>
-    <currency>EUR</currency>
-    <date>02.10.2008</date>
-    <category>
-      <tail>Fachschaft</tail>
-      <tail>Umbuchung</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation/>
-    <additionalinformation>Umbuchung von 150 € von Bank in Kasse. Die Umbuchung taucht auf Kontoauszug Nr. 16 unter den 650 € Barauszahlung (Rest: 500 € E-Wochen WS 08/09 Handgeld) auf.</additionalinformation>
-  </entry>
-  <entry>
-    <name>Weihnachtsfeier (Erstattung AAA)</name>
-    <value>209.77</value>
     <currency>EUR</currency>
     <date>07.02.2008</date>
     <category>
-      <tail>Veranstaltungen</tail>
-      <tail>Weihnachtsfeier 2007</tail>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Einnahmen S/G</tail>
     </category>
     <account>bank_account</account>
     <accountinformation>
       <statement>4</statement>
-      <invoice>E 102</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Rückgeld E-Wochen WS 08/09</name>
-    <value>185.95</value>
-    <currency>EUR</currency>
-    <date>11.11.2008</date>
-    <category>
-      <tail>Veranstaltungen</tail>
-      <tail>E-Wochen WS 08 / 09</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation>
-      <invoice>F 56</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Kramladengebühr Weihnachtsfeier 2008</name>
-    <value>-10.01</value>
-    <currency>EUR</currency>
-    <date>08.01.2009</date>
-    <category>
-      <tail>Veranstaltungen</tail>
-      <tail>Weihnachtsfeier 2008</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>2</statement>
-      <invoice>G 5</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Süßigkeiten</name>
-    <value>-214.33</value>
-    <currency>EUR</currency>
-    <date>02.09.2008</date>
-    <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Süßigkeiten</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation>
-      <invoice>F 47</invoice>
     </accountinformation>
     <additionalinformation></additionalinformation>
   </entry>
@@ -1166,261 +318,17 @@
     <additionalinformation></additionalinformation>
   </entry>
   <entry>
-    <name>Schließzylinder AStA Rückerstattung</name>
-    <value>193.7</value>
-    <currency>EUR</currency>
-    <date>29.10.2008</date>
-    <category>
-      <tail>Fachschaft</tail>
-      <tail>Schließzylinder</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>18</statement>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>T-Shirts</name>
-    <value>57.0</value>
-    <currency>EUR</currency>
-    <date>10.06.2008</date>
-    <category>
-      <tail>Fachschaft</tail>
-      <tail>T-Shirts</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation/>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Umbuchung</name>
-    <value>-250.0</value>
-    <currency>EUR</currency>
-    <date>27.01.2009</date>
-    <category>
-      <tail>Fachschaft</tail>
-      <tail>Umbuchung</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>3</statement>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Zinsen</name>
-    <value>19.57</value>
-    <currency>EUR</currency>
-    <date>30.12.2008</date>
-    <category>
-      <tail>Fachschaft</tail>
-      <tail>Zinsen</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>24</statement>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
     <name>Süßigkeiten</name>
-    <value>-302.09</value>
+    <value>-222.56</value>
     <currency>EUR</currency>
-    <date>21.11.2008</date>
+    <date>18.01.2008</date>
     <category>
       <tail>Süßigkeiten / Getränke</tail>
       <tail>Süßigkeiten</tail>
     </category>
     <account>cash_box</account>
     <accountinformation>
-      <invoice>F 58</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>AStA Rückerstattung Klausurtagung</name>
-    <value>115.23</value>
-    <currency>EUR</currency>
-    <date>03.07.2008</date>
-    <category>
-      <tail>Fachschaft</tail>
-      <tail>Klausurtagung</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>13</statement>
-      <invoice>F 25</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>T-Shirts</name>
-    <value>-386.45</value>
-    <currency>EUR</currency>
-    <date>08.09.2008</date>
-    <category>
-      <tail>Fachschaft</tail>
-      <tail>T-Shirts</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>15</statement>
-      <invoice>F 46</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>E-Wochen WS 08/09 Handgeld</name>
-    <value>-500.0</value>
-    <currency>EUR</currency>
-    <date>02.10.2008</date>
-    <category>
-      <tail>Veranstaltungen</tail>
-      <tail>E-Wochen WS 08 / 09</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>16</statement>
-      <invoice>F 56</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Getränkeeinnahmen</name>
-    <value>210.0</value>
-    <currency>EUR</currency>
-    <date>01.12.2008</date>
-    <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Einnahmen S/G</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation/>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Ringvorlesung</name>
-    <value>-21.43</value>
-    <currency>EUR</currency>
-    <date>29.04.2008</date>
-    <category>
-      <tail>Veranstaltungen</tail>
-      <tail>Ringvorlesung</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation>
-      <invoice>F 12</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Mathefete 2008 (Stadt)</name>
-    <value>-50.0</value>
-    <currency>EUR</currency>
-    <date>07.07.2008</date>
-    <category>
-      <tail>Veranstaltungen</tail>
-      <tail>Mathefete 2008</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>14</statement>
-      <invoice>F44.25</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Getränkeeinnahmen</name>
-    <value>296.0</value>
-    <currency>EUR</currency>
-    <date>30.01.2009</date>
-    <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Einnahmen S/G</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>4</statement>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Getränkerechnung</name>
-    <value>-306.54</value>
-    <currency>EUR</currency>
-    <date>10.12.2008</date>
-    <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Getränke</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>23</statement>
-      <invoice>F 63</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Getränkerechnung</name>
-    <value>-174.28</value>
-    <currency>EUR</currency>
-    <date>31.07.2008</date>
-    <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Getränke</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>14</statement>
-      <invoice>F45</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Süßigkeiten</name>
-    <value>-164.46</value>
-    <currency>EUR</currency>
-    <date>04.06.2008</date>
-    <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Süßigkeiten</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation>
-      <invoice>F 26</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Mathefete 2008 (Wein)</name>
-    <value>-99.5</value>
-    <currency>EUR</currency>
-    <date>09.07.2008</date>
-    <category>
-      <tail>Veranstaltungen</tail>
-      <tail>Mathefete 2008</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>14</statement>
-      <invoice>F44.26</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Getränkerechnung</name>
-    <value>-292.86</value>
-    <currency>EUR</currency>
-    <date>09.06.2008</date>
-    <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Getränke</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>10</statement>
-      <invoice>F 28</invoice>
+      <invoice>F 3</invoice>
     </accountinformation>
     <additionalinformation></additionalinformation>
   </entry>
@@ -1441,77 +349,47 @@
     <additionalinformation></additionalinformation>
   </entry>
   <entry>
-    <name>Getränkerechnung</name>
-    <value>-333.52</value>
+    <name>E-Wochen WS 08/09 AStA Rückerstattung</name>
+    <value>314.5</value>
     <currency>EUR</currency>
-    <date>13.10.2008</date>
+    <date>18.11.2008</date>
     <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Getränke</tail>
+      <tail>Veranstaltungen</tail>
+      <tail>E-Wochen WS 08 / 09</tail>
     </category>
     <account>bank_account</account>
     <accountinformation>
-      <statement>17</statement>
-      <invoice>F 51</invoice>
+      <statement>22</statement>
+      <invoice>F 56</invoice>
     </accountinformation>
     <additionalinformation></additionalinformation>
   </entry>
   <entry>
-    <name>Getränkeeinnahmen</name>
-    <value>100.0</value>
+    <name>Umbuchung</name>
+    <value>250.0</value>
     <currency>EUR</currency>
-    <date>30.09.2008</date>
+    <date>27.01.2009</date>
     <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Einnahmen S/G</tail>
+      <tail>Fachschaft</tail>
+      <tail>Umbuchung</tail>
     </category>
     <account>cash_box</account>
     <accountinformation/>
     <additionalinformation></additionalinformation>
   </entry>
   <entry>
-    <name>Getränkerechnung</name>
-    <value>-401.1</value>
+    <name>Mathefete 2008 (Fleisch)</name>
+    <value>-423.69</value>
     <currency>EUR</currency>
-    <date>05.09.2008</date>
+    <date>07.07.2008</date>
     <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Getränke</tail>
+      <tail>Veranstaltungen</tail>
+      <tail>Mathefete 2008</tail>
     </category>
     <account>bank_account</account>
     <accountinformation>
-      <statement>15</statement>
-      <invoice>F 48</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Klausurtagung</name>
-    <value>-115.23</value>
-    <currency>EUR</currency>
-    <date>02.06.2008</date>
-    <category>
-      <tail>Fachschaft</tail>
-      <tail>Klausurtagung</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation>
-      <invoice>F 25</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Süßigkeiten</name>
-    <value>-195.81</value>
-    <currency>EUR</currency>
-    <date>23.07.2008</date>
-    <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Süßigkeiten</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation>
-      <invoice>F 42</invoice>
+      <statement>14</statement>
+      <invoice>F44.23</invoice>
     </accountinformation>
     <additionalinformation></additionalinformation>
   </entry>
@@ -1531,10 +409,972 @@
     <additionalinformation></additionalinformation>
   </entry>
   <entry>
+    <name>Getränkerechnung</name>
+    <value>-232.52</value>
+    <currency>EUR</currency>
+    <date>03.11.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Getränke</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>20</statement>
+      <invoice>F 55</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Ringvorlesung</name>
+    <value>-11.98</value>
+    <currency>EUR</currency>
+    <date>08.05.2008</date>
+    <category>
+      <tail>Veranstaltungen</tail>
+      <tail>Ringvorlesung</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation>
+      <invoice>F 17</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Getränkeeinnahmen</name>
+    <value>300.5</value>
+    <currency>EUR</currency>
+    <date>12.11.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Einnahmen S/G</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>21</statement>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Getränkerechnung</name>
+    <value>-292.86</value>
+    <currency>EUR</currency>
+    <date>09.06.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Getränke</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>10</statement>
+      <invoice>F 28</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Umbuchung</name>
+    <value>150.0</value>
+    <currency>EUR</currency>
+    <date>02.10.2008</date>
+    <category>
+      <tail>Fachschaft</tail>
+      <tail>Umbuchung</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation/>
+    <additionalinformation>Umbuchung von 150 € von Bank in Kasse. Die Umbuchung taucht auf Kontoauszug Nr. 16 unter den 650 € Barauszahlung (Rest: 500 € E-Wochen WS 08/09 Handgeld) auf.</additionalinformation>
+  </entry>
+  <entry>
+    <name>Schließzylinder</name>
+    <value>-547.4</value>
+    <currency>EUR</currency>
+    <date>18.06.2008</date>
+    <category>
+      <tail>Fachschaft</tail>
+      <tail>Schließzylinder</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>12</statement>
+      <invoice>F 33</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Putzaktion AStA Rückerstattung</name>
+    <value>20.69</value>
+    <currency>EUR</currency>
+    <date>17.01.2008</date>
+    <category>
+      <tail>Fachschaft</tail>
+      <tail>Putzaktion</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>2</statement>
+      <invoice>E 80</invoice>
+    </accountinformation>
+    <additionalinformation>Auf dem Kontoauszug ist die Überweisung nicht explizit aufgeführt, da das Geld sowohl für den Putztag als auch für die E-Wochen fälschlicherweise an die Maschbauer überwiesen wurden. Die haben dann beide Beträge zusammen überwiesen.</additionalinformation>
+  </entry>
+  <entry>
+    <name>Getränkeeinnahmen</name>
+    <value>296.0</value>
+    <currency>EUR</currency>
+    <date>30.01.2009</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Einnahmen S/G</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>4</statement>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Thermobindung</name>
+    <value>33.0</value>
+    <currency>EUR</currency>
+    <date>13.06.2008</date>
+    <category>
+      <tail>Fachschaft</tail>
+      <tail>Thermobindung</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation/>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Getränkeeinnahmen</name>
+    <value>470.5</value>
+    <currency>EUR</currency>
+    <date>30.05.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Einnahmen S/G</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>9</statement>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Süßigkeiten</name>
+    <value>-164.46</value>
+    <currency>EUR</currency>
+    <date>04.06.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Süßigkeiten</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation>
+      <invoice>F 26</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>E-Wochen SS 08 Handgeld</name>
+    <value>-400.0</value>
+    <currency>EUR</currency>
+    <date>16.04.2008</date>
+    <category>
+      <tail>Veranstaltungen</tail>
+      <tail>E-Wochen SS08</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>7</statement>
+      <invoice>F 21</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>T-Shirts</name>
+    <value>57.0</value>
+    <currency>EUR</currency>
+    <date>10.06.2008</date>
+    <category>
+      <tail>Fachschaft</tail>
+      <tail>T-Shirts</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation/>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Kartenspiele</name>
+    <value>-11.0</value>
+    <currency>EUR</currency>
+    <date>28.05.2008</date>
+    <category>
+      <tail>Fachschaft</tail>
+      <tail>Spiele</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation>
+      <invoice>F 23</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Ringvorlesung</name>
+    <value>-15.0</value>
+    <currency>EUR</currency>
+    <date>10.07.2008</date>
+    <category>
+      <tail>Veranstaltungen</tail>
+      <tail>Ringvorlesung</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation>
+      <invoice>F 39</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Süßigkeiten</name>
+    <value>-188.87</value>
+    <currency>EUR</currency>
+    <date>08.04.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Süßigkeiten</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation>
+      <invoice>F 9</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Handgeld Mathefete</name>
+    <value>-500.0</value>
+    <currency>EUR</currency>
+    <date>05.06.2008</date>
+    <category>
+      <tail>Veranstaltungen</tail>
+      <tail>Mathefete 2008</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>10</statement>
+      <invoice>F 44</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Getränkerechnung</name>
+    <value>-329.35</value>
+    <currency>EUR</currency>
+    <date>19.01.2009</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Getränke</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>3</statement>
+      <invoice>G 2</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Mathefete 2008 (Stadt)</name>
+    <value>-50.0</value>
+    <currency>EUR</currency>
+    <date>07.07.2008</date>
+    <category>
+      <tail>Veranstaltungen</tail>
+      <tail>Mathefete 2008</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>14</statement>
+      <invoice>F44.25</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Getränkerechnung</name>
+    <value>-401.1</value>
+    <currency>EUR</currency>
+    <date>05.09.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Getränke</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>15</statement>
+      <invoice>F 48</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Süßigkeiten</name>
+    <value>-244.56</value>
+    <currency>EUR</currency>
+    <date>29.04.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Süßigkeiten</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation>
+      <invoice>F 14</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Erstattung AAA Weihnachtsfeier 08</name>
+    <value>183.86</value>
+    <currency>EUR</currency>
+    <date>08.01.2009</date>
+    <category>
+      <tail>Veranstaltungen</tail>
+      <tail>Weihnachtsfeier 2008</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>1</statement>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Getränkeeinnahmen</name>
+    <value>515.5</value>
+    <currency>EUR</currency>
+    <date>19.06.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Einnahmen S/G</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>10</statement>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>MiB Geschenk f. den Dozenten</name>
+    <value>-10.25</value>
+    <currency>EUR</currency>
+    <date>06.05.2008</date>
+    <category>
+      <tail>Veranstaltungen</tail>
+      <tail>MiB</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation>
+      <invoice>F 16</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Getränkerechnung</name>
+    <value>-155.9</value>
+    <currency>EUR</currency>
+    <date>24.06.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Getränke</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>12</statement>
+      <invoice>F 36</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Süßigkeiten</name>
+    <value>-43.75</value>
+    <currency>EUR</currency>
+    <date>27.01.2009</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Süßigkeiten</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation>
+      <invoice>G4</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Getränkerechnung</name>
+    <value>-142.87</value>
+    <currency>EUR</currency>
+    <date>27.05.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Getränke</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>9</statement>
+      <invoice>F 22</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Wechselgeld Mathefete</name>
+    <value>-1500.0</value>
+    <currency>EUR</currency>
+    <date>19.06.2008</date>
+    <category>
+      <tail>Veranstaltungen</tail>
+      <tail>Mathefete 2008</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>10</statement>
+      <invoice>F 44</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>T-Shirts</name>
+    <value>130.0</value>
+    <currency>EUR</currency>
+    <date>11.09.2008</date>
+    <category>
+      <tail>Fachschaft</tail>
+      <tail>T-Shirts</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation/>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Süßigkeiten</name>
+    <value>-155.94</value>
+    <currency>EUR</currency>
+    <date>11.02.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Süßigkeiten</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation>
+      <invoice>F 5</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Mathefete 2008 (Sicherheitsdienst)</name>
+    <value>-338.02</value>
+    <currency>EUR</currency>
+    <date>01.08.2008</date>
+    <category>
+      <tail>Veranstaltungen</tail>
+      <tail>Mathefete 2008</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>14</statement>
+      <invoice>F44.27</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Süßigkeiten</name>
+    <value>-231.01</value>
+    <currency>EUR</currency>
+    <date>02.10.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Süßigkeiten</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation>
+      <invoice>F 50</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>AStA- Zuweisung WS0809</name>
+    <value>500.0</value>
+    <currency>EUR</currency>
+    <date>16.12.2008</date>
+    <category>
+      <tail>Fachschaft</tail>
+      <tail>AStA- Zuweisung</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>24</statement>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Sofakauf 3 für den KOM-Raum</name>
+    <value>-1.5</value>
+    <currency>EUR</currency>
+    <date>08.12.2008</date>
+    <category>
+      <tail>Fachschaft</tail>
+      <tail>KOM-Raum</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation>
+      <invoice>F 62</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Getränkerechnung</name>
+    <value>-306.54</value>
+    <currency>EUR</currency>
+    <date>10.12.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Getränke</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>23</statement>
+      <invoice>F 63</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>FB-Grillen Platzreservierung</name>
+    <value>-35.0</value>
+    <currency>EUR</currency>
+    <date>31.03.2008</date>
+    <category>
+      <tail>Veranstaltungen</tail>
+      <tail>FB-Grillen 2008</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>6</statement>
+      <invoice>F 8</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Mathefete 2008 (Wein)</name>
+    <value>-99.5</value>
+    <currency>EUR</currency>
+    <date>09.07.2008</date>
+    <category>
+      <tail>Veranstaltungen</tail>
+      <tail>Mathefete 2008</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>14</statement>
+      <invoice>F44.26</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Umsatzsteuer 2005/2006</name>
+    <value>-57.5</value>
+    <currency>EUR</currency>
+    <date>29.10.2008</date>
+    <category>
+      <tail>Fachschaft</tail>
+      <tail>Umsatzsteuer</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>19</statement>
+      <invoice>F 54</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Getränkeeinnahmen</name>
+    <value>207.0</value>
+    <currency>EUR</currency>
+    <date>25.03.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Einnahmen S/G</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>5</statement>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Umbuchung</name>
+    <value>-50.0</value>
+    <currency>EUR</currency>
+    <date>02.10.2008</date>
+    <category>
+      <tail>Fachschaft</tail>
+      <tail>Umbuchung</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation/>
+    <additionalinformation>Es wurden 50 € Hartgeld aus der weißen Kasse auf der Bank eingezahlt. Die Umbuchung taucht auf Kontoauszug Nr. 16 unter den 326,50 € Barumsatz (Rest: 276,50 € Getränkeeinnahmen) auf.</additionalinformation>
+  </entry>
+  <entry>
+    <name>Getränkeeinnahmen</name>
+    <value>612.5</value>
+    <currency>EUR</currency>
+    <date>22.08.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Einnahmen S/G</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>14</statement>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Thermobindungen</name>
+    <value>20.0</value>
+    <currency>EUR</currency>
+    <date>20.01.2009</date>
+    <category>
+      <tail>Fachschaft</tail>
+      <tail>Thermobindung</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation/>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Thermobindung</name>
+    <value>10.0</value>
+    <currency>EUR</currency>
+    <date>18.01.2008</date>
+    <category>
+      <tail>Fachschaft</tail>
+      <tail>Thermobindung</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation/>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Ringvorlesung</name>
+    <value>-15.0</value>
+    <currency>EUR</currency>
+    <date>07.07.2008</date>
+    <category>
+      <tail>Veranstaltungen</tail>
+      <tail>Ringvorlesung</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation>
+      <invoice>F 38</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>E-Wochen SS 08 Restgeld/Abrechnung</name>
+    <value>55.85</value>
+    <currency>EUR</currency>
+    <date>19.05.2008</date>
+    <category>
+      <tail>Veranstaltungen</tail>
+      <tail>E-Wochen SS08</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation>
+      <invoice>F 21</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Schließzylinder AStA Rückerstattung</name>
+    <value>193.7</value>
+    <currency>EUR</currency>
+    <date>29.10.2008</date>
+    <category>
+      <tail>Fachschaft</tail>
+      <tail>Schließzylinder</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>18</statement>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>MiB</name>
+    <value>-12.98</value>
+    <currency>EUR</currency>
+    <date>29.04.2008</date>
+    <category>
+      <tail>Veranstaltungen</tail>
+      <tail>MiB</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation>
+      <invoice>F 15</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Getränkeeinnahmen</name>
+    <value>237.5</value>
+    <currency>EUR</currency>
+    <date>20.01.2009</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Einnahmen S/G</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>2</statement>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Ringvorlesung</name>
+    <value>-21.43</value>
+    <currency>EUR</currency>
+    <date>29.04.2008</date>
+    <category>
+      <tail>Veranstaltungen</tail>
+      <tail>Ringvorlesung</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation>
+      <invoice>F 12</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Lampenschirme</name>
+    <value>-19.0</value>
+    <currency>EUR</currency>
+    <date>16.04.2008</date>
+    <category>
+      <tail>Fachschaft</tail>
+      <tail>Lampenschirme</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation>
+      <invoice>F 11</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Getränkerechnung</name>
+    <value>-174.28</value>
+    <currency>EUR</currency>
+    <date>31.07.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Getränke</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>14</statement>
+      <invoice>F45</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Getränkeeinnahmen</name>
+    <value>210.0</value>
+    <currency>EUR</currency>
+    <date>01.12.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Einnahmen S/G</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation/>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>E-Wochen SS 08 AStA Rückerstattung</name>
+    <value>369.33</value>
+    <currency>EUR</currency>
+    <date>03.07.2008</date>
+    <category>
+      <tail>Veranstaltungen</tail>
+      <tail>E-Wochen SS08</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>13</statement>
+      <invoice>F 21</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Umbuchung</name>
+    <value>-530.0</value>
+    <currency>EUR</currency>
+    <date>10.06.2008</date>
+    <category>
+      <tail>Fachschaft</tail>
+      <tail>Umbuchung</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>10</statement>
+    </accountinformation>
+    <additionalinformation>Entspricht der Kasseneinzahlung vom selben Tag mit dem gleichen Betrag</additionalinformation>
+  </entry>
+  <entry>
+    <name>Süßigkeiten</name>
+    <value>-214.33</value>
+    <currency>EUR</currency>
+    <date>02.09.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Süßigkeiten</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation>
+      <invoice>F 47</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
     <name>Getränkeeinnahmen</name>
     <value>250.0</value>
     <currency>EUR</currency>
     <date>27.02.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Einnahmen S/G</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation/>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Einnahmen Mathefete / Kleingeld</name>
+    <value>84.66</value>
+    <currency>EUR</currency>
+    <date>20.06.2008</date>
+    <category>
+      <tail>Veranstaltungen</tail>
+      <tail>Mathefete 2008</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation/>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Umbuchung</name>
+    <value>-150.0</value>
+    <currency>EUR</currency>
+    <date>02.10.2008</date>
+    <category>
+      <tail>Fachschaft</tail>
+      <tail>Umbuchung</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>16</statement>
+    </accountinformation>
+    <additionalinformation>Umbuchung von 150 € von Bank in Kasse. Die Umbuchung taucht auf Kontoauszug Nr. 16 unter den 650 € Barauszahlung (Rest: 500 € E-Wochen WS 08/09 Handgeld) auf.</additionalinformation>
+  </entry>
+  <entry>
+    <name>Sofakauf 1 für den KOMraum</name>
+    <value>-15.5</value>
+    <currency>EUR</currency>
+    <date>02.12.2008</date>
+    <category>
+      <tail>Fachschaft</tail>
+      <tail>KOM-Raum</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>23</statement>
+      <invoice>F 60</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>FS Unterwegs</name>
+    <value>-27.87</value>
+    <currency>EUR</currency>
+    <date>16.06.2008</date>
+    <category>
+      <tail>Veranstaltungen</tail>
+      <tail>FS Unterwegs</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation>
+      <invoice>F 32</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Getränkerechnung</name>
+    <value>-281.29</value>
+    <currency>EUR</currency>
+    <date>14.04.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Getränke</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>7</statement>
+      <invoice>F 10</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Getränkerechnung</name>
+    <value>-295.46</value>
+    <currency>EUR</currency>
+    <date>19.11.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Getränke</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>22</statement>
+      <invoice>F 57</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Süßigkeiten</name>
+    <value>-237.65</value>
+    <currency>EUR</currency>
+    <date>25.06.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Süßigkeiten</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation>
+      <invoice>F 34</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Zinsen</name>
+    <value>20.09</value>
+    <currency>EUR</currency>
+    <date>03.07.2008</date>
+    <category>
+      <tail>Fachschaft</tail>
+      <tail>Zinsen</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>13</statement>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Getränkeeinnahmen</name>
+    <value>90.0</value>
+    <currency>EUR</currency>
+    <date>02.09.2008</date>
     <category>
       <tail>Süßigkeiten / Getränke</tail>
       <tail>Einnahmen S/G</tail>
@@ -1559,41 +1399,179 @@
     <additionalinformation></additionalinformation>
   </entry>
   <entry>
-    <name>Süßigkeiten</name>
-    <value>-274.62</value>
+    <name>Tabasco Spieleabend</name>
+    <value>-11.49</value>
     <currency>EUR</currency>
-    <date>27.01.2009</date>
+    <date>16.01.2009</date>
     <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Süßigkeiten</tail>
+      <tail>Veranstaltungen</tail>
+      <tail>Spieleabend</tail>
     </category>
     <account>cash_box</account>
     <accountinformation>
-      <invoice>G3</invoice>
+      <invoice>G 1</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>E-Wochen WS07/08 AStA Rückerstattung</name>
+    <value>302.65</value>
+    <currency>EUR</currency>
+    <date>17.01.2008</date>
+    <category>
+      <tail>Veranstaltungen</tail>
+      <tail>E-Wochen WS07/08</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>2</statement>
+      <invoice>E 80</invoice>
+    </accountinformation>
+    <additionalinformation>Auf dem Kontoauszug ist die Überweisung nicht explizit aufgeführt, da das Geld sowohl für den Putztag als auch für die E-Wochen fälschlicherweise an die Maschbauer überwiesen wurden. Die haben dann beide Beträge zusammen überwiesen.</additionalinformation>
+  </entry>
+  <entry>
+    <name>T-Shirts Tag der Mathematik</name>
+    <value>609.0</value>
+    <currency>EUR</currency>
+    <date>04.11.2008</date>
+    <category>
+      <tail>Fachschaft</tail>
+      <tail>T-Shirts</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>20</statement>
     </accountinformation>
     <additionalinformation></additionalinformation>
   </entry>
   <entry>
     <name>Getränkerechnung</name>
-    <value>-329.35</value>
+    <value>-346.88</value>
     <currency>EUR</currency>
-    <date>19.01.2009</date>
+    <date>29.04.2008</date>
     <category>
       <tail>Süßigkeiten / Getränke</tail>
       <tail>Getränke</tail>
     </category>
     <account>bank_account</account>
     <accountinformation>
-      <statement>3</statement>
-      <invoice>G 2</invoice>
+      <statement>8</statement>
+      <invoice>F 13</invoice>
     </accountinformation>
     <additionalinformation></additionalinformation>
   </entry>
   <entry>
     <name>Getränkeeinnahmen</name>
-    <value>90.0</value>
+    <value>394.5</value>
     <currency>EUR</currency>
-    <date>02.09.2008</date>
+    <date>03.07.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Einnahmen S/G</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>13</statement>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>AStA Rückerstattung Klausurtagung</name>
+    <value>115.23</value>
+    <currency>EUR</currency>
+    <date>03.07.2008</date>
+    <category>
+      <tail>Fachschaft</tail>
+      <tail>Klausurtagung</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>13</statement>
+      <invoice>F 25</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Getränkeeinnahmen</name>
+    <value>276.5</value>
+    <currency>EUR</currency>
+    <date>02.10.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Einnahmen S/G</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>16</statement>
+    </accountinformation>
+    <additionalinformation>Die Getränkeeinnahmen tauchen auf Kontoauszug Nr. 16 unter den 326,50 € Barumsatz (Rest: Umbuchung) auf.</additionalinformation>
+  </entry>
+  <entry>
+    <name>Sofakauf 2 für den KOMraum</name>
+    <value>-8.1</value>
+    <currency>EUR</currency>
+    <date>03.12.2008</date>
+    <category>
+      <tail>Fachschaft</tail>
+      <tail>KOM-Raum</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation>
+      <invoice>F 61</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Abrechnung Weihnachtsfeier 2007</name>
+    <value>118.83</value>
+    <currency>EUR</currency>
+    <date>08.01.2008</date>
+    <category>
+      <tail>Veranstaltungen</tail>
+      <tail>Weihnachtsfeier 2007</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation>
+      <invoice>E 102</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Süßigkeiten</name>
+    <value>-263.0</value>
+    <currency>EUR</currency>
+    <date>28.10.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Süßigkeiten</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation>
+      <invoice>F 52</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Weihnachtsfeier (Erstattung AAA)</name>
+    <value>209.77</value>
+    <currency>EUR</currency>
+    <date>07.02.2008</date>
+    <category>
+      <tail>Veranstaltungen</tail>
+      <tail>Weihnachtsfeier 2007</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>4</statement>
+      <invoice>E 102</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Getränkeeinnahmen</name>
+    <value>230.0</value>
+    <currency>EUR</currency>
+    <date>18.01.2008</date>
     <category>
       <tail>Süßigkeiten / Getränke</tail>
       <tail>Einnahmen S/G</tail>
@@ -1603,33 +1581,119 @@
     <additionalinformation></additionalinformation>
   </entry>
   <entry>
-    <name>Getränkeeinnahmen</name>
-    <value>344.0</value>
+    <name>Helferfete 2008</name>
+    <value>-160.9</value>
     <currency>EUR</currency>
-    <date>22.10.2008</date>
+    <date>24.07.2008</date>
     <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Einnahmen S/G</tail>
+      <tail>Veranstaltungen</tail>
+      <tail>Mathefete 2008</tail>
     </category>
-    <account>bank_account</account>
+    <account>cash_box</account>
     <accountinformation>
-      <statement>17</statement>
+      <invoice>F 43</invoice>
     </accountinformation>
     <additionalinformation></additionalinformation>
   </entry>
   <entry>
-    <name>Getränkerechnung</name>
-    <value>-288.88</value>
+    <name>FB-Grillen Einnahmen</name>
+    <value>263.84</value>
     <currency>EUR</currency>
-    <date>07.02.2008</date>
+    <date>11.07.2008</date>
+    <category>
+      <tail>Veranstaltungen</tail>
+      <tail>FB-Grillen 2008</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation/>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Getränkerechnung</name>
+    <value>-333.52</value>
+    <currency>EUR</currency>
+    <date>13.10.2008</date>
     <category>
       <tail>Süßigkeiten / Getränke</tail>
       <tail>Getränke</tail>
     </category>
     <account>bank_account</account>
     <accountinformation>
-      <statement>4</statement>
-      <invoice>F 4</invoice>
+      <statement>17</statement>
+      <invoice>F 51</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Tag der Mathematik</name>
+    <value>-23.93</value>
+    <currency>EUR</currency>
+    <date>10.06.2008</date>
+    <category>
+      <tail>Veranstaltungen</tail>
+      <tail>Tag der Mathematik</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation>
+      <invoice>F 29</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Hangschloss</name>
+    <value>-3.85</value>
+    <currency>EUR</currency>
+    <date>16.09.2008</date>
+    <category>
+      <tail>Fachschaft</tail>
+      <tail>KOM-Raum</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation>
+      <invoice>F 49</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Getränkeeinnahmen</name>
+    <value>200.0</value>
+    <currency>EUR</currency>
+    <date>04.02.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Einnahmen S/G</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation/>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Klausurtagung</name>
+    <value>-115.23</value>
+    <currency>EUR</currency>
+    <date>02.06.2008</date>
+    <category>
+      <tail>Fachschaft</tail>
+      <tail>Klausurtagung</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation>
+      <invoice>F 25</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Wechselgeld und Einnahmen Mathefete</name>
+    <value>4415.0</value>
+    <currency>EUR</currency>
+    <date>20.06.2008</date>
+    <category>
+      <tail>Veranstaltungen</tail>
+      <tail>Mathefete 2008</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>11</statement>
     </accountinformation>
     <additionalinformation></additionalinformation>
   </entry>
@@ -1647,25 +1711,41 @@
     <additionalinformation></additionalinformation>
   </entry>
   <entry>
-    <name>Süßigkeiten</name>
-    <value>-244.56</value>
+    <name>E-Wochen WS 08/09 Handgeld</name>
+    <value>-500.0</value>
     <currency>EUR</currency>
-    <date>29.04.2008</date>
+    <date>02.10.2008</date>
     <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Süßigkeiten</tail>
+      <tail>Veranstaltungen</tail>
+      <tail>E-Wochen WS 08 / 09</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>16</statement>
+      <invoice>F 56</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>MiB</name>
+    <value>-24.54</value>
+    <currency>EUR</currency>
+    <date>15.01.2008</date>
+    <category>
+      <tail>Veranstaltungen</tail>
+      <tail>MiB</tail>
     </category>
     <account>cash_box</account>
     <accountinformation>
-      <invoice>F 14</invoice>
+      <invoice>F 1</invoice>
     </accountinformation>
     <additionalinformation></additionalinformation>
   </entry>
   <entry>
     <name>Getränkeeinnahmen</name>
-    <value>60.0</value>
+    <value>145.0</value>
     <currency>EUR</currency>
-    <date>16.12.2008</date>
+    <date>08.01.2009</date>
     <category>
       <tail>Süßigkeiten / Getränke</tail>
       <tail>Einnahmen S/G</tail>
@@ -1675,108 +1755,32 @@
     <additionalinformation></additionalinformation>
   </entry>
   <entry>
-    <name>Ringvorlesung</name>
-    <value>-15.0</value>
+    <name>MiB</name>
+    <value>-23.43</value>
     <currency>EUR</currency>
-    <date>07.07.2008</date>
+    <date>01.07.2008</date>
     <category>
       <tail>Veranstaltungen</tail>
-      <tail>Ringvorlesung</tail>
+      <tail>MiB</tail>
     </category>
     <account>cash_box</account>
     <accountinformation>
-      <invoice>F 38</invoice>
+      <invoice>F 35</invoice>
     </accountinformation>
     <additionalinformation></additionalinformation>
   </entry>
   <entry>
-    <name>Kartenspiel</name>
-    <value>-5.99</value>
+    <name>Handgeld Weihnachtsfeier 2008</name>
+    <value>-350.0</value>
     <currency>EUR</currency>
-    <date>08.05.2008</date>
-    <category>
-      <tail>Fachschaft</tail>
-      <tail>Spiele</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation>
-      <invoice>F 19</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Ringvorlesung</name>
-    <value>-21.99</value>
-    <currency>EUR</currency>
-    <date>13.06.2008</date>
+    <date>01.12.2008</date>
     <category>
       <tail>Veranstaltungen</tail>
-      <tail>Ringvorlesung</tail>
+      <tail>Weihnachtsfeier 2008</tail>
     </category>
     <account>cash_box</account>
     <accountinformation>
-      <invoice>F 31</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Umbuchung</name>
-    <value>-150.0</value>
-    <currency>EUR</currency>
-    <date>02.10.2008</date>
-    <category>
-      <tail>Fachschaft</tail>
-      <tail>Umbuchung</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>16</statement>
-    </accountinformation>
-    <additionalinformation>Umbuchung von 150 € von Bank in Kasse. Die Umbuchung taucht auf Kontoauszug Nr. 16 unter den 650 € Barauszahlung (Rest: 500 € E-Wochen WS 08/09 Handgeld) auf.</additionalinformation>
-  </entry>
-  <entry>
-    <name>Pflaster für FNK</name>
-    <value>-6.9</value>
-    <currency>EUR</currency>
-    <date>23.07.2008</date>
-    <category>
-      <tail>Fachschaft</tail>
-      <tail>Frauennotfallkoffer</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation>
-      <invoice>F 41</invoice>
-    </accountinformation>
-    <additionalinformation>Die Rechnung lautet auf 12.90, da aber nur 6.90 beantragt wurden (die restlichen 6 Euro wurden aus dem FNK bezahlt), lautet der Betrag entsprechend</additionalinformation>
-  </entry>
-  <entry>
-    <name>Süßigkeiten</name>
-    <value>-237.65</value>
-    <currency>EUR</currency>
-    <date>25.06.2008</date>
-    <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Süßigkeiten</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation>
-      <invoice>F 34</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Schließzylinder</name>
-    <value>-547.4</value>
-    <currency>EUR</currency>
-    <date>18.06.2008</date>
-    <category>
-      <tail>Fachschaft</tail>
-      <tail>Schließzylinder</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>12</statement>
-      <invoice>F 33</invoice>
+      <invoice>G 5</invoice>
     </accountinformation>
     <additionalinformation></additionalinformation>
   </entry>
@@ -1796,119 +1800,29 @@
     <additionalinformation></additionalinformation>
   </entry>
   <entry>
-    <name>Süßigkeiten</name>
-    <value>-155.94</value>
+    <name>Kramladengebühr Weihnachtsfeier 2008</name>
+    <value>-10.01</value>
     <currency>EUR</currency>
-    <date>11.02.2008</date>
-    <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Süßigkeiten</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation>
-      <invoice>F 5</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>E-Wochen SS 08 Restgeld/Abrechnung</name>
-    <value>55.85</value>
-    <currency>EUR</currency>
-    <date>19.05.2008</date>
+    <date>08.01.2009</date>
     <category>
       <tail>Veranstaltungen</tail>
-      <tail>E-Wochen SS08</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation>
-      <invoice>F 21</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>MiB</name>
-    <value>-23.43</value>
-    <currency>EUR</currency>
-    <date>01.07.2008</date>
-    <category>
-      <tail>Veranstaltungen</tail>
-      <tail>MiB</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation>
-      <invoice>F 35</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Mathefete 2008 Abrechnung</name>
-    <value>-240.84</value>
-    <currency>EUR</currency>
-    <date>24.07.2008</date>
-    <category>
-      <tail>Veranstaltungen</tail>
-      <tail>Mathefete 2008</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation>
-      <invoice>F 44</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Getränkerechnung</name>
-    <value>-281.29</value>
-    <currency>EUR</currency>
-    <date>14.04.2008</date>
-    <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Getränke</tail>
+      <tail>Weihnachtsfeier 2008</tail>
     </category>
     <account>bank_account</account>
     <accountinformation>
-      <statement>7</statement>
-      <invoice>F 10</invoice>
+      <statement>2</statement>
+      <invoice>G 5</invoice>
     </accountinformation>
     <additionalinformation></additionalinformation>
   </entry>
   <entry>
     <name>Getränkeeinnahmen</name>
-    <value>470.5</value>
+    <value>100.0</value>
     <currency>EUR</currency>
-    <date>30.05.2008</date>
+    <date>12.11.2008</date>
     <category>
       <tail>Süßigkeiten / Getränke</tail>
       <tail>Einnahmen S/G</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>9</statement>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Getränkeeinnahmen</name>
-    <value>150.0</value>
-    <currency>EUR</currency>
-    <date>07.02.2008</date>
-    <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Einnahmen S/G</tail>
-    </category>
-    <account>bank_account</account>
-    <accountinformation>
-      <statement>4</statement>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Umbuchung</name>
-    <value>250.0</value>
-    <currency>EUR</currency>
-    <date>27.01.2009</date>
-    <category>
-      <tail>Fachschaft</tail>
-      <tail>Umbuchung</tail>
     </category>
     <account>cash_box</account>
     <accountinformation/>
@@ -1916,77 +1830,31 @@
   </entry>
   <entry>
     <name>Süßigkeiten</name>
-    <value>-188.87</value>
+    <value>-195.81</value>
     <currency>EUR</currency>
-    <date>08.04.2008</date>
+    <date>23.07.2008</date>
     <category>
       <tail>Süßigkeiten / Getränke</tail>
       <tail>Süßigkeiten</tail>
     </category>
     <account>cash_box</account>
     <accountinformation>
-      <invoice>F 9</invoice>
+      <invoice>F 42</invoice>
     </accountinformation>
     <additionalinformation></additionalinformation>
   </entry>
   <entry>
-    <name>Süßigkeiten</name>
-    <value>-174.98</value>
+    <name>Zinsen</name>
+    <value>21.45</value>
     <currency>EUR</currency>
-    <date>27.02.2008</date>
+    <date>03.04.2008</date>
     <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Süßigkeiten</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation>
-      <invoice>F 6</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>E-Wochen SS 08 AStA Rückerstattung</name>
-    <value>369.33</value>
-    <currency>EUR</currency>
-    <date>03.07.2008</date>
-    <category>
-      <tail>Veranstaltungen</tail>
-      <tail>E-Wochen SS08</tail>
+      <tail>Fachschaft</tail>
+      <tail>Zinsen</tail>
     </category>
     <account>bank_account</account>
     <accountinformation>
-      <statement>13</statement>
-      <invoice>F 21</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Süßigkeiten</name>
-    <value>-222.56</value>
-    <currency>EUR</currency>
-    <date>18.01.2008</date>
-    <category>
-      <tail>Süßigkeiten / Getränke</tail>
-      <tail>Süßigkeiten</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation>
-      <invoice>F 3</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Kartenspiele</name>
-    <value>-11.0</value>
-    <currency>EUR</currency>
-    <date>28.05.2008</date>
-    <category>
-      <tail>Fachschaft</tail>
-      <tail>Spiele</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation>
-      <invoice>F 23</invoice>
+      <statement>6</statement>
     </accountinformation>
     <additionalinformation></additionalinformation>
   </entry>
@@ -2006,55 +1874,40 @@
     <additionalinformation>Es wurden 50 € Hartgeld aus der weißen Kasse auf der Bank eingezahlt. Die Umbuchung taucht auf Kontoauszug Nr. 16 unter den 326,50 € Barumsatz (Rest: 276,50 € Getränkeeinnahmen) auf.</additionalinformation>
   </entry>
   <entry>
-    <name>Tag der Mathematik</name>
-    <value>-23.93</value>
+    <name>Süßigkeiten</name>
+    <value>-302.09</value>
     <currency>EUR</currency>
-    <date>10.06.2008</date>
-    <category>
-      <tail>Veranstaltungen</tail>
-      <tail>Tag der Mathematik</tail>
-    </category>
-    <account>cash_box</account>
-    <accountinformation>
-      <invoice>F 29</invoice>
-    </accountinformation>
-    <additionalinformation></additionalinformation>
-  </entry>
-  <entry>
-    <name>Getränkeeinnahmen</name>
-    <value>300.5</value>
-    <currency>EUR</currency>
-    <date>12.11.2008</date>
+    <date>21.11.2008</date>
     <category>
       <tail>Süßigkeiten / Getränke</tail>
-      <tail>Einnahmen S/G</tail>
+      <tail>Süßigkeiten</tail>
     </category>
-    <account>bank_account</account>
+    <account>cash_box</account>
     <accountinformation>
-      <statement>21</statement>
+      <invoice>F 58</invoice>
     </accountinformation>
     <additionalinformation></additionalinformation>
   </entry>
   <entry>
-    <name>FS Unterwegs</name>
-    <value>-27.87</value>
+    <name>Lehramtlerkaffee</name>
+    <value>-13.83</value>
     <currency>EUR</currency>
-    <date>16.06.2008</date>
+    <date>13.06.2008</date>
     <category>
       <tail>Veranstaltungen</tail>
-      <tail>FS Unterwegs</tail>
+      <tail>Lehramtlerkaffee</tail>
     </category>
     <account>cash_box</account>
     <accountinformation>
-      <invoice>F 32</invoice>
+      <invoice>F 30</invoice>
     </accountinformation>
     <additionalinformation></additionalinformation>
   </entry>
   <entry>
     <name>Getränkeeinnahmen</name>
-    <value>50.0</value>
+    <value>200.0</value>
     <currency>EUR</currency>
-    <date>28.10.2008</date>
+    <date>21.11.2008</date>
     <category>
       <tail>Süßigkeiten / Getränke</tail>
       <tail>Einnahmen S/G</tail>
@@ -2064,49 +1917,211 @@
     <additionalinformation></additionalinformation>
   </entry>
   <entry>
-    <name>Umsatzsteuer 2005/2006</name>
-    <value>-57.5</value>
+    <name>Putzzeug</name>
+    <value>-8.56</value>
     <currency>EUR</currency>
-    <date>29.10.2008</date>
+    <date>08.05.2008</date>
     <category>
       <tail>Fachschaft</tail>
-      <tail>Umsatzsteuer</tail>
+      <tail>Putzzeug</tail>
     </category>
-    <account>bank_account</account>
+    <account>cash_box</account>
     <accountinformation>
-      <statement>19</statement>
-      <invoice>F 54</invoice>
+      <invoice>F 18</invoice>
     </accountinformation>
     <additionalinformation></additionalinformation>
   </entry>
   <entry>
-    <name>Mathefete 2008 (Getränke)</name>
-    <value>-435.42</value>
+    <name>Mathefete 2008 Abrechnung</name>
+    <value>-240.84</value>
     <currency>EUR</currency>
-    <date>07.07.2008</date>
+    <date>24.07.2008</date>
     <category>
       <tail>Veranstaltungen</tail>
       <tail>Mathefete 2008</tail>
     </category>
-    <account>bank_account</account>
+    <account>cash_box</account>
     <accountinformation>
-      <statement>14</statement>
-      <invoice>F44.24</invoice>
+      <invoice>F 44</invoice>
     </accountinformation>
     <additionalinformation></additionalinformation>
   </entry>
   <entry>
-    <name>Abrechnung Weihnachtsfeier 2007</name>
-    <value>118.83</value>
+    <name>Getränkeeinnahmen</name>
+    <value>207.0</value>
     <currency>EUR</currency>
-    <date>08.01.2008</date>
+    <date>23.05.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Einnahmen S/G</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>8</statement>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Zinsen</name>
+    <value>20.86</value>
+    <currency>EUR</currency>
+    <date>01.10.2008</date>
+    <category>
+      <tail>Fachschaft</tail>
+      <tail>Zinsen</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>16</statement>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Getränkerechnung</name>
+    <value>-340.68</value>
+    <currency>EUR</currency>
+    <date>07.07.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Getränke</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>14</statement>
+      <invoice>F 37</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Getränkeeinnahmen</name>
+    <value>380.0</value>
+    <currency>EUR</currency>
+    <date>07.05.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Einnahmen S/G</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation/>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>T-Shirts</name>
+    <value>-386.45</value>
+    <currency>EUR</currency>
+    <date>08.09.2008</date>
+    <category>
+      <tail>Fachschaft</tail>
+      <tail>T-Shirts</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>15</statement>
+      <invoice>F 46</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Ringvorlesung</name>
+    <value>-21.99</value>
+    <currency>EUR</currency>
+    <date>13.06.2008</date>
     <category>
       <tail>Veranstaltungen</tail>
-      <tail>Weihnachtsfeier 2007</tail>
+      <tail>Ringvorlesung</tail>
     </category>
     <account>cash_box</account>
     <accountinformation>
-      <invoice>E 102</invoice>
+      <invoice>F 31</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Getränkerechnung</name>
+    <value>-251.1</value>
+    <currency>EUR</currency>
+    <date>25.03.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Getränke</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>5</statement>
+      <invoice>F 7</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>ZEIT-Abo</name>
+    <value>-103.09</value>
+    <currency>EUR</currency>
+    <date>29.10.2008</date>
+    <category>
+      <tail>Fachschaft</tail>
+      <tail>ZEIT-Abo</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>19</statement>
+      <invoice>F 53</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Kartenspiel</name>
+    <value>-5.99</value>
+    <currency>EUR</currency>
+    <date>08.05.2008</date>
+    <category>
+      <tail>Fachschaft</tail>
+      <tail>Spiele</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation>
+      <invoice>F 19</invoice>
+    </accountinformation>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Getränkeeinnahmen</name>
+    <value>100.0</value>
+    <currency>EUR</currency>
+    <date>30.09.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Einnahmen S/G</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation/>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Getränkeeinnahmen</name>
+    <value>350.0</value>
+    <currency>EUR</currency>
+    <date>08.04.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Einnahmen S/G</tail>
+    </category>
+    <account>cash_box</account>
+    <accountinformation/>
+    <additionalinformation></additionalinformation>
+  </entry>
+  <entry>
+    <name>Getränkerechnung</name>
+    <value>-288.88</value>
+    <currency>EUR</currency>
+    <date>07.02.2008</date>
+    <category>
+      <tail>Süßigkeiten / Getränke</tail>
+      <tail>Getränke</tail>
+    </category>
+    <account>bank_account</account>
+    <accountinformation>
+      <statement>4</statement>
+      <invoice>F 4</invoice>
     </accountinformation>
     <additionalinformation></additionalinformation>
   </entry>

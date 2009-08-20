@@ -5,6 +5,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -14,8 +15,11 @@ import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -23,6 +27,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
@@ -91,7 +96,12 @@ public class JournalTableBar extends JToolBar implements ResourceDependent {
 	// LISTENERS *************************************
 	// ***********************************************
 	
-	private ActionListener newListener = new ActionListener() {
+	private Action newListener = new AbstractAction() {
+		/**
+		 * compiler-generated serial version uid
+		 */
+		private static final long serialVersionUID = 183347560752781021L;
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			EntryDialog newDialog = new EntryDialog(Fsfibu2.getFrame(),associatedJournal,null);
@@ -133,7 +143,12 @@ public class JournalTableBar extends JToolBar implements ResourceDependent {
 		}
 	};
 	
-	private ActionListener deleteListener = new ActionListener() {
+	private Action deleteListener = new AbstractAction() {
+		/**
+		 * compiler-generated serial version uid
+		 */
+		private static final long serialVersionUID = 4546525351258280102L;
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			int[] selection = table.getSelectedRows();
@@ -260,12 +275,16 @@ public class JournalTableBar extends JToolBar implements ResourceDependent {
 		newButton.addActionListener(newListener);
 			newButton.setIcon(new ImageIcon(ref.getFullResourcePath(this, path + "/new.png")));
 			newButton.setToolTipText(Fsfibu2StringTableMgr.getString(sgroup + ".newtooltip"));
+			newButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_N,ActionEvent.CTRL_MASK), "new");
+			newButton.getActionMap().put("new", newListener);
 		editButton.addActionListener(editListener);
 			editButton.setIcon(new ImageIcon(ref.getFullResourcePath(this, path + "/edit.png")));
 			editButton.setToolTipText(Fsfibu2StringTableMgr.getString(sgroup + ".edittooltip"));
 		deleteButton.addActionListener(deleteListener);
 			deleteButton.setIcon(new ImageIcon(ref.getFullResourcePath(this, path + "/delete.png")));
 			deleteButton.setToolTipText(Fsfibu2StringTableMgr.getString(sgroup + ".deletetooltip"));
+			deleteButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0),"delete");
+			deleteButton.getActionMap().put("delete", deleteListener);
 		csvButton.addActionListener(csvListener);
 			csvButton.setIcon(new ImageIcon(ref.getFullResourcePath(this, path + "/csv.png")));
 			csvButton.setToolTipText(Fsfibu2StringTableMgr.getString(sgroup + ".csvtooltip"));

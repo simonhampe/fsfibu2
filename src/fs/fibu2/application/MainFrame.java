@@ -6,6 +6,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -14,14 +15,18 @@ import java.util.Vector;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.UndoableEditEvent;
@@ -111,7 +116,12 @@ public class MainFrame extends JFrame implements ResourceDependent {
 		};	
 	};
 	
-	private ActionListener saveListener = new ActionListener() {
+	private Action saveListener = new AbstractAction() {
+		/**
+		 * compiler-generated serial version uid
+		 */
+		private static final long serialVersionUID = 6452547778859847096L;
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			saveJournal();
@@ -296,6 +306,8 @@ public class MainFrame extends JFrame implements ResourceDependent {
 			openButton.addActionListener(openListener);
 		saveButton.setIcon(new ImageIcon(ref.getFullResourcePath(this,path + "save.png")));
 			saveButton.addActionListener(saveListener);
+			saveButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S,ActionEvent.CTRL_MASK), "save");
+			saveButton.getActionMap().put("save", saveListener);
 		saveAsButton.setIcon(new ImageIcon(ref.getFullResourcePath(this, path + "save.png")));
 			saveAsButton.addActionListener(saveAsListener);
 		optionButton.setIcon(new ImageIcon(ref.getFullResourcePath(this, path + "options.png")));
