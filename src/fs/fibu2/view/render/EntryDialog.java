@@ -15,12 +15,15 @@ import java.util.Arrays;
 import java.util.Currency;
 import java.util.HashMap;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -29,6 +32,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -305,7 +309,12 @@ public class EntryDialog extends FrameworkDialog {
 	};
 	
 	//Closes the dialog and notifies data listeners
-	private ActionListener closeButtonListener = new ActionListener() {
+	private Action closeButtonListener = new AbstractAction() {
+		/**
+		 * compiler-genertated serial version uid
+		 */
+		private static final long serialVersionUID = 3861019438613873784L;
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			exit(e.getSource() == okButton);
@@ -504,6 +513,8 @@ public class EntryDialog extends FrameworkDialog {
 		checkAdditional.addChangeListener(checkAdditionalListener);
 		okButton.addActionListener(closeButtonListener);
 		cancelButton.addActionListener(closeButtonListener);
+			cancelButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "dispose");
+			cancelButton.getActionMap().put("dispose", closeButtonListener);
 		fieldNewCategory.getDocument().addDocumentListener(newCategoryListener);
 		radioCreate.addChangeListener(createRadioListener);
 		createButton.addActionListener(createCategoryListener);

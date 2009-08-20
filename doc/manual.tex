@@ -35,7 +35,7 @@ Klassen nicht. Empfohlen ist eine möglichst aktuelle Version der VM von Sun sel
 Eine Installation ist nicht notwendig. Um das Programm zu starten, musst du die Datei fsfibu2.jar ausführen. Unter Linux geht das bspw. mit dem Befehl \textit{java -jar fsfibu2.jar}.
 
 Wenn du fsfibu 2 das erste Mal startest (und damit meine ich das allererste Mal überhaupt auf deinem Rechner), wirst 
-du nach dem Pfad zu fsframework gefragt. Auf den Fachschaftrechnern sollte das /home/fskasse/fsframework sein. Danach sollte das Programm laufen.
+du nach dem Pfad zu fsframework gefragt. Auf den Fachschaftrechnern sollte das /home/fskasse/fsfibu2/fsframework sein. Danach sollte das Programm laufen.
 
 \section{Bibliotheken}
 fsfibu 2 verwendet folgende weitere Bibliotheken:
@@ -58,7 +58,7 @@ Wenn du fsfibu 2 das erste Mal öffnest, wird es ungefähr so aussehen: Nämlich
 \begin{itemize}
  \item Neues Kassenbuch: Erstellt ein neues, leeres Kassenbuch und öffnet es
  \item Kassenbuch öffnet: Öffnet einen Dialog, um eine existierende Kassenbuchdate zu auszuwählen, die dann geladen wird
- \item Speichern: Speichert das aktuell ausgewählte Kassenbuch. Ist das Kassenbuch noch mit keiner Datei verknüpft, so wird ein entsprechende Dialog geöffnet
+ \item Speichern: Speichert das aktuell ausgewählte Kassenbuch. Ist das Kassenbuch noch mit keiner Datei verknüpft, so wird ein entsprechende Dialog geöffnet. Kann mit Strg-S ausgelöst werden.
  \item Speichern unter: Speichert das Kassenbuch in einer anderen Datei
  \item Optionen: Hier kann man verschiedene Einstellungen am Programm vornehmen: Zur Zeit ist das lediglich die Sprache
  \item Hilfe: Dieser Knopf öffnet dieses Handbuch, sofern Java die entsprechende Programmzuweisung für pdf-Dokumente kennt. Wenn nicht, muss man das Handbuch eben 'von Hand' öffnen.
@@ -104,6 +104,7 @@ Ein Eintrag besteht aus folgenden Informationen:
 Die Werkzeugleiste bietet folgende Optionen:
 \begin{itemize}
  \item Neuer Eintrag / Editieren / Löschen: Die drei ersten Knöpfe dienen dazu, Einträge neu zu erstellen, zu bearbeiten oder zu löschen. Dabei können beliebig viele Einträge auf einmal bearbeitet oder gelöscht werden.
+ Ein neuer Eintrag kann auch mit Strg-N erstellt werden und ein existierender mit 'Entf' gelöscht werden.
  \item Drucken: Das Kassenbuch kann als einfache Tabelle sofort gedruckt werden. Die Messpunkte und Jahrestrenner werden dabei ausgelassen. Im entsprechenden Druckdialog kann man angeben, welcher Titel über der Tabelle erscheinen soll, in welcher Schriftgröße gedruckt werden soll und ob die Anmerkungen ebenfalls gedruckt werden sollen. Ein Eintrag kann auch durch Doppelklick editiert werden.
  \item Als csv exportieren: Analog zum CSV Tabellenformat werden hier allerdings nur die sichtbaren Einträge exportiert.
  \item Editiere Messpunkte: Hiermit öffnet sich ein Dialog zum Editieren der Messpunkte. Ein Messpunkt besteht aus einem Namen und einem Datum, das angibt welche Einträge vor ihm liegen (nämlich alle bis einschließlich zu diesem Datum).

@@ -9,14 +9,18 @@ import java.text.ParseException;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
@@ -119,7 +123,12 @@ public class ReadingPointDialog extends FrameworkDialog {
 		}
 	};
 	
-	private ActionListener closeListener = new ActionListener() {
+	private Action closeListener = new AbstractAction() {
+		/**
+		 * compiler-generated serial version uid
+		 */
+		private static final long serialVersionUID = -7035872590509354661L;
+
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			dispose();
@@ -273,6 +282,8 @@ public class ReadingPointDialog extends FrameworkDialog {
 		editButton.addActionListener(editListener);
 		deleteButton.addActionListener(deleteListener);
 		closeButton.addActionListener(closeListener);
+			closeButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "dispose");
+			closeButton.getActionMap().put("dispose", closeListener);
 		cancelButton.addActionListener(cancelListener);
 		okButton.addActionListener(okListener);
 	}

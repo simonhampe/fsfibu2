@@ -13,7 +13,7 @@
 \contentsline {subsubsection}{Die Tabelle}{7}
 \contentsline {subsubsection}{Eintr\IeC {\"a}ge erstellen / editieren}{7}
 \contentsline {subsubsection}{Die Werkzeugleiste}{8}
-\contentsline {subsubsection}{Die Bilanz}{8}
+\contentsline {subsubsection}{Die Bilanz}{9}
 \contentsline {subsection}{\numberline {2.2.2}Filter}{9}
 \contentsline {subsubsection}{Tabtitel}{9}
 \contentsline {subsubsection}{Der Filtereditor}{9}
