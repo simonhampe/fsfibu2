@@ -2,6 +2,7 @@ package fs.fibu2.data.format;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 import fs.fibu2.data.model.Entry;
@@ -65,8 +66,29 @@ public class Fsfibu2DateFormats {
 		return c;
 	}
 	
+	/**
+	 * @return A slightly modified version of #{@link #entryDateInputFormat}. If a year is >= or <= 9, the year 2000
+	 * is added (this has the effect, that one-digit year value are NOT interpreted literally)
+	 */
 	public static SimpleDateFormat getDateInputFormat() {
-		return new SimpleDateFormat(entryDateInputFormat);
+		return new SimpleDateFormat(entryDateInputFormat) {
+
+			/**
+			 * compiler-generated serial version uid
+			 */
+			private static final long serialVersionUID = 3304838431819846363L;
+
+			@Override
+			public Date parse(String source) throws ParseException {
+				GregorianCalendar c = new GregorianCalendar();
+				c.setTime(super.parse(source));
+				int year = c.get(GregorianCalendar.YEAR);
+				if(year >= 0 && year <= 9) {
+					c.set(GregorianCalendar.YEAR, year + 2000);
+				}
+				return c.getTime();
+			}			
+		};
 	}
 	
 	public static GregorianCalendar parseDateInputFormat(String source) throws ParseException {

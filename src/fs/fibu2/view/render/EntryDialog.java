@@ -13,6 +13,7 @@ import java.awt.event.WindowListener;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Currency;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 
 import javax.swing.AbstractAction;
@@ -147,7 +148,12 @@ public class EntryDialog extends FrameworkDialog {
 			Result r = Result.CORRECT;
 			String tooltip = null;
 			try {
-				Fsfibu2DateFormats.getDateInputFormat().parse(component.getText());
+				GregorianCalendar c = new GregorianCalendar();
+				c.setTime(Fsfibu2DateFormats.getDateInputFormat().parse(component.getText()));
+				if(c.get(GregorianCalendar.YEAR) < 1900) {
+					r = Result.INCORRECT;
+					tooltip = Fsfibu2StringTableMgr.getString(sgroup + ".smalldate");
+				}
 			} catch (ParseException e) {
 				r = Result.INCORRECT;
 				tooltip = Fsfibu2StringTableMgr.getString(sgroup + ".wrongdate");
