@@ -92,6 +92,7 @@ public class Fsfibu2 {
 		}
 		catch(UnsupportedOperationException e) {
 			JOptionPane.showMessageDialog(null, "Could not find fsframework. fsfibu2 will not be started", "Error", JOptionPane.ERROR_MESSAGE);
+			System.exit(1);
 		}
 		
 		//Load language
