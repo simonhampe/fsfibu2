@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Locale;
+import java.util.prefs.Preferences;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -21,6 +22,7 @@ import fs.fibu2.data.model.AccountLoader;
 import fs.fibu2.filter.FilterLoader;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
 import fs.fibu2.view.render.JournalModuleLoader;
+import fs.xml.PolyglotStringTable;
 
 /**
  * This class is responsible for initializing and starting fsfibu2. The expected initialization files (which are  all optional) are: <br>
@@ -91,6 +93,11 @@ public class Fsfibu2 {
 		catch(UnsupportedOperationException e) {
 			JOptionPane.showMessageDialog(null, "Could not find fsframework. fsfibu2 will not be started", "Error", JOptionPane.ERROR_MESSAGE);
 		}
+		
+		//Load language
+		logger.info(Fsfibu2StringTableMgr.getString("fs.fibu2.init.loadinglanguage"));
+		String languageID = Preferences.userRoot().node("fsfibu2").node("lang").get("lang", "en");
+		PolyglotStringTable.setGlobalLanguageID(languageID);
 		
 		//Now load all user classes
 		try {

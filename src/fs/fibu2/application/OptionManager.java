@@ -5,7 +5,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Vector;
 import java.util.prefs.Preferences;
@@ -14,27 +13,19 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 
-import org.apache.log4j.Logger;
-import org.dom4j.Element;
-import org.dom4j.tree.DefaultDocument;
-
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
 import fs.fibu2.resource.Fsfibu2DefaultReference;
 import fs.gui.FrameworkDialog;
 import fs.gui.GUIToolbox;
 import fs.polyglot.model.Language;
 import fs.polyglot.view.LanguageListCellRenderer;
-import fs.xml.FsfwConfigurator;
 import fs.xml.FsfwDefaultReference;
 import fs.xml.PolyglotStringLoader;
 import fs.xml.PolyglotStringTable;
-import fs.xml.XMLReadConfigurationException;
-import fs.xml.XMLToolbox;
 
 /**
  * This class manages the global application options. It provides functions to save these options to a {@link Preferences} node and 
- * to retrieve them from it. The only option that cannot be changed via Preferences is the the application language, which is saved in the
- * {@link FrameworkLoader} file and has to be saved explicitly. The manager also provides a dialog for the user to access these options.
+ * to retrieve them from it. The manager also provides a dialog for the user to access these options.
  * The option manager should be instantiated after Fsframework has been initialized.
  * @author Simon Hampe
  *
@@ -44,7 +35,7 @@ public class OptionManager {
 	// MISC **************************
 	// *******************************
 	
-	private Logger logger = Logger.getLogger(OptionManager.class);
+//	private Logger logger = Logger.getLogger(OptionManager.class);
 	
 	// OPTIONS ************************
 	// ********************************
@@ -81,19 +72,20 @@ public class OptionManager {
 	 * this language is chosen
 	 */
 	public void saveLanguage() {
-		FsfwConfigurator configurator = new FsfwConfigurator("frameworkConfigurator");
-			configurator.setGlobalLanguageID(languageID);
-			configurator.setDefaultDirectory(FsfwDefaultReference.getFsfwDirectory());
-		try {
-			Element e = configurator.getConfiguration();
-			DefaultDocument d = new DefaultDocument();
-			d.setRootElement(e);
-			XMLToolbox.saveXML(d, FrameworkLoader.configuratorPath);
-		} catch (XMLReadConfigurationException e) {
-			//Will not happen
-		} catch (IOException e) {
-			logger.error("Cannot save Framework configuration: " + e.getLocalizedMessage());
-		}
+		Preferences.userRoot().node("fsfibu2").node("lang").put("lang", languageID);
+//		FsfwConfigurator configurator = new FsfwConfigurator("frameworkConfigurator");
+//			configurator.setGlobalLanguageID(languageID);
+//			configurator.setDefaultDirectory(FsfwDefaultReference.getFsfwDirectory());
+//		try {
+//			Element e = configurator.getConfiguration();
+//			DefaultDocument d = new DefaultDocument();
+//			d.setRootElement(e);
+//			XMLToolbox.saveXML(d, FrameworkLoader.configuratorPath);
+//		} catch (XMLReadConfigurationException e) {
+//			//Will not happen
+//		} catch (IOException e) {
+//			logger.error("Cannot save Framework configuration: " + e.getLocalizedMessage());
+//		}
 	}
 	
 	/**
