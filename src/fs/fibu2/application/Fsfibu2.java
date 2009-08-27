@@ -106,7 +106,7 @@ public class Fsfibu2 {
 				URLClassLoader accountLoader = new URLClassLoader(accountURL);
 			URL[] filterURL = {new URL("file://filters/")};
 				URLClassLoader filterLoader = new URLClassLoader(filterURL);
-			URL[] moduleURL = {new URL("file://modules/")};
+			URL[] moduleURL = {new URL("file://modules/"),new URL("file://bin/fs/fibu2/module")};
 				URLClassLoader moduleLoader = new URLClassLoader(moduleURL);
 			URL[] exportURL = {new URL("file://exports/")};
 				URLClassLoader exportLoader = new URLClassLoader(exportURL);
