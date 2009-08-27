@@ -1,6 +1,8 @@
 package fs.fibu2.application;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -103,13 +105,13 @@ public class Fsfibu2 {
 		//Now load all user classes
 		try {
 			URL[] accountURL =  {new URL("file://accounts/")};
-				URLClassLoader accountLoader = new URLClassLoader(accountURL);
+				CustomLoader accountLoader = new CustomLoader(accountURL);
 			URL[] filterURL = {new URL("file://filters/")};
-				URLClassLoader filterLoader = new URLClassLoader(filterURL);
-			URL[] moduleURL = {new URL("file://modules/"),new URL("file://bin/fs/fibu2/module")};
-				URLClassLoader moduleLoader = new URLClassLoader(moduleURL);
+				CustomLoader filterLoader = new CustomLoader(filterURL);
+			URL[] moduleURL = {new URL("file://modules/")};
+				CustomLoader moduleLoader = new CustomLoader(moduleURL);
 			URL[] exportURL = {new URL("file://exports/")};
-				URLClassLoader exportLoader = new URLClassLoader(exportURL);
+				CustomLoader exportLoader = new CustomLoader(exportURL);
 			//Accounts
 			logger.info(Fsfibu2StringTableMgr.getString("fs.fibu2.init.loadingaccounts"));
 			File accountDir = new File("accounts/");
@@ -119,9 +121,9 @@ public class Fsfibu2 {
 					if(name.endsWith(".class")) {
 						String subname = name.substring(0, name.length()-6);
 						try {
-							Class<?> c = accountLoader.loadClass("fs.fibu2.account." + subname);
+							Class<?> c = accountLoader.getClassFromFile("fs.fibu2.account." + subname,a);
 							AccountLoader.loadAccount(c);
-						} catch (ClassNotFoundException e) {
+						} catch (IOException e) {
 							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.classnotfound",name) + ": " + e.getLocalizedMessage());
 						}
 						catch(UnsupportedOperationException e) {
@@ -139,9 +141,9 @@ public class Fsfibu2 {
 					if(name.endsWith(".class")) {
 						String subname = name.substring(0, name.length()-6);
 						try {
-							Class<?> c = filterLoader.loadClass("fs.fibu2.filter." + subname);
+							Class<?> c = filterLoader.getClassFromFile("fs.fibu2.filter." + subname,a);
 							FilterLoader.loadFilter(c);
-						} catch (ClassNotFoundException e) {
+						} catch (IOException e) {
 							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.classnotfound",name) + ": " + e.getLocalizedMessage());
 						}
 						catch(UnsupportedOperationException e) {
@@ -159,9 +161,9 @@ public class Fsfibu2 {
 					if(name.endsWith(".class")) {
 						String subname = name.substring(0, name.length()-6);
 						try {
-							Class<?> c = moduleLoader.loadClass("fs.fibu2.module." + subname);
+							Class<?> c = moduleLoader.getClassFromFile("fs.fibu2.module." + subname,a);
 							JournalModuleLoader.loadModule(c);
-						} catch (ClassNotFoundException e) {
+						} catch (IOException e) {
 							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.classnotfound",name) + ": " + e.getLocalizedMessage());
 						}
 						catch(UnsupportedOperationException e) {
@@ -179,10 +181,10 @@ public class Fsfibu2 {
 					if(name.endsWith(".class")) {
 						String subname = name.substring(0, name.length()-6);
 						try {
-							Class<?> c = exportLoader.loadClass("fs.fibu2.export." + subname);
+							Class<?> c = exportLoader.getClassFromFile("fs.fibu2.export." + subname,a);
 							JournalExportLoader.loadExport(c);
 						}
-						catch (ClassNotFoundException e) {
+						catch (IOException e) {
 							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.classnotfound",name));
 						}
 						catch(UnsupportedOperationException e) {
@@ -211,4 +213,31 @@ public class Fsfibu2 {
 		return frame;
 	}
 
+	/**
+	 * A custom class loader for loading plugins from .class files
+	 * @author Simon Hampe
+	 *
+	 */
+	private class CustomLoader extends URLClassLoader {
+
+		public CustomLoader(URL[] urls) {
+			super(urls);
+		}
+		
+		/**
+		 * Loads a class from a given file
+		 * @param name The fully qualified name of the class
+		 * @param f The .class file
+		 * @return The class object
+		 * @throws IOException - If anything goes wrong 
+		 */
+		public Class<?> getClassFromFile(String name, File f) throws IOException {
+			byte[] b = new byte[(int)f.length()];
+			FileInputStream stream = new FileInputStream(f);
+			stream.read(b);
+			return defineClass(name, b, 0, b.length);
+		}
+		
+	}
+	
 }
