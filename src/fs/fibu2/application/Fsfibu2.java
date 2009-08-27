@@ -122,7 +122,7 @@ public class Fsfibu2 {
 							Class<?> c = accountLoader.loadClass("fs.fibu2.account." + subname);
 							AccountLoader.loadAccount(c);
 						} catch (ClassNotFoundException e) {
-							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.classnotfound",name));
+							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.classnotfound",name) + ": " + e.getLocalizedMessage());
 						}
 						catch(UnsupportedOperationException e) {
 							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.accountnotloaded",subname,e.getMessage()));
@@ -142,7 +142,7 @@ public class Fsfibu2 {
 							Class<?> c = filterLoader.loadClass("fs.fibu2.filter." + subname);
 							FilterLoader.loadFilter(c);
 						} catch (ClassNotFoundException e) {
-							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.classnotfound",name));
+							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.classnotfound",name) + ": " + e.getLocalizedMessage());
 						}
 						catch(UnsupportedOperationException e) {
 							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.filternotloaded",subname,e.getMessage()));
@@ -162,7 +162,7 @@ public class Fsfibu2 {
 							Class<?> c = moduleLoader.loadClass("fs.fibu2.module." + subname);
 							JournalModuleLoader.loadModule(c);
 						} catch (ClassNotFoundException e) {
-							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.classnotfound",name));
+							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.classnotfound",name) + ": " + e.getLocalizedMessage());
 						}
 						catch(UnsupportedOperationException e) {
 							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.modulenotloaded",subname,e.getMessage()));
