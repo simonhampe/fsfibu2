@@ -710,7 +710,7 @@ public class EntryDialog extends FrameworkDialog {
 				accMap.put(k, accountMap.get(k).getText());
 			}
 		try {
-			return new Entry(fieldName.getText(),
+			return new Entry(radioNewName.isSelected()? fieldName.getText() : comboNames.getSelectedItem().toString(),
 							DefaultCurrencyFormat.getFormat().parse(fieldValue.getText()).floatValue(),Currency.getInstance("EUR"),Fsfibu2DateFormats.parseDateInputFormat(fieldDate.getText()),
 							radioExisting.isSelected()? (Category)comboCategory.getSelectedItem() :
 								(radioNew.isSelected()? Category.getCategory((Category)comboCategory.getSelectedItem(),fieldNewCategory.getText()) :
