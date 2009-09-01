@@ -223,7 +223,7 @@ public class ReadingPointDialog extends FrameworkDialog {
 		GridBagLayout gbl = new GridBagLayout();
 		setLayout(gbl);
 		
-		GridBagConstraints gcList 	= GUIToolbox.buildConstraints(0, 0, 1, 6);
+		GridBagConstraints gcList 	= GUIToolbox.buildConstraints(0, 0, 1, 6); gcList.ipadx = 100;
 		GridBagConstraints gcNew 	= GUIToolbox.buildConstraints(1, 0, 1, 1);
 		GridBagConstraints gcEdit 	= GUIToolbox.buildConstraints(1, 1, 1, 1);
 		GridBagConstraints gcDelete = GUIToolbox.buildConstraints(1, 2, 1, 1);
