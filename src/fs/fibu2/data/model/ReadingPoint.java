@@ -113,11 +113,11 @@ public class ReadingPoint implements EntrySeparator, XMLConfigurable {
 	}
 	
 	/**
-	 * @return true, if and only if {@link #compareTo(Entry)} returns 1
+	 * @return true, if and only if {@link #compareTo(Entry)} returns something >= 0
 	 */
 	@Override
 	public boolean isLessOrEqualThanMe(Entry e) {
-		return compareTo(e) == 1;
+		return compareTo(e) >= 0;
 	}
 
 	// LISTENER MECHANISM *********************
