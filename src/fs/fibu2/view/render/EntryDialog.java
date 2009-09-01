@@ -389,6 +389,13 @@ public class EntryDialog extends FrameworkDialog {
 		}
 	};
 	
+	private ActionListener oldNameActionListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			radioOldName.setSelected(true);
+		}
+	};
+	
 	//Makes the category editor visible
 	private ActionListener createCategoryListener = new ActionListener() {
 		@Override
@@ -572,6 +579,7 @@ public class EntryDialog extends FrameworkDialog {
 		fieldDate.getDocument().addDocumentListener(previewListener);
 		fieldValue.getDocument().addDocumentListener(previewListener);
 		comboNames.addItemListener(oldNameListener);
+		comboNames.addActionListener(oldNameActionListener);
 		comboAccount.addItemListener(accountListener);
 		checkAdditional.addChangeListener(checkAdditionalListener);
 		okButton.addActionListener(closeButtonListener);

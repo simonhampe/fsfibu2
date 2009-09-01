@@ -21,16 +21,16 @@
     <variant lang="en">Statement sheet number</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2ext.account.NonStrictBankAccount.name" group="fs.fibu2ext.account.NonStrictBankAccount">
-    <variant lang="de">Generisches Bankkonto</variant>
+    <variant lang="de">Allgemeines Bankkonto</variant>
     <variant lang="en">Generic bank account</variant>
-  </polyglotstring>
-  <polyglotstring id="fs.fibu2ext.account.NonStrictBankAccount.nonumber" group="fs.fibu2ext.account.NonStrictBankAccount">
-    <variant lang="de">Die Kontoauszugsnummer sollte eine ganze Zahl sein. Wenn Sie sie noch nicht kennen, sollen sie das Feld frei lassen.</variant>
-    <variant lang="en">The statement sheet number should be a number. If you don't know it yet, you should leave it empty</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2ext.account.NonStrictBankAccount.nostatement" group="fs.fibu2ext.account.NonStrictBankAccount">
     <variant lang="de">Es wurde kein Kontoauszug angegeben</variant>
     <variant lang="en">No statement sheet number was given</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2ext.account.NonStrictBankAccount.nonumber" group="fs.fibu2ext.account.NonStrictBankAccount">
+    <variant lang="de">Die Kontoauszugsnummer sollte eine ganze Zahl sein. Wenn Sie sie noch nicht kennen, sollen sie das Feld frei lassen.</variant>
+    <variant lang="en">The statement sheet number should be a number. If you don't know it yet, you should leave it empty</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2ext.account.NonStrictBankAccount.statementname" group="fs.fibu2ext.account.NonStrictBankAccount">
     <variant lang="de">Kontoauszug</variant>
