@@ -365,8 +365,8 @@ public class MainFrame extends JFrame implements ResourceDependent {
 		}
 		else {
 			JournalVector vector = journalsOpen.get(tabPane.getSelectedIndex());
-			if(vector.journal.getName().trim().equals("")) b.append(Fsfibu2StringTableMgr.getString("fs.fibu2.MainFrame.unnamed"));
-			else b.append(vector.journal.getName());
+			if(vector.file == null) b.append(Fsfibu2StringTableMgr.getString("fs.fibu2.MainFrame.unnamed"));
+			else b.append(vector.file.getAbsolutePath());
 			if (vector.flag.hasBeenChanged())
 				b.append("*");
 			saveButton.setEnabled(true);
