@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<fsfw:polyglotstringtable id="INVENTORY" xmlns:fsfw="http://www.fsmathe.uni-kl.de/fsframework" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fsmathe.uni-kl.de/fsframework ../schema/PolyglotStringTable.xsd">
+  <description>A string table for the fsfibu 2 INVENTORY extension</description>
+  <languagetable>
+    <language>
+      <id>de</id>
+      <description>Deutsch</description>
+    </language>
+    <language>
+      <id>en</id>
+      <description>English</description>
+    </language>
+  </languagetable>
+  <polyglotstring id="fs.invent.model.InventoryDateModel.columnDelete" group="fs.invent.model.InventoryDateModel">
+    <variant lang="de">Löschen</variant>
+    <variant lang="en">Delete</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.invent.model.ArticleTableModel.columnName" group="fs.invent.model.ArticleTableModel">
+    <variant lang="de">Name</variant>
+    <variant lang="en">Name</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.invent.render.ArticleDeleteButton.text" group="fs.invent.render.ArticleDeleteButton">
+    <variant lang="de">Löschen</variant>
+    <variant lang="en">Delete</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.invent.model.InventoryDateModel.columnID" group="fs.invent.model.InventoryDateModel">
+    <variant lang="de">ID</variant>
+    <variant lang="en">ID</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.invent.model.ArticleTableModel.columnID" group="fs.invent.model.ArticleTableModel">
+    <variant lang="de">ID</variant>
+    <variant lang="en">ID</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.invent.model.InventoryDateModel.columnDate" group="fs.invent.model.InventoryDateModel">
+    <variant lang="de">Datum</variant>
+    <variant lang="en">Date</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.invent.model.ArticleTableModel.columnDelete" group="fs.invent.model.ArticleTableModel">
+    <variant lang="de">Löschen</variant>
+    <variant lang="en">Delete</variant>
+  </polyglotstring>
+</fsfw:polyglotstringtable>
