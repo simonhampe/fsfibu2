@@ -12,13 +12,21 @@
       <description>English</description>
     </language>
   </languagetable>
+  <polyglotstring id="fs.invent.model.ArticleTableModel.columnName" group="fs.invent.model.ArticleTableModel">
+    <variant lang="de">Name</variant>
+    <variant lang="en">Name</variant>
+  </polyglotstring>
   <polyglotstring id="fs.invent.model.InventoryDateModel.columnDelete" group="fs.invent.model.InventoryDateModel">
     <variant lang="de">Löschen</variant>
     <variant lang="en">Delete</variant>
   </polyglotstring>
-  <polyglotstring id="fs.invent.model.ArticleTableModel.columnName" group="fs.invent.model.ArticleTableModel">
-    <variant lang="de">Name</variant>
-    <variant lang="en">Name</variant>
+  <polyglotstring id="fs.invent.model.InventoryTableModel.columnCost" group="fs.invent.model.InventoryTableModel">
+    <variant lang="de">Kosten</variant>
+    <variant lang="en">Cost</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.invent.model.InventoryTableModel.columnCount" group="fs.invent.model.InventoryTableModel">
+    <variant lang="de">Anzahl</variant>
+    <variant lang="en">Count</variant>
   </polyglotstring>
   <polyglotstring id="fs.invent.render.ArticleDeleteButton.text" group="fs.invent.render.ArticleDeleteButton">
     <variant lang="de">Löschen</variant>
@@ -28,6 +36,10 @@
     <variant lang="de">ID</variant>
     <variant lang="en">ID</variant>
   </polyglotstring>
+  <polyglotstring id="fs.invent.model.InventoryTableModel.columnArticle" group="fs.invent.model.InventoryTableModel">
+    <variant lang="de">Artikel</variant>
+    <variant lang="en">Article</variant>
+  </polyglotstring>
   <polyglotstring id="fs.invent.model.ArticleTableModel.columnID" group="fs.invent.model.ArticleTableModel">
     <variant lang="de">ID</variant>
     <variant lang="en">ID</variant>
@@ -35,6 +47,10 @@
   <polyglotstring id="fs.invent.model.InventoryDateModel.columnDate" group="fs.invent.model.InventoryDateModel">
     <variant lang="de">Datum</variant>
     <variant lang="en">Date</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.invent.model.InventoryTableModel.columnPrice" group="fs.invent.model.InventoryTableModel">
+    <variant lang="de">Preis</variant>
+    <variant lang="en">Price</variant>
   </polyglotstring>
   <polyglotstring id="fs.invent.model.ArticleTableModel.columnDelete" group="fs.invent.model.ArticleTableModel">
     <variant lang="de">Löschen</variant>
