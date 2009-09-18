@@ -221,6 +221,9 @@ Die ID-Konvention für Konten ist, den Namen des Kontos klein zu schreiben und L
 \section{Export}
 Man kann ein Kassenbuch in mehrere verschiedene Formate exportieren. Unter Umständen benötigt man aber ein sehr bestimmtes Format. Den entsprechenden Exporter kann man sich dann selbst schreiben. Er muss das Interface \textit{fs.fibu2.data.format.JournalExport} implementieren. Export unter fsfibu 2 unterstützt keine variablen Parameter, wie z.B. Filter oder ähnliches. Die Exportmethode enthält als Argumente lediglich das zu exportierende Kassenbuch und den Namen der Datei, in die es exportiert werden soll. Die Klassendatei gehört in das Verzeichnis exports/.
 
+\section{Bibliotheken}
+Ein aufwändiges Plugin, insbesondere ein neues Modul, braucht unter Umständen weitere, selbst definierte Klassen. Würde man nur die Klassendatei des Moduls laden, käme man nicht weit, der ClassLoader würde all diese Klassen nicht kennen. Deswegen gibt es die Möglichkeit, eigene jar - Bibliotheken beim Programmstart zu laden. Die Datei muss auf .jar enden und im Verzeichnis pluginlibs/ liegen. Das Programm wird dann versuchen, sie vor den Plugins zu laden.
+
 \section{Sprache}\label{language}
 fsfibu 2 ist so gestaltet, dass es ohne größeren Aufwand in mehreren Sprachen dargstellt werden kann. Dazu wird eine Texttabelle im XML-Format verwendet, die alle in fsfibu 2 erscheindenen Texte in eben diesen Sprachen enthält. Die Tabelle kann mit dem von mir geschriebenen Programm POLYGLOT bearbeitet werden (das zum Paket fsframework gehört, bzw. unter /fsframework mit polyglot.jar gestartet werden kann). Die alte Tabelle muss allerdings nicht unbedingt durch eine neue ersetzt werden, es reicht auch, die neue, modifizierte Version unter anderem Namen in das Unterverzeichnis lang/. fsfibu 2 wird sie dann automatisch laden und als Update integrieren.
 

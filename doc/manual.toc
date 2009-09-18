@@ -32,4 +32,5 @@
 \contentsline {section}{\numberline {3.2}Filter}{15}
 \contentsline {section}{\numberline {3.3}Konten}{15}
 \contentsline {section}{\numberline {3.4}Export}{15}
-\contentsline {section}{\numberline {3.5}Sprache}{16}
+\contentsline {section}{\numberline {3.5}Bibliotheken}{16}
+\contentsline {section}{\numberline {3.6}Sprache}{16}
