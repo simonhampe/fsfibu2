@@ -24,6 +24,18 @@
     <variant lang="de">Löschen</variant>
     <variant lang="en">Delete</variant>
   </polyglotstring>
+  <polyglotstring id="fs.invent.model.InventoryDateModel.columnDate" group="fs.invent.model.InventoryDateModel">
+    <variant lang="de">Datum</variant>
+    <variant lang="en">Date</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.invent.InventoryModule.tabname" group="fs.invent.InventoryModule">
+    <variant lang="de">Inventur</variant>
+    <variant lang="en">Inventory</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.invent.model.ArticleTableModel.columnDelete" group="fs.invent.model.ArticleTableModel">
+    <variant lang="de">Löschen</variant>
+    <variant lang="en">Delete</variant>
+  </polyglotstring>
   <polyglotstring id="fs.invent.model.InventoryTableModel.columnCount" group="fs.invent.model.InventoryTableModel">
     <variant lang="de">Anzahl</variant>
     <variant lang="en">Count</variant>
@@ -44,10 +56,6 @@
     <variant lang="de">ID</variant>
     <variant lang="en">ID</variant>
   </polyglotstring>
-  <polyglotstring id="fs.invent.model.InventoryDateModel.columnDate" group="fs.invent.model.InventoryDateModel">
-    <variant lang="de">Datum</variant>
-    <variant lang="en">Date</variant>
-  </polyglotstring>
   <polyglotstring id="fs.invent.model.InventoryDateModel.columnName" group="fs.invent.model.InventoryDateModel">
     <variant lang="de">Name</variant>
     <variant lang="en">Name</variant>
@@ -56,8 +64,8 @@
     <variant lang="de">Preis</variant>
     <variant lang="en">Price</variant>
   </polyglotstring>
-  <polyglotstring id="fs.invent.model.ArticleTableModel.columnDelete" group="fs.invent.model.ArticleTableModel">
-    <variant lang="de">Löschen</variant>
-    <variant lang="en">Delete</variant>
+  <polyglotstring id="fs.invent.InventoryModule.tabtip" group="fs.invent.InventoryModule">
+    <variant lang="de">Verwaltet Inventurdateien</variant>
+    <variant lang="en">Manages inventory files</variant>
   </polyglotstring>
 </fsfw:polyglotstringtable>

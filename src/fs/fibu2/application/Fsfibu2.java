@@ -108,7 +108,7 @@ public class Fsfibu2 {
 				CustomLoader accountLoader = new CustomLoader(accountURL);
 			URL[] filterURL = {new URL("file://filters/")};
 				CustomLoader filterLoader = new CustomLoader(filterURL);
-			URL[] moduleURL = {new URL("file://modules/")};
+			URL[] moduleURL = {new URL("file://modules/") };
 				CustomLoader moduleLoader = new CustomLoader(moduleURL);
 			URL[] exportURL = {new URL("file://exports/")};
 				CustomLoader exportLoader = new CustomLoader(exportURL);
@@ -127,7 +127,8 @@ public class Fsfibu2 {
 						catch(UnsupportedOperationException e) {
 							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.accountnotloaded",subname,e.getMessage()));
 						}
-						catch (Exception e) {
+						catch (Throwable e) 
+						{
 							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.classnotfound",name) + ": " + e.getLocalizedMessage());
 						}
 					}
@@ -147,7 +148,7 @@ public class Fsfibu2 {
 						} catch(UnsupportedOperationException e) {
 							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.filternotloaded",subname,e.getMessage()));
 						}
-						catch (Exception e) {
+						catch (Throwable e) {
 							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.classnotfound",name) + ": " + e.getLocalizedMessage());
 						}
 					}
@@ -168,7 +169,7 @@ public class Fsfibu2 {
 						catch(UnsupportedOperationException e) {
 							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.modulenotloaded",subname,e.getMessage()));
 						}
-						catch (Exception e) {
+						catch (Throwable e) {
 							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.classnotfound",name) + ": " + e.getLocalizedMessage());
 						}
 					}
@@ -189,7 +190,7 @@ public class Fsfibu2 {
 						catch(UnsupportedOperationException e) {
 							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.exportnotloaded",subname,e.getMessage()));
 						}
-						catch (Exception e) {
+						catch (Throwable e) {
 							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.classnotfound",name));
 						}
 					}
@@ -223,7 +224,19 @@ public class Fsfibu2 {
 	private class CustomLoader extends URLClassLoader {
 
 		public CustomLoader(URL[] urls) {
+			//Add all jar files in pluginlibs/
 			super(urls);
+			File directory = new File("pluginlibs/");
+			File[] jarfiles = directory.listFiles();
+			for(File f : jarfiles) {
+				if(f.getName().endsWith(".jar")) {
+					try {
+						addURL(f.toURI().toURL());
+					} catch (MalformedURLException e) {
+						//Will not happen
+					}
+				}
+			}
 		}
 		
 		/**
