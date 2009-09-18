@@ -123,11 +123,12 @@ public class Fsfibu2 {
 						try {
 							Class<?> c = accountLoader.getClassFromFile("fs.fibu2.account." + subname,a);
 							AccountLoader.loadAccount(c);
-						} catch (IOException e) {
-							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.classnotfound",name) + ": " + e.getLocalizedMessage());
 						}
 						catch(UnsupportedOperationException e) {
 							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.accountnotloaded",subname,e.getMessage()));
+						}
+						catch (Exception e) {
+							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.classnotfound",name) + ": " + e.getLocalizedMessage());
 						}
 					}
 				}
@@ -143,11 +144,11 @@ public class Fsfibu2 {
 						try {
 							Class<?> c = filterLoader.getClassFromFile("fs.fibu2.filter." + subname,a);
 							FilterLoader.loadFilter(c);
-						} catch (IOException e) {
-							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.classnotfound",name) + ": " + e.getLocalizedMessage());
-						}
-						catch(UnsupportedOperationException e) {
+						} catch(UnsupportedOperationException e) {
 							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.filternotloaded",subname,e.getMessage()));
+						}
+						catch (Exception e) {
+							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.classnotfound",name) + ": " + e.getLocalizedMessage());
 						}
 					}
 				}
@@ -163,11 +164,12 @@ public class Fsfibu2 {
 						try {
 							Class<?> c = moduleLoader.getClassFromFile("fs.fibu2.module." + subname,a);
 							JournalModuleLoader.loadModule(c);
-						} catch (IOException e) {
-							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.classnotfound",name) + ": " + e.getLocalizedMessage());
 						}
 						catch(UnsupportedOperationException e) {
 							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.modulenotloaded",subname,e.getMessage()));
+						}
+						catch (Exception e) {
+							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.classnotfound",name) + ": " + e.getLocalizedMessage());
 						}
 					}
 				}
@@ -184,11 +186,11 @@ public class Fsfibu2 {
 							Class<?> c = exportLoader.getClassFromFile("fs.fibu2.export." + subname,a);
 							JournalExportLoader.loadExport(c);
 						}
-						catch (IOException e) {
-							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.classnotfound",name));
-						}
 						catch(UnsupportedOperationException e) {
 							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.exportnotloaded",subname,e.getMessage()));
+						}
+						catch (Exception e) {
+							logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.classnotfound",name));
 						}
 					}
 				}
