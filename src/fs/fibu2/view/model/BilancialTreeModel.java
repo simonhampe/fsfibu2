@@ -592,7 +592,7 @@ public class BilancialTreeModel implements TreeModel, JournalListener, ChangeLis
 		//If it has no subcategories, simply return a trivial, one-element dataset
 		if(subcats == null || subcats.size() == 0) {
 			if(invisibles.contains(ec)) dataset.setValue(c,0);
-			else dataset.setValue(c, positive? plus.get(c) : -minus.get(c));
+			else dataset.setValue(c, positive? plus.get(c) == null? 0 : plus.get(c) : -(minus.get(c) == null? 0 : minus.get(c)));
 			return dataset;
 		}
 		
