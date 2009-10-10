@@ -340,16 +340,19 @@ public class ExportModule extends JPanel implements JournalModule, ResourceDepen
 			JournalExport export = (JournalExport)exportList.getSelectedValue();
 			nameLabel.setText("<html><b>" + export.getName() + "</b></html>");
 			descriptionArea.setText(export.getDescription());
-			if(backupTimer.containsKey(export.getID())) {
-				fileNameLabel.setText(fileNames.get(export.getID()));
+			
+			minuteSpinner.removeChangeListener(spinnerListener);
+			fileNameLabel.setText(fileNames.containsKey(export.getID())? fileNames.get(export.getID()) : "");
+			if(backupTimer.containsKey(export.getID())) {	
 				minuteSpinner.setValue(backupTimer.get(export.getID()));
 				backupCheck.setSelected(true);
 			}
 			else {
 				backupCheck.setSelected(false);
 				minuteSpinner.setValue(new Integer(15));
-				fileNameLabel.setText("");
 			}
+			minuteSpinner.addChangeListener(spinnerListener);
+			
 			checkListener.itemStateChanged(null);
 		}
 	}
@@ -374,6 +377,7 @@ public class ExportModule extends JPanel implements JournalModule, ResourceDepen
 		if(timers.containsKey(export.getID())) {
 			timers.get(export.getID()).stop();
 			timers.remove(export.getID());
+			backupTimer.remove(export.getID());
 		}
 		if(f != null){
 			backupTimer.put(export.getID(),minute);
