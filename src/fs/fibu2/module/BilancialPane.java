@@ -6,39 +6,58 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Arrays;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingWorker;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeSelectionModel;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.labels.PieSectionLabelGenerator;
+import org.jfree.chart.labels.StandardPieSectionLabelGenerator;
+import org.jfree.chart.plot.PiePlot3D;
 
 import fs.fibu2.data.Fsfibu2Constants;
 import fs.fibu2.data.format.DefaultCurrencyFormat;
+import fs.fibu2.data.model.Category;
 import fs.fibu2.data.model.Journal;
 import fs.fibu2.filter.EntryFilterEditor;
 import fs.fibu2.filter.StackFilter;
@@ -49,9 +68,11 @@ import fs.fibu2.view.event.ProgressListener;
 import fs.fibu2.view.model.BilancialAccountModel;
 import fs.fibu2.view.model.BilancialTableModel;
 import fs.fibu2.view.model.BilancialTreeModel;
+import fs.fibu2.view.model.CategoryListModel;
 import fs.fibu2.view.model.BilancialTreeModel.ExtendedCategory;
 import fs.fibu2.view.render.BilancialTableRenderer;
 import fs.fibu2.view.render.BilancialTree;
+import fs.fibu2.view.render.CategoryListRenderer;
 import fs.fibu2.view.render.MoneyCellRenderer;
 import fs.gui.GUIToolbox;
 import fs.xml.ResourceDependent;
@@ -83,14 +104,18 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 	
 	private JButton printButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".print"));
 	private JButton csvButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".csvexport"));
+	private JButton pieButton = new JButton(Fsfibu2StringTableMgr.getString(sgroup + ".pie"));
 	private JToggleButton filterButton = new JToggleButton();
 	
 	private ImageIcon filterIcon = new ImageIcon(Fsfibu2DefaultReference.getDefaultReference().getFullResourcePath(this, "graphics/BilancialPane/filter.png"));
 	private ImageIcon printIcon = new ImageIcon(Fsfibu2DefaultReference.getDefaultReference().getFullResourcePath(this, "graphics/BilancialPane/print.png"));
+	private ImageIcon pieIcon = new ImageIcon(Fsfibu2DefaultReference.getDefaultReference().getFullResourcePath(this, "graphics/BilancialPane/pie.png"));
 	
 	private JPanel progressPanel = new JPanel();
 	private JLabel recalculateLabel = new JLabel(Fsfibu2StringTableMgr.getString("fs.fibu2.view.JournalTableBar.progress"));
 	private JProgressBar progressBar = new JProgressBar();
+	
+	private PieWindow pieWindow = null;
 	
 	// DATA *******************************
 	// ************************************
@@ -171,6 +196,16 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 			}
 		}
 	};
+
+	private ActionListener pieListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(pieWindow == null) {
+				pieWindow = new PieWindow();
+			}
+			pieWindow.setVisible(true);
+		}
+	};
 	
 	// MISC *******************************
 	// ************************************
@@ -240,7 +275,9 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 		csvButton.setToolTipText(Fsfibu2StringTableMgr.getString(sgroup + ".csvtooltip"));
 			csvButton.addActionListener(csvListener);
 			csvButton.setIcon(new ImageIcon(Fsfibu2DefaultReference.getDefaultReference().getFullResourcePath(this, "graphics/BilancialPane/csv.png")));
-		
+		pieButton.setToolTipText(Fsfibu2StringTableMgr.getString(sgroup + ".pietooltip"));
+			pieButton.addActionListener(pieListener);
+			pieButton.setIcon(pieIcon);
 		
 		JPanel treePanel = new JPanel();
 			treePanel.setBackground(Color.WHITE);
@@ -262,6 +299,7 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 			JPanel barPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 			barPanel.add(printButton);
 			barPanel.add(csvButton);
+			barPanel.add(pieButton);
 		bar.add(barPanel, BorderLayout.WEST);
 		bar.add(progressPanel, BorderLayout.EAST);
 			
@@ -391,7 +429,151 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 			tree.addPath("graphics/BilancialPane/filter.png");
 			tree.addPath("graphics/BilancialPane/print.png");
 			tree.addPath("graphics/BilancialPane/csv.png");
+			tree.addPath("graphics/BilancialPane/pie.png");
 		return tree;
+	}
+	
+	// LOCAL WINDOW CLASS *****************
+	// ************************************
+	
+	private class PieWindow extends JFrame {
+		
+		/**
+		 *  compiler-generated serial version uid
+		 */
+		private static final long serialVersionUID = -1048366259455981508L;
+		
+		// COMPONENTS **************************
+		// *************************************
+		
+		private JComboBox categoryBox = new JComboBox();
+		private JRadioButton restrictToDirect = new JRadioButton(Fsfibu2StringTableMgr.getString(sgroup + ".pierestricthighest"));
+		private JRadioButton restrictToLowest = new JRadioButton(Fsfibu2StringTableMgr.getString(sgroup + ".pierestrictlowest"));
+		private JRadioButton usePositive = new JRadioButton(Fsfibu2StringTableMgr.getString("fs.fibu2.model.BilancialTableModel.in"));
+		private JRadioButton useNegative = new JRadioButton(Fsfibu2StringTableMgr.getString("fs.fibu2.model.BilancialTableModel.out"));
+		private PiePlot3D plot = new PiePlot3D();
+		
+		// LISTENERS ***************************
+		// *************************************
+		
+		private ItemListener categoryListener = new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				fillData();
+			}
+		};
+		
+		private ChangeListener buttonListener = new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				if(e.getSource() == restrictToDirect || e.getSource() == usePositive) fillData();
+			}
+		};
+		
+		private TreeModelListener modelListener = new TreeModelListener() {
+			@Override
+			public void treeNodesChanged(TreeModelEvent e) {
+				fillData();
+			}
+			@Override
+			public void treeNodesInserted(TreeModelEvent e) {
+				fillData();
+			}
+			@Override
+			public void treeNodesRemoved(TreeModelEvent e) {
+				fillData();
+			}
+			@Override
+			public void treeStructureChanged(TreeModelEvent e) {
+				fillData();
+			}
+		};
+		
+		// CONSTRUCTOR & HELPERS ***************
+		// *************************************
+		
+		public PieWindow() {
+			super(Fsfibu2StringTableMgr.getString(sgroup + ".pietitle"));
+			setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			setLayout(new BorderLayout());
+			
+			tree.getModel().addTreeModelListener(modelListener);
+			
+			categoryBox.setModel(new CategoryListModel(associatedJournal,true));
+			categoryBox.addItemListener(categoryListener);
+			categoryBox.setRenderer(new CategoryListRenderer(" > "));
+			
+			ButtonGroup group1 = new ButtonGroup();
+				group1.add(restrictToDirect);
+				group1.add(restrictToLowest);
+				restrictToDirect.setSelected(true);
+				restrictToDirect.addChangeListener(buttonListener);
+				restrictToLowest.addChangeListener(buttonListener);
+			ButtonGroup group2 = new ButtonGroup();
+				group2.add(usePositive);
+				group2.add(useNegative);
+				usePositive.setSelected(true);
+				usePositive.addChangeListener(buttonListener);
+				useNegative.addChangeListener(buttonListener);
+			
+			PieSectionLabelGenerator generator = new StandardPieSectionLabelGenerator("{0} = {1} ({2})",
+					DefaultCurrencyFormat.getFormat(Fsfibu2Constants.defaultCurrency),
+					DecimalFormat.getPercentInstance()); 
+			plot.setLabelGenerator(generator);
+			plot.setLegendLabelGenerator(generator);
+			
+			fillData();
+			
+			//Layout
+			JPanel barPanel = new JPanel();
+			ChartPanel piePanel = new ChartPanel(new JFreeChart(plot));
+			JLabel categoryLabel = new JLabel(Fsfibu2StringTableMgr.getString("fs.fibu2.Entry.category") + ":");
+			
+			GridBagLayout gbl = new GridBagLayout();
+			barPanel.setLayout(gbl);
+			
+			GridBagConstraints gcCategoryLabel = GUIToolbox.buildConstraints(0, 0, 1, 1);
+			GridBagConstraints gcCategory = GUIToolbox.buildConstraints(0, 1, 1, 1);
+			GridBagConstraints gcReDirect = GUIToolbox.buildConstraints(1, 0, 1, 1);
+			GridBagConstraints gcReLowest = GUIToolbox.buildConstraints(1, 1, 1, 1);
+			GridBagConstraints gcPlus = GUIToolbox.buildConstraints(2, 0, 1, 1);
+			GridBagConstraints gcMinus = GUIToolbox.buildConstraints(2, 1, 1, 1);
+			
+			for(GridBagConstraints gc : Arrays.asList(gcCategory, gcCategoryLabel, gcReDirect, gcReLowest,gcPlus,gcMinus)) {
+				gc.insets = new Insets(5,5,5,5);
+			}
+			
+			gbl.setConstraints(categoryLabel, gcCategoryLabel);
+			gbl.setConstraints(categoryBox, gcCategory);
+			gbl.setConstraints(restrictToDirect, gcReDirect);
+			gbl.setConstraints(restrictToLowest, gcReLowest);
+			gbl.setConstraints(usePositive, gcPlus);
+			gbl.setConstraints(useNegative, gcMinus);
+			
+			barPanel.add(categoryLabel); barPanel.add(categoryBox); barPanel.add(restrictToDirect); barPanel.add(restrictToLowest);
+			barPanel.add(usePositive); barPanel.add(useNegative);
+			
+			add(barPanel,BorderLayout.NORTH);
+			add(piePanel, BorderLayout.CENTER);
+			
+			
+			pack();
+		}
+		
+		private void fillData() {
+			BilancialTreeModel model = (BilancialTreeModel) tree.getModel();
+			plot.setDataset(model.getPieDataSet((Category)categoryBox.getSelectedItem(), restrictToDirect.isSelected(), usePositive.isSelected()));
+		}
+
+		@Override
+		public void dispose() {
+			super.dispose();
+			tree.getModel().removeTreeModelListener(modelListener);
+			pieWindow = null;
+		}
+		
+		
+		
 	}
 
 }

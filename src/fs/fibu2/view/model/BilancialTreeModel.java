@@ -17,6 +17,9 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 import org.apache.log4j.Logger;
+import org.jfree.data.general.DefaultPieDataset;
+import org.jfree.data.general.PieDataset;
+import org.jfree.util.SortOrder;
 
 import fs.fibu2.data.event.JournalListener;
 import fs.fibu2.data.model.Account;
@@ -569,6 +572,66 @@ public class BilancialTreeModel implements TreeModel, JournalListener, ChangeLis
 		this.filter = filter;
 		if(this.filter != null) this.filter.addChangeListener(this);
 		recalculate();
+	}
+	
+	/**
+	 * This returns a {@link PieDataset} which can be used to display a pie plot representing
+	 * the distribution of either the incomes or expenditures of a category
+	 * @param c The category which should be used for calculation
+	 * @param includeOnlyFirstLevel If true, only the sums of the categories directly below c 
+	 * are used for calculation. If false, all lowest-level categories are used
+	 * @param positive If true, income is used for calculation, if false, expenditure is used.
+	 */
+	public PieDataset getPieDataSet(Category c, boolean includeOnlyFirstLevel, boolean positive) {
+		DefaultPieDataset dataset = new DefaultPieDataset();
+		
+		c = c == null? Category.getRootCategory() : c;
+		ExtendedCategory ec = new ExtendedCategory(c,false);
+		Vector<ExtendedCategory> subcats = directSubcategories.get(ec);
+		
+		//If it has no subcategories, simply return a trivial, one-element dataset
+		if(subcats == null || subcats.size() == 0) {
+			if(invisibles.contains(ec)) dataset.setValue(c,0);
+			else dataset.setValue(c, positive? plus.get(c) : -minus.get(c));
+			return dataset;
+		}
+		
+		//Go through direct subcategories
+		if(includeOnlyFirstLevel) {
+			for(ExtendedCategory ecc : subcats) {
+				if(!invisibles.contains(ecc))
+					dataset.setValue(ecc.category(), positive? plus.get(ecc.category()) : -minus.get(ecc.category()));
+			}
+		}
+		//Go through lowest-level children
+		else {
+			for(ExtendedCategory ecc : getLowestLevelChildren(ec)) {
+				if(!invisibles.contains(ecc))
+					dataset.setValue(ecc.category(), positive? plus.get(ecc.category()) : -minus.get(ecc.category()));
+			}
+		}
+		
+		dataset.sortByKeys(SortOrder.ASCENDING);
+		return dataset;	
+	}
+	
+	/**
+	 * @return A list of the lowest-level children of ec
+	 */
+	protected Vector<ExtendedCategory> getLowestLevelChildren(ExtendedCategory ec) {
+		Vector<ExtendedCategory> children = new Vector<ExtendedCategory>();
+		
+		Vector<ExtendedCategory> subcategories = directSubcategories.get(ec);
+		if(subcategories == null || subcategories.size() == 0) {
+			children.add(ec);
+		}
+		else {
+			for(ExtendedCategory child : subcategories) {
+				children.addAll(getLowestLevelChildren(child));
+			}
+		}
+		
+		return children;
 	}
 	
 	// TREEMODEL *******************
