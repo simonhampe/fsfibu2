@@ -521,6 +521,7 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 					DecimalFormat.getPercentInstance()); 
 			plot.setLabelGenerator(generator);
 			plot.setLegendLabelGenerator(generator);
+			plot.setIgnoreZeroValues(true);
 			
 			fillData();
 			
