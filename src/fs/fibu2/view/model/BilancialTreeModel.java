@@ -581,8 +581,9 @@ public class BilancialTreeModel implements TreeModel, JournalListener, ChangeLis
 	 * @param includeOnlyFirstLevel If true, only the sums of the categories directly below c 
 	 * are used for calculation. If false, all lowest-level categories are used
 	 * @param positive If true, income is used for calculation, if false, expenditure is used.
+	 * @param bilancial If true, positive/negative values of the overall bilancial are used, otherwise pure income/expenditure is used
 	 */
-	public PieDataset getPieDataSet(Category c, boolean includeOnlyFirstLevel, boolean positive) {
+	public PieDataset getPieDataSet(Category c, boolean includeOnlyFirstLevel, boolean positive, boolean bilancial) {
 		DefaultPieDataset dataset = new DefaultPieDataset();
 		
 		c = c == null? Category.getRootCategory() : c;
@@ -592,22 +593,55 @@ public class BilancialTreeModel implements TreeModel, JournalListener, ChangeLis
 		//If it has no subcategories, simply return a trivial, one-element dataset
 		if(subcats == null || subcats.size() == 0) {
 			if(invisibles.contains(ec)) dataset.setValue(c,0);
-			else dataset.setValue(c, positive? plus.get(c) == null? 0 : plus.get(c) : -(minus.get(c) == null? 0 : minus.get(c)));
-			return dataset;
+			else {
+				float value = 0.0f;
+				if(bilancial && sum.get(c) != null) {
+					if(positive && sum.get(c) > 0) value = sum.get(c);
+					if(!positive && sum.get(c) < 0) value = -sum.get(c);
+				}
+				else {
+					if(positive && plus.get(c) != null) value = plus.get(c);
+					if(!positive && minus.get(c) != null) value = -minus.get(c);
+				}
+				dataset.setValue(c,value);
+				return dataset;
+			}
 		}
 		
 		//Go through direct subcategories
 		if(includeOnlyFirstLevel) {
 			for(ExtendedCategory ecc : subcats) {
-				if(!invisibles.contains(ecc))
-					dataset.setValue(ecc.category(), positive? plus.get(ecc.category()) : -minus.get(ecc.category()));
+				if(!invisibles.contains(ecc)) {
+					float value = 0.0f;
+					Category cat = ecc.category();
+					if(bilancial && sum.get(cat) != null) {
+						if(positive && sum.get(cat) > 0) value = sum.get(cat);
+						if(!positive && sum.get(cat) < 0) value = -sum.get(cat);
+					}
+					else {
+						if(positive && plus.get(cat) != null) value = plus.get(cat);
+						if(!positive && minus.get(cat) != null) value = -minus.get(cat);
+					}
+					dataset.setValue(ecc.category(), value);
+				}
 			}
 		}
 		//Go through lowest-level children
 		else {
 			for(ExtendedCategory ecc : getLowestLevelChildren(ec)) {
-				if(!invisibles.contains(ecc))
-					dataset.setValue(ecc.category(), positive? plus.get(ecc.category()) : -minus.get(ecc.category()));
+				if(!invisibles.contains(ecc)){
+					float value = 0.0f;
+					Category cat = ecc.category();
+					if(bilancial && sum.get(cat) != null) {
+						if(positive && sum.get(cat) > 0) value = sum.get(cat);
+						if(!positive && sum.get(cat) < 0) value = -sum.get(cat);
+					}
+					else {
+						if(positive && plus.get(cat) != null) value = plus.get(cat);
+						if(!positive && minus.get(cat) != null) value = -minus.get(cat);
+					}
+					dataset.setValue(ecc.category(), value);
+				}
 			}
 		}
 		

@@ -451,6 +451,8 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 		private JRadioButton restrictToLowest = new JRadioButton(Fsfibu2StringTableMgr.getString(sgroup + ".pierestrictlowest"));
 		private JRadioButton usePositive = new JRadioButton(Fsfibu2StringTableMgr.getString("fs.fibu2.model.BilancialTableModel.in"));
 		private JRadioButton useNegative = new JRadioButton(Fsfibu2StringTableMgr.getString("fs.fibu2.model.BilancialTableModel.out"));
+		private JRadioButton usePositiveBilancial = new JRadioButton(Fsfibu2StringTableMgr.getString(sgroup + ".piebilancialpositive"));
+		private JRadioButton useNegativeBilancial = new JRadioButton(Fsfibu2StringTableMgr.getString(sgroup + ".piebilancialnegative"));
 		private PiePlot3D plot = new PiePlot3D();
 		
 		// LISTENERS ***************************
@@ -512,9 +514,13 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 			ButtonGroup group2 = new ButtonGroup();
 				group2.add(usePositive);
 				group2.add(useNegative);
+				group2.add(usePositiveBilancial);
+				group2.add(useNegativeBilancial);
 				usePositive.setSelected(true);
 				usePositive.addChangeListener(buttonListener);
 				useNegative.addChangeListener(buttonListener);
+				usePositiveBilancial.addChangeListener(buttonListener);
+				useNegativeBilancial.addChangeListener(buttonListener);
 			
 			PieSectionLabelGenerator generator = new StandardPieSectionLabelGenerator("{0} = {1} ({2})",
 					DefaultCurrencyFormat.getFormat(Fsfibu2Constants.defaultCurrency),
@@ -539,8 +545,10 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 			GridBagConstraints gcReLowest = GUIToolbox.buildConstraints(1, 1, 1, 1);
 			GridBagConstraints gcPlus = GUIToolbox.buildConstraints(2, 0, 1, 1);
 			GridBagConstraints gcMinus = GUIToolbox.buildConstraints(2, 1, 1, 1);
+			GridBagConstraints gcBilPlus = GUIToolbox.buildConstraints(3, 0, 1, 1);
+			GridBagConstraints gcBilNeg = GUIToolbox.buildConstraints(3, 1, 1, 1);
 			
-			for(GridBagConstraints gc : Arrays.asList(gcCategory, gcCategoryLabel, gcReDirect, gcReLowest,gcPlus,gcMinus)) {
+			for(GridBagConstraints gc : Arrays.asList(gcCategory, gcCategoryLabel, gcReDirect, gcReLowest,gcPlus,gcMinus, gcBilPlus, gcBilNeg)) {
 				gc.insets = new Insets(5,5,5,5);
 			}
 			
@@ -550,9 +558,11 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 			gbl.setConstraints(restrictToLowest, gcReLowest);
 			gbl.setConstraints(usePositive, gcPlus);
 			gbl.setConstraints(useNegative, gcMinus);
+			gbl.setConstraints(usePositiveBilancial, gcBilPlus);
+			gbl.setConstraints(useNegativeBilancial, gcBilNeg);
 			
 			barPanel.add(categoryLabel); barPanel.add(categoryBox); barPanel.add(restrictToDirect); barPanel.add(restrictToLowest);
-			barPanel.add(usePositive); barPanel.add(useNegative);
+			barPanel.add(usePositive); barPanel.add(useNegative); barPanel.add(usePositiveBilancial); barPanel.add(useNegativeBilancial);
 			
 			add(barPanel,BorderLayout.NORTH);
 			add(piePanel, BorderLayout.CENTER);
@@ -563,7 +573,9 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 		
 		private void fillData() {
 			BilancialTreeModel model = (BilancialTreeModel) tree.getModel();
-			plot.setDataset(model.getPieDataSet((Category)categoryBox.getSelectedItem(), restrictToDirect.isSelected(), usePositive.isSelected()));
+			plot.setDataset(model.getPieDataSet((Category)categoryBox.getSelectedItem(), restrictToDirect.isSelected(),
+					usePositive.isSelected() || usePositiveBilancial.isSelected(),
+					usePositiveBilancial.isSelected() || useNegativeBilancial.isSelected()));
 		}
 
 		@Override
