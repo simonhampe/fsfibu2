@@ -468,7 +468,7 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 		private ChangeListener buttonListener = new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				if(e.getSource() == restrictToDirect || e.getSource() == usePositive) fillData();
+				fillData();
 			}
 		};
 		
