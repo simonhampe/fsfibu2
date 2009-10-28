@@ -280,6 +280,7 @@ public final class FrameworkLoader {
 			if(l != null) listeners.add(l);
 		}
 		
+		@SuppressWarnings("unused")
 		public void removeRetrievalListener(DataRetrievalListener l) {
 			listeners.remove(l);
 		}
