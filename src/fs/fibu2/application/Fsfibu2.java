@@ -224,18 +224,23 @@ public class Fsfibu2 {
 	private class CustomLoader extends URLClassLoader {
 
 		public CustomLoader(URL[] urls) {
-			//Add all jar files in pluginlibs/
 			super(urls);
-			File directory = new File("pluginlibs/");
-			File[] jarfiles = directory.listFiles();
-			for(File f : jarfiles) {
-				if(f.getName().endsWith(".jar")) {
-					try {
-						addURL(f.toURI().toURL());
-					} catch (MalformedURLException e) {
-						//Will not happen
+			//Add all jar files in pluginlibs/
+			try {
+				File directory = new File("pluginlibs/");
+				File[] jarfiles = directory.listFiles();
+				for(File f : jarfiles) {
+					if(f.getName().endsWith(".jar")) {
+						try {
+							addURL(f.toURI().toURL());
+						} catch (MalformedURLException e) {
+							//Will not happen
+						}
 					}
 				}
+			}
+			catch(Exception e) {
+				logger.warn(Fsfibu2StringTableMgr.getString("fs.fibu2.init.pluginlibsnotloaded"));
 			}
 		}
 		
