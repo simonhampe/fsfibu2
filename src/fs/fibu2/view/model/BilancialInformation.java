@@ -105,6 +105,17 @@ public final class BilancialInformation {
 	}
 	
 	/**
+	 * @return The bilancial information obtained by adding the value of e ONLY to its account mapping. If e == null, a clone is created
+	 */
+	public BilancialInformation incrementAccount(Entry e) {
+		if(e == null) return clone();
+		HashMap<Account, Float> newaccount = new HashMap<Account, Float>(accountSums);
+			Float a = newaccount.get(e.getAccount());
+			newaccount.put(e.getAccount(), a == null? e.getValue() : e.getValue() + a);
+		return new BilancialInformation(overallSum, categorySums, newaccount);
+	}
+	
+	/**
 	 * @return The bilancial information obtained by incrementing with an entry which is identical to e, except that is has value ( - e.getValue())
 	 */
 	public BilancialInformation decrement(Entry e) {

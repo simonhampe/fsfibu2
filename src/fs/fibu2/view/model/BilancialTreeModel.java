@@ -77,6 +77,9 @@ public class BilancialTreeModel implements TreeModel, JournalListener, ChangeLis
 	//The mask of each category (null = there is no mask). 
 	private HashMap<ExtendedCategory, String> mask = new HashMap<ExtendedCategory, String>();
 	
+	//Whether account bilancials are calculated regardless of invisibility parameters
+	private boolean accountsIgnoreInvisibility = false;
+	
 	//The corresponding journal
 	private Journal associatedJournal;
 	//The filter used by this model
@@ -197,6 +200,12 @@ public class BilancialTreeModel implements TreeModel, JournalListener, ChangeLis
 			if(filter == null || filter.verifyEntry(e)) {
 				entriesAccepted = true;
 				if(isInheritedVisible(e.getCategory(), true) && isInheritedVisible(e.getCategory(),false)) biOverall = biOverall.increment(e);
+				//If accounts ignore invisibility, we have to add this entry to the account bilancials anyway
+				else  {
+					if(accountsIgnoreInvisibility) {
+						biOverall = biOverall.incrementAccount(e);
+					}
+				}
 				
 				if(!biAcceptedMinusIndiv.keySet().contains(e.getCategory())) biAcceptedMinusIndiv.put(e.getCategory(), 0.0f);
 				if(!biAcceptedPlusIndiv.keySet().contains(e.getCategory())) biAcceptedPlusIndiv.put(e.getCategory(), 0.0f);
@@ -500,6 +509,22 @@ public class BilancialTreeModel implements TreeModel, JournalListener, ChangeLis
 			else mask.put(ec, maskString);
 			fireTreeNodesChanged(new TreeModelEvent(this, getPath(ecp),new int[]{0},new Object[]{ec}));
 		}
+	}
+	
+	/**
+	 * Sets whether invisibility settings are ignored for account bilancials
+	 */
+	public void setAccountsIgnoreInvisibility(boolean ignore) {
+		accountsIgnoreInvisibility = ignore;
+		recalculate();
+		fireTreeNodesChanged(new TreeModelEvent(this, new TreePath(getRoot())));
+	}
+	
+	/**
+	 * @return Whether account bilancial ignores invisibility settings
+	 */
+	public boolean doAccountsIgnoreInvisibility() {
+		return accountsIgnoreInvisibility;
 	}
 	
 	/**

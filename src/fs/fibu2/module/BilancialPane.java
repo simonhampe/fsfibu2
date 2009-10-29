@@ -24,6 +24,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -97,6 +98,7 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 	private BilancialTree tree;
 	private JTable table;
 	private JTable accountTable;
+	private JCheckBox ignoreInvisibles = new JCheckBox(Fsfibu2StringTableMgr.getString(sgroup + ".ignore"));
 	
 	private EntryFilterEditor editor;
 	
@@ -196,6 +198,13 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 			}
 		}
 	};
+	
+	private ActionListener ignoreListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			tree.getModel().setAccountsIgnoreInvisibility(ignoreInvisibles.isSelected());
+		}
+	};
 
 	private ActionListener pieListener = new ActionListener() {
 		@Override
@@ -256,6 +265,8 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 			accountTable.setModel(new BilancialAccountModel(model));
 			accountTable.setDefaultRenderer(Float.class, new MoneyCellRenderer(Fsfibu2Constants.defaultCurrency));
 			accountTable.getTableHeader().setReorderingAllowed(false);
+		ignoreInvisibles.setSelected(tree.getModel().doAccountsIgnoreInvisibility());
+			ignoreInvisibles.addActionListener(ignoreListener);
 		editor = filter.getEditor(associatedJournal);
 			editor.setVisible(false);
 		bar = new JToolBar();
@@ -325,6 +336,7 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 		
 		//Account panel
 		accountPanel.setLayout(new BorderLayout());
+		accountPanel.add(ignoreInvisibles, BorderLayout.NORTH);
 		accountPanel.add(accountScroll,BorderLayout.WEST);
 		accountPanel.add(new JPanel(),BorderLayout.EAST);
 		
