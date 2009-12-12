@@ -661,6 +661,7 @@ public class EntryDialog extends FrameworkDialog {
 			label.setIconReference(warn);
 			String eInfo = e != null? (e.getAccountInformation().containsKey(id)? e.getAccountInformation().get(id) : "") : "";
 			JTextField field = new JTextField(accountMap.containsKey(id)? accountMap.get(id).getText() : eInfo);
+				field.setToolTipText(a.getFieldDescriptions().get(id));
 			newAccountMap.put(id, field); newLabelMap.put(id, label);
 			JPanel fillPanel = new JPanel();
 			GridBagConstraints gclabel = GUIToolbox.buildConstraints(0, row, 1, 1); gclabel.insets = new Insets(5,5,5,5);
