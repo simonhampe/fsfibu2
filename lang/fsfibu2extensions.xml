@@ -12,6 +12,10 @@
       <description>English</description>
     </language>
   </languagetable>
+  <polyglotstring id="fs.fibu2ext.account.Kostenstelle.name" group="fs.fibu2ext.account.Kostenstelle">
+    <variant lang="de">Kostenstelle 8190000</variant>
+    <variant lang="en">Kostenstelle 8190000</variant>
+  </polyglotstring>
   <polyglotstring id="fs.fibu2ext.account.NonStrictBankAccount.description" group="fs.fibu2ext.account.NonStrictBankAccount">
     <variant lang="de">Ein Bankkonto ohne Rechnungsnummer</variant>
     <variant lang="en">A bank account without invoice number</variant>
@@ -24,13 +28,17 @@
     <variant lang="de">Allgemeines Bankkonto</variant>
     <variant lang="en">Generic bank account</variant>
   </polyglotstring>
-  <polyglotstring id="fs.fibu2ext.account.NonStrictBankAccount.nostatement" group="fs.fibu2ext.account.NonStrictBankAccount">
-    <variant lang="de">Es wurde kein Kontoauszug angegeben</variant>
-    <variant lang="en">No statement sheet number was given</variant>
+  <polyglotstring id="fs.fibu2ext.account.Kostenstelle.description" group="fs.fibu2ext.account.Kostenstelle">
+    <variant lang="de">Die Kostenstelle der Fachschaft</variant>
+    <variant lang="en">The Fachschaft's Kostenstelle</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2ext.account.NonStrictBankAccount.nonumber" group="fs.fibu2ext.account.NonStrictBankAccount">
     <variant lang="de">Die Kontoauszugsnummer sollte eine ganze Zahl sein. Wenn Sie sie noch nicht kennen, sollen sie das Feld frei lassen.</variant>
     <variant lang="en">The statement sheet number should be a number. If you don't know it yet, you should leave it empty</variant>
+  </polyglotstring>
+  <polyglotstring id="fs.fibu2ext.account.NonStrictBankAccount.nostatement" group="fs.fibu2ext.account.NonStrictBankAccount">
+    <variant lang="de">Es wurde kein Kontoauszug angegeben</variant>
+    <variant lang="en">No statement sheet number was given</variant>
   </polyglotstring>
   <polyglotstring id="fs.fibu2ext.account.NonStrictBankAccount.statementname" group="fs.fibu2ext.account.NonStrictBankAccount">
     <variant lang="de">Kontoauszug</variant>

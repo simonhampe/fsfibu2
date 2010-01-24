@@ -34,7 +34,8 @@ public class YearListModel extends JournalAdapter implements ComboBoxModel {
 	 * Creates a list model for the given journal
 	 */
 	public YearListModel(Journal j) {
-		associatedJournal = j;
+		associatedJournal = j == null? new Journal() : j;
+		associatedJournal.addJournalListener(this);
 	}
 	
 	// LIST MODEL ****************************
