@@ -158,7 +158,7 @@ public final class BilancialInformation {
 		b.append("<html><b>");
 		b.append(Fsfibu2StringTableMgr.getString("fs.fibu2.model.BilancialInformation.report"));
 		b.append(":</b><br>");
-		b.append("Overall sum: ");
+		b.append(Fsfibu2StringTableMgr.getString("fs.fibu2.model.BilancialInformation.overallsum"));
 			b.append(format.format(overallSum));
 			b.append("<br>");
 		if(c != null) {
