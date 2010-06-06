@@ -604,7 +604,8 @@ public class EntryDialog extends FrameworkDialog {
 		accInfValidator.addComponent(panelAccInf, labelAccInf);
 		okValidator.validate();
 		
-		fieldName.requestFocusInWindow();
+		//fieldName.requestFocusInWindow();
+		comboNames.requestFocusInWindow();
 	}
 	
 	// GETTER METHODS ***************************************
@@ -626,6 +627,7 @@ public class EntryDialog extends FrameworkDialog {
 	private void insertValues(Entry e) {
 		if(e == null) return;
 		fieldName.setText(e.getName());
+		comboNames.setSelectedItem(e.getName());
 		fieldDate.setText(Fsfibu2DateFormats.getEntryDateFormat().format(e.getDate().getTime()));
 		fieldValue.setText(DefaultCurrencyFormat.getFormat().format(e.getValue()));
 		if(((CategoryListModel)comboCategory.getModel()).getListOfItems().contains(e.getCategory())) {
