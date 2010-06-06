@@ -1,6 +1,5 @@
 package fs.fibu2.view.render;
 
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -43,6 +42,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 import fs.event.DataRetrievalListener;
 import fs.fibu2.data.error.EntryVerificationException;
@@ -97,8 +98,8 @@ public class EntryDialog extends FrameworkDialog {
 	private JLabel labelPreviewCreate = new JLabel();
 	
 	private JTextField fieldName = new JTextField();
-	private JRadioButton radioNewName = new JRadioButton();
-	private JRadioButton radioOldName = new JRadioButton();
+//	private JRadioButton radioNewName = new JRadioButton();
+//	private JRadioButton radioOldName = new JRadioButton();
 	private JComboBox comboNames = new JComboBox();
 	private JTextField fieldDate = new JTextField();
 	private JTextField fieldValue = new JTextField();
@@ -132,7 +133,8 @@ public class EntryDialog extends FrameworkDialog {
 		public Result validate(JTextField component) {
 			Result r = Result.CORRECT;
 			String tooltip = null;
-			String text = radioNewName.isSelected()? fieldName.getText().trim() : comboNames.getSelectedItem().toString();
+			String text = //radioNewName.isSelected()? fieldName.getText().trim() : 
+				comboNames.getSelectedItem().toString().trim();
 			if(text == null || text.equals("")) {
 				r = Result.INCORRECT;
 				tooltip = Fsfibu2StringTableMgr.getString(sgroup + ".emptyname");
@@ -143,15 +145,15 @@ public class EntryDialog extends FrameworkDialog {
 		@Override
 		protected void unregisterFromComponent(JTextField arg0) {
 			arg0.getDocument().removeDocumentListener(this);
-			radioNewName.removeChangeListener(this);
-			radioOldName.removeChangeListener(this);
+//			radioNewName.removeChangeListener(this);
+//			radioOldName.removeChangeListener(this);
 			comboNames.removeItemListener(this);
 		}
 		@Override
 		protected void registerToComponent(JTextField arg0) {
 			arg0.getDocument().addDocumentListener(this);
-			radioNewName.addChangeListener(this);
-			radioOldName.addChangeListener(this);
+//			radioNewName.addChangeListener(this);
+//			radioOldName.addChangeListener(this);
 			comboNames.addItemListener(this);
 		}
 	};
@@ -366,35 +368,35 @@ public class EntryDialog extends FrameworkDialog {
 	};
 	
 	//Selects 'new name', when text is entered/changed
-	private DocumentListener newNameListener = new DocumentListener() {
-		@Override
-		public void changedUpdate(DocumentEvent e) {
-			radioNewName.setSelected(true);
-		}
-		@Override
-		public void insertUpdate(DocumentEvent e) {
-			radioNewName.setSelected(true);
-		}
-		@Override
-		public void removeUpdate(DocumentEvent e) {
-			radioNewName.setSelected(true);
-		}
-	};
+//	private DocumentListener newNameListener = new DocumentListener() {
+//		@Override
+//		public void changedUpdate(DocumentEvent e) {
+//			radioNewName.setSelected(true);
+//		}
+//		@Override
+//		public void insertUpdate(DocumentEvent e) {
+//			radioNewName.setSelected(true);
+//		}
+//		@Override
+//		public void removeUpdate(DocumentEvent e) {
+//			radioNewName.setSelected(true);
+//		}
+//	};
 	
 	//Selects 'old name', when an item in the combo box is selected
-	private ItemListener oldNameListener = new ItemListener() {
-		@Override
-		public void itemStateChanged(ItemEvent e) {
-			radioOldName.setSelected(true);
-		}
-	};
+//	private ItemListener oldNameListener = new ItemListener() {
+//		@Override
+//		public void itemStateChanged(ItemEvent e) {
+//			radioOldName.setSelected(true);
+//		}
+//	};
 	
-	private ActionListener oldNameActionListener = new ActionListener() {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			radioOldName.setSelected(true);
-		}
-	};
+//	private ActionListener oldNameActionListener = new ActionListener() {
+//		@Override
+//		public void actionPerformed(ActionEvent e) {
+//			radioOldName.setSelected(true);
+//		}
+//	};
 	
 	//Makes the category editor visible
 	private ActionListener createCategoryListener = new ActionListener() {
@@ -466,13 +468,15 @@ public class EntryDialog extends FrameworkDialog {
 			TreeSet<String> names = new TreeSet<String>();
 			for(Entry en : j.getEntries()) names.add(en.getName());
 		comboNames.setModel(new DefaultComboBoxModel(new Vector<String>(names)));
+			comboNames.setEditable(true);
 			comboNames.setSelectedItem("");
+			AutoCompleteDecorator.decorate(comboNames);
 		ButtonGroup group = new ButtonGroup();
 			group.add(radioExisting); group.add(radioNew); group.add(radioCreate);
 			radioExisting.setSelected(true);
-		ButtonGroup group2 = new ButtonGroup();
-			group2.add(radioNewName); group2.add(radioOldName);
-			radioNewName.setSelected(true);
+//		ButtonGroup group2 = new ButtonGroup();
+//			group2.add(radioNewName); group2.add(radioOldName);
+//			radioNewName.setSelected(true);
 		checkAdditional.setSelected(e == null? false : (e.getAdditionalInformation().trim().equals("")? false : true));
 		areaInfo.setEnabled(checkAdditional.isSelected());
 		areaInfo.setLineWrap(true);
@@ -482,9 +486,9 @@ public class EntryDialog extends FrameworkDialog {
 		editor = new CategoryEditor(this,j);
 		editor.setModalityType(ModalityType.DOCUMENT_MODAL);
 		JScrollPane areaPane = new JScrollPane(areaInfo);
-		JPanel comboNamesPanel = new JPanel();
-			comboNamesPanel.setLayout(new FlowLayout(FlowLayout.LEFT,5,0));
-			comboNamesPanel.add(radioOldName); comboNamesPanel.add(comboNames);
+//		JPanel comboNamesPanel = new JPanel();
+//			comboNamesPanel.setLayout(new FlowLayout(FlowLayout.LEFT,5,0));
+//			comboNamesPanel.add(radioOldName); comboNamesPanel.add(comboNames);
 		
 		//Layout
 		
@@ -496,8 +500,8 @@ public class EntryDialog extends FrameworkDialog {
 		GridBagConstraints gcLabelCategory = GUIToolbox.buildConstraints(0, 3, 1, 1);
 		GridBagConstraints gcLabelAccount = GUIToolbox.buildConstraints(0, 5, 1, 1);
 		GridBagConstraints gcRadioNewName = GUIToolbox.buildConstraints(1, 0, 1, 1);
-		GridBagConstraints gcComboNames = GUIToolbox.buildConstraints(3, 0, 2, 1);
-		GridBagConstraints gcFieldName = GUIToolbox.buildConstraints(2, 0, 1, 1);
+		GridBagConstraints gcComboNames = GUIToolbox.buildConstraints(1, 0, 2, 1);
+		GridBagConstraints gcFieldName = GUIToolbox.buildConstraints(3, 0, 1, 1);
 		GridBagConstraints gcFieldDate = GUIToolbox.buildConstraints(1, 1, 2, 1);
 		GridBagConstraints gcFieldValue = GUIToolbox.buildConstraints(1, 2, 2, 1);
 		GridBagConstraints gcRadioEx = GUIToolbox.buildConstraints(1,3, 1, 1);
@@ -538,8 +542,8 @@ public class EntryDialog extends FrameworkDialog {
 		gbl.setConstraints(labelValue, gcLabelValue);
 		gbl.setConstraints(labelCategory, gcLabelCategory);
 		gbl.setConstraints(labelAccount, gcLabelAccount);
-		gbl.setConstraints(radioNewName, gcRadioNewName);
-		gbl.setConstraints(comboNamesPanel, gcComboNames);
+		//gbl.setConstraints(radioNewName, gcRadioNewName);
+		gbl.setConstraints(comboNames, gcComboNames);
 		gbl.setConstraints(fieldName, gcFieldName);
 		gbl.setConstraints(fieldDate, gcFieldDate);
 		gbl.setConstraints(fieldValue, gcFieldValue);
@@ -562,7 +566,8 @@ public class EntryDialog extends FrameworkDialog {
 	
 		for(JLabel l : Arrays.asList(labelName,labelDate, labelValue, labelCategory,labelAccount, labelAccInf, labelPreviewCreate, labelPreviewDate, 
 				labelPreviewValue)) add(l);
-		add(radioNewName);add(fieldName); add(comboNamesPanel);add(fieldDate); add(fieldValue); add(radioExisting); add(comboCategory); 
+		//add(radioNewName);add(fieldName); 
+		add(comboNames);add(fieldDate); add(fieldValue); add(radioExisting); add(comboCategory); 
 		add(radioNew); add(fieldNewCategory); add(radioCreate);add(createButton); add(comboAccount);
 		add(panelAccInf);
 		add(checkAdditional);
@@ -575,11 +580,11 @@ public class EntryDialog extends FrameworkDialog {
 		setResizable(false);
 		
 		//Register validators and listeners
-		fieldName.getDocument().addDocumentListener(newNameListener);
+		//fieldName.getDocument().addDocumentListener(newNameListener);
 		fieldDate.getDocument().addDocumentListener(previewListener);
 		fieldValue.getDocument().addDocumentListener(previewListener);
-		comboNames.addItemListener(oldNameListener);
-		comboNames.addActionListener(oldNameActionListener);
+//		comboNames.addItemListener(oldNameListener);
+//		comboNames.addActionListener(oldNameActionListener);
 		comboAccount.addItemListener(accountListener);
 		checkAdditional.addChangeListener(checkAdditionalListener);
 		okButton.addActionListener(closeButtonListener);
@@ -719,7 +724,8 @@ public class EntryDialog extends FrameworkDialog {
 				accMap.put(k, accountMap.get(k).getText());
 			}
 		try {
-			return new Entry(radioNewName.isSelected()? fieldName.getText() : comboNames.getSelectedItem().toString(),
+			return new Entry(//radioNewName.isSelected()? fieldName.getText() : comboNames.getSelectedItem().toString(),
+							comboNames.getSelectedItem().toString(),
 							DefaultCurrencyFormat.getFormat().parse(fieldValue.getText()).floatValue(),Currency.getInstance("EUR"),Fsfibu2DateFormats.parseDateInputFormat(fieldDate.getText()),
 							radioExisting.isSelected()? (Category)comboCategory.getSelectedItem() :
 								(radioNew.isSelected()? Category.getCategory((Category)comboCategory.getSelectedItem(),fieldNewCategory.getText()) :
