@@ -45,6 +45,7 @@ fsfibu 2 verwendet folgende weitere Bibliotheken:
  \item log4j, die Logging API von Apache (logging.apache.org/log4j)
  \item JFreeChart, um die Graphen zu zeichnen (www.jfree.org/jfreechart)
  \item Liquid Look \& Feel, für die graphische Oberfläche (https://liquidlnf.dev.java.net/)
+ \item SwingLabs swingx, für die Auto-Vervollständigen-Funktion beim Erstellen eines Eintrags (https://swingx.dev.java.net/)
  \item fsframework, eine von mir geschriebene Bibliothek (ohne Webseite...)
 \end{itemize}
 
@@ -201,7 +202,7 @@ Vor fsfibu 1 wurde unser Kassenbuch in einer Tabelle in OpenOffice verwaltet. Di
 
 fsfibu 2 ist von vornherein so geschrieben worden, dass sich mehrere Aspekte leicht erweitern lassen. 'Leicht' bedeutet in diesem Zusammenhang allerdings noch immer, dass man, um eine Erweiterung selbst zu erstellen, durchaus Java programmieren muss. Man braucht allerdings nicht jedes Mal den Quellcode des ganzen Projekts zu beschaffen und zu kompilieren. Trotz allem ist dieses Kapitel relativ technisch und ohne gewisse Grundkenntnisse in Java wahrscheinlich völlig uninteressant.
 
-Das Erweiterungskonzept funktioniert eigentlich immer auf die gleiche Weise: Man schreibt eine Klasse, die eine Erweiterung in einem bestimmten Bereich darstellen soll (beispielsweise einen Filter) und kopiert die .class - Datei, die beim Kompilieren entstand, in den zugehörigen Ordner im Hauptverzeichnis von fsfibu 2(in diesem Fall eben /filters). Beim nächsten Programmstart wird die Erweiterung automatisch geladen. Des Weiteren muss eine solche Klasse immer eine Methode implementieren, die eine eindeutige ID zurückgibt. Für jeden Typ von Erweiterungen gibt es eine entsprechende Konvention für diese ID, die zumindest von mir eingehalten wurde. Indem man sich also NICHT daran hält, geht man relativ sicher, nicht mit den von mir gewählten IDs zu kollidieren.
+Das Erweiterungskonzept funktioniert eigentlich immer auf die gleiche Weise: Man schreibt eine Klasse, die eine Erweiterung in einem bestimmten Bereich darstellen soll (beispielsweise einen Filter) und kopiert die .class - Datei, die beim Kompilieren entstand, in den zugehörigen Ordner im Hauptverzeichnis von fsfibu 2(in diesem Fall eben /filters). Beim nächsten Programmstart wird die Erweiterung automatisch geladen. Des Weiteren muss eine solche Klasse immer eine Methode implementieren, die eine eindeutige ID zurückgibt. Für jeden Typ von Erweiterungen gibt es eine entsprechende Konvention für diese ID, die zumindest von mir eingehalten wurde. Indem man sich also daran hält, geht man relativ sicher, nicht mit den bereits vorhandenen IDs zu kollidieren.
 
 \textbf{Hinweis:} Damit eine Erweiterung erkannt wird, ist immer ein Neustart des Programms notwendig.
 

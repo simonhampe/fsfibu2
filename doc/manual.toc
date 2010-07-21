@@ -16,12 +16,12 @@
 \contentsline {subsubsection}{Die Bilanz}{9}
 \contentsline {subsection}{\numberline {2.2.2}Filter}{9}
 \contentsline {subsubsection}{Tabtitel}{9}
-\contentsline {subsubsection}{Der Filtereditor}{9}
+\contentsline {subsubsection}{Der Filtereditor}{10}
 \contentsline {subsubsection}{Konteninformationsfilter}{10}
-\contentsline {subsubsection}{Kategorienfilter}{10}
+\contentsline {subsubsection}{Kategorienfilter}{11}
 \contentsline {subsubsection}{Kontenfilter}{11}
 \contentsline {subsection}{\numberline {2.2.3}Bilanz}{11}
-\contentsline {subsection}{\numberline {2.2.4}Graphen}{11}
+\contentsline {subsection}{\numberline {2.2.4}Graphen}{12}
 \contentsline {subsection}{\numberline {2.2.5}Exportieren}{12}
 \contentsline {subsubsection}{Fsfibu 2 format}{12}
 \contentsline {subsubsection}{Fsfibu 1 format}{12}
