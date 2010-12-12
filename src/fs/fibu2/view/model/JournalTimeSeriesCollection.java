@@ -1,5 +1,6 @@
 package fs.fibu2.view.model;
 
+import java.math.BigDecimal;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.TreeSet;
@@ -16,6 +17,7 @@ import org.jfree.data.time.TimeSeriesCollection;
 import fs.fibu2.data.event.JournalListener;
 import fs.fibu2.data.format.EntryComparator;
 import fs.fibu2.data.format.EntryDateComparator;
+import fs.fibu2.data.format.MoneyDecimal;
 import fs.fibu2.data.model.Account;
 import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.Journal;
@@ -99,19 +101,20 @@ public class JournalTimeSeriesCollection extends TimeSeriesCollection implements
 			EntryDateComparator comparator = new EntryDateComparator();
 			GregorianCalendar currentDay = sortedSet.first().getDate();
 			boolean validEntryOccured = false;
-			float currentValue = 0.0f;
+			BigDecimal currentValue = MoneyDecimal.bigd(0);
 			
 			for(Entry e : sortedSet) {
+				BigDecimal evalue = MoneyDecimal.bigd(e.getValue());
 				if(filter == null || filter.verifyEntry(e)) {
-					//If the entry belongs to the same day, add its valus
+					//If the entry belongs to the same day, add its value
 					if(comparator.compare(e.getDate(), currentDay) == 0) {
-						currentValue += e.getValue();
+						currentValue = MoneyDecimal.add(currentValue, evalue);
 					}
 					//Otherwise add a time series value (if this is NOT the first entry, which might occur when using  a filter)
 					else {
 						if(validEntryOccured)data.add(new Day(currentDay.getTime()), currentValue);
 						currentDay = e.getDate();
-						currentValue += e.getValue();						
+						currentValue = MoneyDecimal.add(currentValue, evalue);					
 					}
 					validEntryOccured = true;
 				}

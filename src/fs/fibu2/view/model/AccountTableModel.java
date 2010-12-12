@@ -1,5 +1,6 @@
 package fs.fibu2.view.model;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.TreeSet;
 import java.util.Vector;
@@ -9,6 +10,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
 import fs.fibu2.data.format.DefaultAccountComparator;
+import fs.fibu2.data.format.MoneyDecimal;
 import fs.fibu2.data.model.Account;
 import fs.fibu2.data.model.Entry;
 import fs.fibu2.lang.Fsfibu2StringTableMgr;
@@ -168,7 +170,8 @@ public class AccountTableModel implements TableModel {
 					for(Entry e : entries) info = info.increment(e);
 					return info.getAccountMappings().get(rowAccount);
 				}
-		case 3: return (Float)getValueAt(rowIndex, 2) - (Float)getValueAt(rowIndex, 1);
+		case 3: return //(Float)getValueAt(rowIndex, 2) - (Float)getValueAt(rowIndex, 1);
+				MoneyDecimal.substract((BigDecimal)getValueAt(rowIndex, 2), (BigDecimal)getValueAt(rowIndex, 1));
 		default: return "";
 		}
 	}

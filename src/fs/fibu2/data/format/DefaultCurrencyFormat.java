@@ -1,5 +1,6 @@
 package fs.fibu2.data.format;
 
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Currency;
 
@@ -10,7 +11,7 @@ import java.util.Currency;
  *
  */
 public class DefaultCurrencyFormat {
-
+	
 	public static NumberFormat getFormat(Currency currency) {
 		NumberFormat format = NumberFormat.getCurrencyInstance();
 			format.setCurrency(currency);
@@ -28,6 +29,13 @@ public class DefaultCurrencyFormat {
 		String result = "<html><font color=\"" + (value >= 0? "000000" : "FF0000")   
 						+ "\">" + nf.format(value) + "</font></html>";
 		return result;
+	}
+	
+	/**
+	 * Simply calls on {@link #formatAsHTML(float, Currency)} by using value.floatValue()
+	 */
+	public static String formatAsHTML(BigDecimal value, Currency currency) {
+		return formatAsHTML(value.floatValue(), currency);
 	}
 	
 	/**

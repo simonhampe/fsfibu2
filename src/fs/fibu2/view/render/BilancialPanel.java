@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.math.BigDecimal;
 import java.util.TreeSet;
 import java.util.Vector;
 
@@ -30,6 +31,7 @@ import javax.swing.event.TableModelListener;
 
 import fs.fibu2.data.Fsfibu2Constants;
 import fs.fibu2.data.format.DefaultCurrencyFormat;
+import fs.fibu2.data.format.MoneyDecimal;
 import fs.fibu2.data.model.Category;
 import fs.fibu2.data.model.Entry;
 import fs.fibu2.data.model.EntrySeparator;
@@ -297,8 +299,8 @@ public class BilancialPanel extends JPanel {
 		updateRange();
 		boolean unconnectedRange = false; //Whether we are in selection mode with an unconnected selection
 		int[] selected = table.getSelectedRows();
-		float categorySum = 0;
-		float overallSum = 0;
+		BigDecimal categorySum = MoneyDecimal.bigd(0);
+		BigDecimal overallSum = MoneyDecimal.bigd(0);
 		for (int i = 0; i < selected.length; i++) {
 			selected[i] = table.convertRowIndexToModel(selected[i]);
 		}
@@ -323,15 +325,15 @@ public class BilancialPanel extends JPanel {
 			if(first instanceof Entry) first = tableModel.getValueAt(tableModel.indexOf(first)-1, 0);
 			//Insert values
 			((AccountTableModel)tableAccount.getModel()).setRange(first, last);
-			categorySum = 
-				saveValueOf(tableModel.getBilancialMapping(last).getOldest().information().getCategoryMappings().get((Category)comboCategory.getSelectedItem())) -
-				(first == last? 0 : 
-					saveValueOf(tableModel.getBilancialMapping(first).getOldest().information().getCategoryMappings().get((Category)comboCategory.getSelectedItem()))); 
+			categorySum = MoneyDecimal.substract(
+				saveValueOf(tableModel.getBilancialMapping(last).getOldest().information().getCategoryMappings().get((Category)comboCategory.getSelectedItem())),
+				(first == last? MoneyDecimal.bigd(0) : 
+								saveValueOf(tableModel.getBilancialMapping(first).getOldest().information().getCategoryMappings().get((Category)comboCategory.getSelectedItem())))); 
 				
-			overallSum = 
-				saveValueOf(tableModel.getBilancialMapping(last).getOldest().information().getOverallSum()) - 
-				(first == last? 0 : 
-					saveValueOf(tableModel.getBilancialMapping(first).getOldest().information().getOverallSum()));
+			overallSum = MoneyDecimal.substract(
+				saveValueOf(tableModel.getBilancialMapping(last).getOldest().information().getOverallSum()), 
+				(first == last? MoneyDecimal.bigd(0) : 
+					saveValueOf(tableModel.getBilancialMapping(first).getOldest().information().getOverallSum())));
 			
 		}
 		//Difficult: Unconnected 
@@ -340,9 +342,10 @@ public class BilancialPanel extends JPanel {
 			for (int i = 0; i < selected.length; i++) {
 				Object o = tableModel.getValueAt(selected[i], 0);
 				if(o instanceof Entry) {
-					overallSum += ((Entry)o).getValue();
+					BigDecimal evalue = MoneyDecimal.bigd(((Entry)o).getValue());
+					overallSum = MoneyDecimal.add(overallSum, evalue);
 					if(((Entry)o).getCategory() == comboCategory.getSelectedItem()) {
-						categorySum += ((Entry)o).getValue();
+						categorySum = MoneyDecimal.add(categorySum, evalue);
 					}
 					entries.add((Entry)o);
 				}
@@ -425,9 +428,9 @@ public class BilancialPanel extends JPanel {
 	/**
 	 * @return 0, if f == null, the value of f otherwise
 	 */
-	private static float saveValueOf(Float f) {
-		if(f == null) return 0;
-		else return f;
+	private static BigDecimal saveValueOf(BigDecimal d) {
+		if(d == null) return MoneyDecimal.bigd(0);
+		else return d;
 	}
 	
 }

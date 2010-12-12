@@ -1,5 +1,6 @@
 package fs.fibu2.view.model;
 
+import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,6 +23,7 @@ import org.jfree.data.general.PieDataset;
 import org.jfree.util.SortOrder;
 
 import fs.fibu2.data.event.JournalListener;
+import fs.fibu2.data.format.MoneyDecimal;
 import fs.fibu2.data.model.Account;
 import fs.fibu2.data.model.Category;
 import fs.fibu2.data.model.Entry;
@@ -58,18 +60,18 @@ public class BilancialTreeModel implements TreeModel, JournalListener, ChangeLis
 	private HashMap<ExtendedCategory, Vector<ExtendedCategory>> directSubcategories = new HashMap<ExtendedCategory, Vector<ExtendedCategory>>();
 	
 	//The bilancials for each category, including subcategories (the last is of course the sum of the first two)
-	private HashMap<Category, Float> plus = new HashMap<Category, Float>();
-	private HashMap<Category, Float> minus = new HashMap<Category, Float>();
-	private HashMap<Category, Float> sum = new HashMap<Category, Float>();
+	private HashMap<Category, BigDecimal> plus = new HashMap<Category, BigDecimal>();
+	private HashMap<Category, BigDecimal> minus = new HashMap<Category, BigDecimal>();
+	private HashMap<Category, BigDecimal> sum = new HashMap<Category, BigDecimal>();
 	
 	//The bilancials for each category - without subcategories!
-	private HashMap<Category, Float> plusIndiv = new HashMap<Category, Float>();
-	private HashMap<Category, Float> minusIndiv = new HashMap<Category, Float>();
-	private HashMap<Category, Float> sumIndiv = new HashMap<Category, Float>();
+	private HashMap<Category, BigDecimal> plusIndiv = new HashMap<Category, BigDecimal>();
+	private HashMap<Category, BigDecimal> minusIndiv = new HashMap<Category, BigDecimal>();
+	private HashMap<Category, BigDecimal> sumIndiv = new HashMap<Category, BigDecimal>();
 	
 	//The before/after status of accounts
-	private HashMap<Account, Float> before = new HashMap<Account, Float>();
-	private HashMap<Account, Float> after = new HashMap<Account, Float>();
+	private HashMap<Account, BigDecimal> before = new HashMap<Account, BigDecimal>();
+	private HashMap<Account, BigDecimal> after = new HashMap<Account, BigDecimal>();
 	
 	//Each category contained in here is invisble. 
 	private HashSet<ExtendedCategory> invisibles = new HashSet<ExtendedCategory>();
@@ -182,9 +184,9 @@ public class BilancialTreeModel implements TreeModel, JournalListener, ChangeLis
 		//The bilancial of all entries 'before'
 		BilancialInformation biBefore = new BilancialInformation(associatedJournal);
 		//The individual bilancials of all accepted entries
-		HashMap<Category, Float> biAcceptedPlusIndiv = new HashMap<Category, Float>();
-		HashMap<Category, Float>  biAcceptedMinusIndiv = new HashMap<Category, Float>();
-		HashMap<Category, Float>  biAcceptedSumIndiv = new  HashMap<Category, Float>();
+		HashMap<Category, BigDecimal> biAcceptedPlusIndiv = new HashMap<Category, BigDecimal>();
+		HashMap<Category, BigDecimal>  biAcceptedMinusIndiv = new HashMap<Category, BigDecimal>();
+		HashMap<Category, BigDecimal>  biAcceptedSumIndiv = new  HashMap<Category, BigDecimal>();
 		//The overall bilancial of all 'before' and accepted entries
 		BilancialInformation biOverall = new BilancialInformation(associatedJournal);
 		
@@ -207,18 +209,18 @@ public class BilancialTreeModel implements TreeModel, JournalListener, ChangeLis
 					}
 				}
 				
-				if(!biAcceptedMinusIndiv.keySet().contains(e.getCategory())) biAcceptedMinusIndiv.put(e.getCategory(), 0.0f);
-				if(!biAcceptedPlusIndiv.keySet().contains(e.getCategory())) biAcceptedPlusIndiv.put(e.getCategory(), 0.0f);
-				if(!biAcceptedSumIndiv.keySet().contains(e.getCategory())) biAcceptedSumIndiv.put(e.getCategory(), 0.0f);
+				if(!biAcceptedMinusIndiv.keySet().contains(e.getCategory())) biAcceptedMinusIndiv.put(e.getCategory(), MoneyDecimal.bigd(0));
+				if(!biAcceptedPlusIndiv.keySet().contains(e.getCategory())) biAcceptedPlusIndiv.put(e.getCategory(), MoneyDecimal.bigd(0));
+				if(!biAcceptedSumIndiv.keySet().contains(e.getCategory())) biAcceptedSumIndiv.put(e.getCategory(), MoneyDecimal.bigd(0));
 				
 				if(e.getValue() >= 0) {
-					biAcceptedPlusIndiv.put(e.getCategory(), biAcceptedPlusIndiv.get(e.getCategory()) + e.getValue());
+					biAcceptedPlusIndiv.put(e.getCategory(), MoneyDecimal.add(biAcceptedPlusIndiv.get(e.getCategory()), MoneyDecimal.bigd(e.getValue())));
 				}
 				else {
-					biAcceptedMinusIndiv.put(e.getCategory(), biAcceptedMinusIndiv.get(e.getCategory()) + e.getValue());
+					biAcceptedMinusIndiv.put(e.getCategory(), MoneyDecimal.add(biAcceptedMinusIndiv.get(e.getCategory()), MoneyDecimal.bigd(e.getValue())));
 				}
 				
-				biAcceptedSumIndiv.put(e.getCategory(), biAcceptedSumIndiv.get(e.getCategory()) + e.getValue());
+				biAcceptedSumIndiv.put(e.getCategory(), MoneyDecimal.add(biAcceptedSumIndiv.get(e.getCategory()), MoneyDecimal.bigd(e.getValue())));
 				
 			}
 			//Add non-accepted entries to the 'before' bilancials as long as no entry has been accepted
@@ -263,26 +265,26 @@ public class BilancialTreeModel implements TreeModel, JournalListener, ChangeLis
 			if((v.directSubcategories.get(c) != null && v.directSubcategories.get(c).size() > 0) || 
 					(c.category() == Category.getRootCategory() && !c.isAdditional())) continue;
 			//For leafs, just pass up the bilancial value while you're still in a visible range
-			Float plus = v.plusIndiv.get(c.category());
-			Float minus = v.minusIndiv.get(c.category());
-			Float sum = v.sumIndiv.get(c.category());
+			BigDecimal plus = v.plusIndiv.get(c.category());
+			BigDecimal minus = v.minusIndiv.get(c.category());
+			BigDecimal sum = v.sumIndiv.get(c.category());
 			//Non-additional leaf nodes add their bilancials to their sum anyway
 			if(!c.isAdditional) {
 				if(!v.sum.containsKey(c.category())) v.sum.put(c.category(), sum);
-				else v.sum.put(c.category(), v.sum.get(c.category()) + sum);
+				else v.sum.put(c.category(), MoneyDecimal.add(v.sum.get(c.category()),sum));
 				if(!v.plus.containsKey(c.category())) v.plus.put(c.category(), plus);
-				else v.plus.put(c.category(), v.plus.get(c.category()) + plus);
+				else v.plus.put(c.category(), MoneyDecimal.add(v.plus.get(c.category()),plus));
 				if(!v.minus.containsKey(c.category())) v.minus.put(c.category(), minus);
-				else v.minus.put(c.category(), v.minus.get(c.category()) + minus);
+				else v.minus.put(c.category(), MoneyDecimal.add(v.minus.get(c.category()),minus));
 			}
 			while(!invisibles.contains(c) && c != null) {
 				ExtendedCategory ecp = new ExtendedCategory(c.isAdditional()? c.category() : c.category().parent,false);
 				if(!v.sum.containsKey(ecp.category())) v.sum.put(ecp.category(), sum);
-				else v.sum.put(ecp.category(), v.sum.get(ecp.category()) + sum);
+				else v.sum.put(ecp.category(), MoneyDecimal.add(v.sum.get(ecp.category()),sum));
 				if(!v.plus.containsKey(ecp.category())) v.plus.put(ecp.category(), plus);
-				else v.plus.put(ecp.category(), v.plus.get(ecp.category()) + plus);
+				else v.plus.put(ecp.category(), MoneyDecimal.add(v.plus.get(ecp.category()),plus));
 				if(!v.minus.containsKey(ecp.category())) v.minus.put(ecp.category(), minus);
-				else v.minus.put(ecp.category(), v.minus.get(ecp.category()) + minus);
+				else v.minus.put(ecp.category(), MoneyDecimal.add(v.minus.get(ecp.category()), minus));
 				c = ecp.category() == Category.getRootCategory()? null : ecp;
 			}
 		}
@@ -390,48 +392,48 @@ public class BilancialTreeModel implements TreeModel, JournalListener, ChangeLis
 	 * @return The sum over all positive entries in this category and subcategories (0, if there are none)
 	 */
 	public float getCategoryPlus(Category c) {
-		Float f = plus.get(c);
-		return f == null? 0 : f;
+		BigDecimal f = plus.get(c);
+		return f == null? 0 : f.floatValue();
 	}
 	
 	/**
 	 * @return The sum over all negative entries in this category and subcategories (0, if there are none)
 	 */
 	public float getCategoryMinus(Category c) {
-		Float f = minus.get(c);
-		return f == null? 0 : f;
+		BigDecimal f = minus.get(c);
+		return f == null? 0 : f.floatValue();
 	}
 	
 	/**
 	 * @return The sum over all entries in this category and subcategories (0, if there are none)
 	 */
 	public float getCategorySum(Category c) {
-		Float f = sum.get(c);
-		return f == null? 0 : f;
+		BigDecimal f = sum.get(c);
+		return f == null? 0 : f.floatValue();
 	}
 	
 	/**
 	 * @return The sum over all positive entries directly in this category (0, if there are none)
 	 */
 	public float getIndividualPlus(Category c) {
-		Float f = plusIndiv.get(c);
-		return f == null? 0 : f;
+		BigDecimal f = plusIndiv.get(c);
+		return f == null? 0 : f.floatValue();
 	}
 	
 	/**
 	 * @return The sum over all negative entries directly in this category (0, if there are none)
 	 */
 	public float getIndividualMinus(Category c) {
-		Float f = minusIndiv.get(c);
-		return f == null? 0 : f;
+		BigDecimal f = minusIndiv.get(c);
+		return f == null? 0 : f.floatValue();
 	}
 	
 	/**
 	 * @return The sum over all entries directly in this category (0, if there are none)
 	 */
 	public float getIndividualSum(Category c) {
-		Float f = sumIndiv.get(c);
-		return f == null? 0 : f;
+		BigDecimal f = sumIndiv.get(c);
+		return f == null? 0 : f.floatValue();
 	}
 	
 	/**
@@ -531,18 +533,18 @@ public class BilancialTreeModel implements TreeModel, JournalListener, ChangeLis
 	 * @return The status of a before the regarded entries (or 0, if the account does not figure in this bilancial)
 	 */
 	public float getAccountBefore(Account a) {
-		Float f = before.get(a);
+		BigDecimal f = before.get(a);
 		if(f == null) return 0;
-		else return f;
+		else return f.floatValue();
 	}
 	
 	/**
 	 * @return The status of a after the regarded entries (or 0, if the account does not figure in this bilancial)
 	 */
 	public float getAccountAfter(Account a) {
-		Float f = after.get(a);
+		BigDecimal f = after.get(a);
 		if(f == null) return 0;
-		else return f;
+		else return f.floatValue();
 	}
 	
 	/**
@@ -621,12 +623,12 @@ public class BilancialTreeModel implements TreeModel, JournalListener, ChangeLis
 			else {
 				float value = 0.0f;
 				if(bilancial && sum.get(c) != null) {
-					if(positive && sum.get(c) > 0) value = sum.get(c);
-					if(!positive && sum.get(c) < 0) value = -sum.get(c);
+					if(positive && sum.get(c).compareTo(MoneyDecimal.bigd(0)) > 0) value = sum.get(c).floatValue();
+					if(!positive && sum.get(c).compareTo(MoneyDecimal.bigd(0)) < 0) value = -sum.get(c).floatValue();
 				}
 				else {
-					if(positive && plus.get(c) != null) value = plus.get(c);
-					if(!positive && minus.get(c) != null) value = -minus.get(c);
+					if(positive && plus.get(c) != null) value = plus.get(c).floatValue();
+					if(!positive && minus.get(c) != null) value = -minus.get(c).floatValue();
 				}
 				dataset.setValue(c,value);
 				return dataset;
@@ -640,12 +642,12 @@ public class BilancialTreeModel implements TreeModel, JournalListener, ChangeLis
 					float value = 0.0f;
 					Category cat = ecc.category();
 					if(bilancial && sum.get(cat) != null) {
-						if(positive && sum.get(cat) > 0) value = sum.get(cat);
-						if(!positive && sum.get(cat) < 0) value = -sum.get(cat);
+						if(positive && sum.get(cat).compareTo(MoneyDecimal.bigd(0)) > 0) value = sum.get(cat).floatValue();
+						if(!positive && sum.get(cat).compareTo(MoneyDecimal.bigd(0)) < 0) value = -sum.get(cat).floatValue();
 					}
 					else {
-						if(positive && plus.get(cat) != null) value = plus.get(cat);
-						if(!positive && minus.get(cat) != null) value = -minus.get(cat);
+						if(positive && plus.get(cat) != null) value = plus.get(cat).floatValue();
+						if(!positive && minus.get(cat) != null) value = -minus.get(cat).floatValue();
 					}
 					dataset.setValue(ecc.category(), value);
 				}
@@ -658,12 +660,12 @@ public class BilancialTreeModel implements TreeModel, JournalListener, ChangeLis
 					float value = 0.0f;
 					Category cat = ecc.category();
 					if(bilancial && sum.get(cat) != null) {
-						if(positive && sum.get(cat) > 0) value = sum.get(cat);
-						if(!positive && sum.get(cat) < 0) value = -sum.get(cat);
+						if(positive && sum.get(cat).compareTo(MoneyDecimal.bigd(0)) > 0) value = sum.get(cat).floatValue();
+						if(!positive && sum.get(cat).compareTo(MoneyDecimal.bigd(0)) < 0) value = -sum.get(cat).floatValue();
 					}
 					else {
-						if(positive && plus.get(cat) != null) value = plus.get(cat);
-						if(!positive && minus.get(cat) != null) value = -minus.get(cat);
+						if(positive && plus.get(cat) != null) value = plus.get(cat).floatValue();
+						if(!positive && minus.get(cat) != null) value = -minus.get(cat).floatValue();
 					}
 					dataset.setValue(ecc.category(), value);
 				}
@@ -943,14 +945,14 @@ public class BilancialTreeModel implements TreeModel, JournalListener, ChangeLis
 	private class DataVector {
 		public HashSet<ExtendedCategory> used = new HashSet<ExtendedCategory>();
 		public HashMap<ExtendedCategory, Vector<ExtendedCategory>> directSubcategories = new HashMap<ExtendedCategory, Vector<ExtendedCategory>>();
-		public HashMap<Category, Float> minus = new HashMap<Category, Float>();
-		public HashMap<Category, Float> plus = new HashMap<Category, Float>();
-		public HashMap<Category, Float> sum = new HashMap<Category, Float>();
-		public HashMap<Category, Float> minusIndiv = new HashMap<Category, Float>();
-		public HashMap<Category, Float> plusIndiv = new HashMap<Category, Float>();
-		public HashMap<Category, Float> sumIndiv = new HashMap<Category, Float>();
-		public HashMap<Account, Float> before = new HashMap<Account, Float>();
-		public HashMap<Account, Float> after = new HashMap<Account, Float>();
+		public HashMap<Category, BigDecimal> minus = new HashMap<Category, BigDecimal>();
+		public HashMap<Category, BigDecimal> plus = new HashMap<Category, BigDecimal>();
+		public HashMap<Category, BigDecimal> sum = new HashMap<Category, BigDecimal>();
+		public HashMap<Category, BigDecimal> minusIndiv = new HashMap<Category, BigDecimal>();
+		public HashMap<Category, BigDecimal> plusIndiv = new HashMap<Category, BigDecimal>();
+		public HashMap<Category, BigDecimal> sumIndiv = new HashMap<Category, BigDecimal>();
+		public HashMap<Account, BigDecimal> before = new HashMap<Account, BigDecimal>();
+		public HashMap<Account, BigDecimal> after = new HashMap<Account, BigDecimal>();
 	}
 	
 	private class ExtCatComparator implements Comparator<ExtendedCategory>{

@@ -1,11 +1,13 @@
 package fs.fibu2.view.model;
 
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Currency;
 import java.util.HashMap;
 import java.util.Locale;
 
 import fs.fibu2.data.format.DefaultCurrencyFormat;
+import fs.fibu2.data.format.MoneyDecimal;
 import fs.fibu2.data.model.Account;
 import fs.fibu2.data.model.Category;
 import fs.fibu2.data.model.Entry;
@@ -26,18 +28,17 @@ public final class BilancialInformation {
 	/**
 	 * The overall sum of all entries
 	 */
-	private float overallSum = 0;
+	private BigDecimal overallSum = MoneyDecimal.bigd(0);
 	
 	/**
 	 * Sums of entries in certain categories
 	 */
-	private HashMap<Category, Float> categorySums = new HashMap<Category, Float>();
+	private HashMap<Category, BigDecimal> categorySums = new HashMap<Category, BigDecimal>();
 	
 	/**
 	 * Sums of entries using certain accounts
 	 */
-	private HashMap<Account, Float> accountSums = new HashMap<Account, Float>();
-	
+	private HashMap<Account, BigDecimal> accountSums = new HashMap<Account, BigDecimal>();
 	
 	// CONSTRUCTOR ***************************
 	// ***************************************
@@ -46,16 +47,16 @@ public final class BilancialInformation {
 	 * Creates a new bilancial information with overall value 0 and empty maps
 	 */
 	public BilancialInformation() {
-		this(0,null,null);
+		this(MoneyDecimal.bigd(0),null,null);
 	}
 	
 	/**
 	 * Creates a new bilancial information. The maps are cloned
 	 */
-	public BilancialInformation(float overallSum, HashMap<Category, Float> categorySums, HashMap<Account, Float> accountSums) {
+	public BilancialInformation(BigDecimal overallSum, HashMap<Category, BigDecimal> categorySums, HashMap<Account, BigDecimal> accountSums) {
 		this.overallSum = overallSum;
-		this.categorySums = categorySums == null? new HashMap<Category, Float>() : new HashMap<Category, Float>(categorySums);
-		this.accountSums = accountSums == null? new HashMap<Account, Float>() : new HashMap<Account, Float>(accountSums);
+		this.categorySums = categorySums == null? new HashMap<Category, BigDecimal>() : new HashMap<Category, BigDecimal>(categorySums);
+		this.accountSums = accountSums == null? new HashMap<Account, BigDecimal>() : new HashMap<Account, BigDecimal>(accountSums);
 	}
 	
 	/**
@@ -64,9 +65,9 @@ public final class BilancialInformation {
 	 */
 	public BilancialInformation(Journal j) {
 		if(j != null) {	
-			HashMap<Account, Float> start = new HashMap<Account, Float>();
-			for(Account a : j.getListOfAccounts()) {
-				start.put(a, j.getStartValue(a));
+			HashMap<Account, BigDecimal> start = new HashMap<Account, BigDecimal>();
+			for(Account a : j.getListOfAccounts()) {				
+				start.put(a, MoneyDecimal.bigd(j.getStartValue(a)));
 			}
 			accountSums = start;
 		}
@@ -78,7 +79,7 @@ public final class BilancialInformation {
 	 * @param info
 	 */
 	public BilancialInformation(BilancialInformation info) {
-		this(0,null,info == null? null: info.getAccountMappings());
+		this(MoneyDecimal.bigd(0),null,info == null? null: info.getAccountMappings());
 	}
 	
 	// GETTERS ******************************
@@ -90,18 +91,20 @@ public final class BilancialInformation {
 	 */
 	public BilancialInformation increment(Entry e) {
 		if(e == null)return clone();
-		HashMap<Category, Float> newcategory = new HashMap<Category, Float>(categorySums);
+		BigDecimal evalue = MoneyDecimal.bigd(e.getValue());
+		HashMap<Category, BigDecimal> newcategory = new HashMap<Category, BigDecimal>(categorySums);
 			Category cat = e.getCategory();
 			do {
-				Float c = newcategory.get(cat);
-				newcategory.put(cat, c == null? e.getValue() : e.getValue() + c);
+				BigDecimal c = newcategory.get(cat);
+				newcategory.put(cat, c == null? 
+						evalue : MoneyDecimal.add(evalue, c));
 				cat = cat.parent;
 			}
 			while(/*cat != Category.getRootCategory() && */ cat != null);
-		HashMap<Account, Float> newaccount = new HashMap<Account, Float>(accountSums);
-			Float a = newaccount.get(e.getAccount());
-			newaccount.put(e.getAccount(), a == null? e.getValue() : e.getValue() + a);
-		return new BilancialInformation(overallSum + e.getValue(), newcategory,newaccount);
+		HashMap<Account, BigDecimal> newaccount = new HashMap<Account, BigDecimal>(accountSums);
+			BigDecimal a = newaccount.get(e.getAccount());
+			newaccount.put(e.getAccount(), a == null? evalue : MoneyDecimal.add(evalue, a));
+		return new BilancialInformation(MoneyDecimal.add(overallSum, evalue), newcategory,newaccount);
 	}
 	
 	/**
@@ -109,9 +112,10 @@ public final class BilancialInformation {
 	 */
 	public BilancialInformation incrementAccount(Entry e) {
 		if(e == null) return clone();
-		HashMap<Account, Float> newaccount = new HashMap<Account, Float>(accountSums);
-			Float a = newaccount.get(e.getAccount());
-			newaccount.put(e.getAccount(), a == null? e.getValue() : e.getValue() + a);
+		BigDecimal evalue = MoneyDecimal.bigd(e.getValue());
+		HashMap<Account, BigDecimal> newaccount = new HashMap<Account, BigDecimal>(accountSums);
+			BigDecimal a = newaccount.get(e.getAccount());
+			newaccount.put(e.getAccount(), a == null? evalue : MoneyDecimal.add(evalue, a));
 		return new BilancialInformation(overallSum, categorySums, newaccount);
 	}
 	
@@ -124,24 +128,24 @@ public final class BilancialInformation {
 				e.getCurrency(),e.getDate(),e.getCategory(),e.getAccount().getID(),e.getAccountInformation(),e.getAdditionalInformation()));
 	}
 	
-	public float getOverallSum() {
+	public BigDecimal getOverallSum() {
 		return overallSum;
 	}
 	
-	public HashMap<Account, Float> getAccountMappings() {
-		return new HashMap<Account, Float>(accountSums);
+	public HashMap<Account, BigDecimal> getAccountMappings() {
+		return new HashMap<Account, BigDecimal>(accountSums);
 	}
 	
-	public HashMap<Category, Float> getCategoryMappings() {
-		return new HashMap<Category, Float>(categorySums);
+	public HashMap<Category, BigDecimal> getCategoryMappings() {
+		return new HashMap<Category, BigDecimal>(categorySums);
 	}
 	
 	public BilancialInformation clone() {
 		BilancialInformation clone = new BilancialInformation();
 		
 		clone.overallSum = overallSum;
-		clone.categorySums = new HashMap<Category, Float>(categorySums);
-		clone.accountSums = new HashMap<Account, Float>(accountSums);
+		clone.categorySums = new HashMap<Category, BigDecimal>(categorySums);
+		clone.accountSums = new HashMap<Account, BigDecimal>(accountSums);
 		
 		return clone;
 	}
@@ -159,15 +163,15 @@ public final class BilancialInformation {
 		b.append(Fsfibu2StringTableMgr.getString("fs.fibu2.model.BilancialInformation.report"));
 		b.append(":</b><br>");
 		b.append(Fsfibu2StringTableMgr.getString("fs.fibu2.model.BilancialInformation.overallsum"));
-			b.append(format.format(overallSum));
+			b.append(format.format(overallSum.floatValue()));
 			b.append("<br>");
 		if(c != null) {
 			Category cat = c;
 			do {
 				b.append(cat.tail);
 				b.append(": ");
-				Float value = categorySums.get(cat);
-				b.append(format.format(value == null? 0 : value));
+				BigDecimal value = categorySums.get(cat);
+				b.append(format.format(value == null? 0 : value.floatValue()));
 				b.append("<br>");
 				cat = cat.parent;
 			}
@@ -176,8 +180,8 @@ public final class BilancialInformation {
 		if(a != null) {
 			b.append(a.getName());
 			b.append(": ");
-			Float value = accountSums.get(a);
-			b.append(format.format(value == null? 0 : value));
+			BigDecimal value = accountSums.get(a);
+			b.append(format.format(value == null? 0 : value.floatValue()));
 		}
 		b.append("</html>");
 		return b.toString();
