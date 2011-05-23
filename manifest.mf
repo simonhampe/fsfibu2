@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
 Main-Class: fs.fibu2.application.Fsfibu2
 SplashScreen-Image: graphics/logo/fsfibu2splash.jpg
-Class-Path: libs/dom4j.jar libs/jaxen.jar libs/log4j-1.2.jar libs/fsframework.jar libs/jcommon-1.0.15.jar libs/jfreechart-1.0.12.jar libs/liquidlnf.jar libs/swingx-1.6.jar
+Class-Path: libs/dom4j.jar libs/jaxen.jar libs/log4j-1.2.jar libs/fsframework.jar libs/jcommon-1.0.15.jar libs/jfreechart-1.0.12.jar libs/liquidlnf.jar libs/swingx-core-1.6.2.jar
