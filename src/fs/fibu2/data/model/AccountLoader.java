@@ -18,10 +18,10 @@ public final class AccountLoader {
 	static {
 		AbstractAccount absAcc = new AbstractAccount();
 		accountMap.put(absAcc.getID(), absAcc);
-		BankAccount bankAcc = new BankAccount();
-		accountMap.put(bankAcc.getID(), bankAcc);
-		CashBox cb = new CashBox();
-		accountMap.put(cb.getID(), cb);
+//		BankAccount bankAcc = new BankAccount();
+//		accountMap.put(bankAcc.getID(), bankAcc);
+//		CashBox cb = new CashBox();
+//		accountMap.put(cb.getID(), cb);
 	}
 	
 	/**

@@ -1,0 +1,2 @@
+This directory contains alternative account classes. To use them, move them into the parent 'accounts' directory. 
+NOTE: OldBankAccount is the original account version of bank account used in older versions of fsfibu2. To actually use it, you have to remove the BankAccount.class already present in the accounts folder (after making a backup, preferrably), since they both use the same account ID. The main difference between the old and the new class is that the new bank account does not require any invoice number. 

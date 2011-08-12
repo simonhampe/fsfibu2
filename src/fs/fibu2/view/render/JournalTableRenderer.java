@@ -137,13 +137,15 @@ public class JournalTableRenderer implements TableCellRenderer, ResourceDependen
 					tooltip.append("</b><br>");
 					TreeSet<String> ids = new TreeSet<String>(e.getAccountInformation().keySet()); 
 					for(String id : ids) {
-						b.append(e.getAccountInformation().get(id));
-						tooltip.append(e.getAccount().getFieldNames().get(id));
-						tooltip.append(": ");
-						tooltip.append(e.getAccountInformation().get(id));
-						if(id != ids.last()) {
-							b.append(" / ");
-							tooltip.append("<br>");
+						if(e.getAccount().getFieldNames().get(id) != null) {
+							b.append(e.getAccountInformation().get(id));
+							tooltip.append(e.getAccount().getFieldNames().get(id));
+							tooltip.append(": ");
+							tooltip.append(e.getAccountInformation().get(id));
+							if(id != ids.last()) {
+								b.append(" / ");
+								tooltip.append("<br>");
+							}
 						}
 					}
 					tooltip.append("</html>");

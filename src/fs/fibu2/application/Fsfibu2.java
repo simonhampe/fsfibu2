@@ -45,7 +45,7 @@ public class Fsfibu2 {
 	
 	private static Fsfibu2 global_instance;
 	
-	public final static String version = "2.1 Official Release";
+	public final static String version = "2.2 Official Release";
 	
 	private static MainFrame frame;
 	
