@@ -234,6 +234,7 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 		
 		//Read out preferences
 		Preferences modelNode = null;
+		boolean ignore = true;
 		try {
 			if(node != null && node.nodeExists("model")) {
 				modelNode = node.node("model");
@@ -241,6 +242,7 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 			if(node != null && node.nodeExists("filter")) {
 				filter = (StackFilter)new StackFilter().createMeFromPreferences(node.node("filter"));
 			}
+			if(node != null) ignore = (Boolean.parseBoolean(node.get("ignoreinvisibles", "true")));
 		} catch (BackingStoreException e) {
 			//Ignore
 		}
@@ -265,7 +267,8 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 			accountTable.setModel(new BilancialAccountModel(model));
 			accountTable.setDefaultRenderer(Float.class, new MoneyCellRenderer(Fsfibu2Constants.defaultCurrency));
 			accountTable.getTableHeader().setReorderingAllowed(false);
-		ignoreInvisibles.setSelected(tree.getModel().doAccountsIgnoreInvisibility());
+		ignoreInvisibles.setSelected(ignore);
+			tree.getModel().setAccountsIgnoreInvisibility(ignore);
 			ignoreInvisibles.addActionListener(ignoreListener);
 		editor = filter.getEditor(associatedJournal);
 			editor.setVisible(false);
@@ -367,6 +370,7 @@ public class BilancialPane extends JPanel implements ResourceDependent {
 			if(node.nodeExists("filter")) node.node("filter").removeNode();
 			tree.getModel().insertMyPreferences(node.node("model"));
 			filter.insertMyPreferences(node);
+			node.put("ignoreinvisibles", Boolean.toString(ignoreInvisibles.isSelected()));
 		} catch (BackingStoreException e) {
 			//Ignore
 		}
