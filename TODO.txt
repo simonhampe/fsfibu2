@@ -1,9 +1,0 @@
-TODOS:
-
-- Print the journal! //check.
-- Options  //check.
-- Reading point configuration!  //check.
-- General export: Backup/ExportModule //check.
-- ChartModule (Maybe there should be a button to change the type of the chart) //check.
-- More logging //check.
-- CSV Export for BilancialView and JournalTable //check.
