@@ -4,3 +4,5 @@ An older project of mine: A java-based bookkeeping software I wrote for the Math
 I'm not maintaining this code in any way (if you're a member of the Kaiserslautern math student council and you're having trouble with fsfibu2,
 you can write me an email, though... ;-)
 Some documentation can be found in the doc/ folder. There is a manual and a javadoc (I think I actually annotated quite a lot of the code back then...)
+
+*Note:* This requires [fsframework](https://github.com/simonhampe/fsframework) to run. Wenn starting the fsfibu2-jar file, you will be asked for the location of fsframework. Just point it to the root folder of wherever you cloned the fsframework repo to.
